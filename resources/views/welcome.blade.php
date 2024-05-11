@@ -70,7 +70,7 @@
                             Don't feel comfortable giving out your phone number? Protect your online identity by using our one-time-use non-VoIP phone numbers.
 
                         </p>
-                        <img  class=" my-2 d-flex justify-content-center"  src="{{url('')}}/public/assets/images/front.svg">
+                        <img  class="d-flex justify-content-center"  src="{{url('')}}/public/assets/images/front.svg">
 
 
 
