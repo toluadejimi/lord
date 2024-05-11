@@ -54,6 +54,30 @@
 
 
         <div class="row">
+
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+
+
+                        <div class="card-header d-flex justify-content-center">
+                            <h2 class="text-center">
+                                Cheapest and Fastest Online SMS verification
+                            </h2>
+                        </div>
+
+                        <p class="text-center">
+                            Don't feel comfortable giving out your phone number? Protect your online identity by using our one-time-use non-VoIP phone numbers.
+
+                        </p>
+                        <img  class=" my-2 d-flex justify-content-center"  src="{{url('')}}/public/assets/images/front.svg">
+
+
+
+                    </div>
+                </div>
+            </div>
+
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-body">
@@ -165,6 +189,10 @@
                     </div>
                 </div>
             </div>
+
+
+
+
 
             @auth
             <div class="col-md-6">
