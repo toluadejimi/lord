@@ -23,16 +23,15 @@
     <link rel="stylesheet" href="{{url('')}}/public/assets/css/style-preset.css">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
 
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
           integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA=="
-          crossorigin="anonymous" />
+          crossorigin="anonymous"/>
 
 
 </head><!-- [Head] end --><!-- [Body] Start -->
@@ -59,8 +58,8 @@
                             <div class="flex-shrink-0"><img src="{{url('')}}/public/assets/images/user/avatar-1.jpg"
                                                             alt="user-image"
                                                             class="user-avtar wid-45 rounded-circle"></div>
-                            <div class="flex-grow-1 ms-3 me-2"><h6 class="mb-0">Jonh Smith</h6>
-                                <small>Administrator</small>
+                            <div class="flex-grow-1 ms-3 me-2"><h6 class="mb-0">{{Auth::user()->username}}</h6>
+                                <small>Customer</small>
                             </div>
                             <a class="btn btn-icon btn-link-secondary avtar" data-bs-toggle="collapse"
                                href="#pc_sidebar_userlink">
@@ -69,11 +68,20 @@
                                 </svg>
                             </a></div>
                         <div class="collapse pc-user-links" id="pc_sidebar_userlink">
-                            <div class="pt-3"><a href="#!"><i class="ti ti-user"></i> <span>My Account</span>
-                                </a><a href="#!"><i class="ti ti-settings"></i>
-                                    <span>Settings</span> </a><a href="#!"><i
-                                        class="ti ti-lock"></i> <span>Lock Screen</span> </a><a
-                                    href="#!"><i class="ti ti-power"></i> <span>Logout</span></a>
+                            <div class="pt-3">
+                                <a href="#">
+                                    <i class="ti ti-user">
+                                    </i>
+                                    <span>Profile</span>
+                                </a>
+
+
+                                <a href="log-out">
+                                    <i class="ti ti-power">
+
+                                    </i>
+                                    <span>Logout</span>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -143,22 +151,6 @@
                     </li>
 
 
-                    <li class="pc-item pc-caption"><label>Settings</label>
-                        <svg class="pc-icon">
-                            <use xlink:href="#custom-layer"></use>
-                        </svg>
-                    </li>
-
-                    <li class="pc-item">
-                        <a href="#" class="pc-link">
-                        <span class="pc-micon">
-                            <svg class="pc-icon"><use xlink:href="#custom-notification-status"></use></svg>
-                        </span>
-                            <span class="pc-mtext">Profile</span>
-                        </a>
-                    </li>
-
-
                     <li class="pc-item pc-caption"><label>Other Links</label>
                         <svg class="pc-icon">
                             <use xlink:href="#custom-layer"></use>
@@ -183,7 +175,6 @@
                             <span class="pc-mtext">Buy Account</span>
                         </a>
                     </li>
-
 
 
                     <hr>
@@ -221,7 +212,6 @@
             @endauth
 
 
-
         </div>
     </div>
 </nav><!-- [ Sidebar Menu ] end --><!-- [ Header Topbar ] start -->
@@ -245,7 +235,6 @@
                     <img src="{{url('')}}/public/assets/images/logo.svg">
 
                 </li>
-
 
 
             </ul>
@@ -436,7 +425,6 @@
 <footer class="pc-footer">
     <p class="d-flex justify-content-center">2024 SMSLORD</p>
 </footer>
-
 
 
 <!-- Required Js -->
@@ -693,7 +681,6 @@
 {{--<a href="https://t.me/verifyasapp" class="float" target="_blank">--}}
 {{--    <i class="fa fa-comment my-float"></i>--}}
 {{--</a>--}}
-
 
 
 <script>function changebrand(presetColor) {
