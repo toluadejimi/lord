@@ -38,7 +38,7 @@
                         </div>
 
 
-                    @if ($errors->any())
+                        @if ($errors->any())
                             <div class="alert alert-danger">
                                 <ul>
                                     @foreach ($errors->all() as $error)
@@ -59,69 +59,70 @@
                         @endif
 
 
-                        <div class="col-xl-12 col-md-12 col-sm-12 p-2 justify-center">
+                        <div class="col-xl-12 col-md-12 col-sm-12  justify-center">
 
 
                             <div class="card">
                                 <div class="card-body">
-                                    <table class="table table-sm table-responsive-sm">
-                                        <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Phone</th>
-                                            <th>SMS</th>
-                                            <th>Amount</th>
-                                            <th>Status</th>
-                                            <th>Action</th>
-
-                                        </tr>
-                                        </thead>
-
-
-                                        @foreach ($orders as $data)
-
-                                            <tbody>
-
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead>
                                             <tr>
-
-                                                <td>
-                                                    {{ $data->id }}
-                                                </td>
-                                                <td>
-                                                    {{ $data->phone }}
-                                                </td>
-                                                <td>
-                                                    {{ $data->sms}}
-                                                </td>
-
-                                                <td>
-                                                    {{ number_format($data->cost, 2) }}
-                                                </td>
-
-                                                @if($data->status == 2)
-                                                    <td class="text-success">
-                                                        Delivered
-                                                    </td>
-                                                @else
-                                                    <td class="text-warning">
-                                                        Pending
-                                                    </td>
-                                                @endif
-
-                                                <td>
-                                                    <a href="delete-order?id={{$data->id}}"
-                                                       class="btn btn-sm btn-dark text-small">Delete</a>
-                                                </td>
+                                                <th>ID</th>
+                                                <th>Phone</th>
+                                                <th>SMS</th>
+                                                <th>Amount</th>
+                                                <th>Status</th>
+                                                <th>Action</th>
 
                                             </tr>
+                                            </thead>
 
 
-                                            </tbody>
+                                            @foreach ($orders as $data)
 
-                                        @endforeach
+                                                <tbody>
+
+                                                <tr>
+
+                                                    <td>
+                                                        {{ $data->id }}
+                                                    </td>
+                                                    <td>
+                                                        {{ $data->phone }}
+                                                    </td>
+                                                    <td>
+                                                        {{ $data->sms}}
+                                                    </td>
+
+                                                    <td>
+                                                        {{ number_format($data->cost, 2) }}
+                                                    </td>
+
+                                                    @if($data->status == 2)
+                                                        <td class="text-success">
+                                                            Delivered
+                                                        </td>
+                                                    @else
+                                                        <td class="text-warning">
+                                                            Pending
+                                                        </td>
+                                                    @endif
+
+                                                    <td>
+                                                        <a href="delete-order?id={{$data->id}}"
+                                                           class="btn btn-sm btn-dark text-small">Delete</a>
+                                                    </td>
+
+                                                </tr>
 
 
-                                    </table>
+                                                </tbody>
+
+                                            @endforeach
+
+                                        </table>
+                                    </div>
 
 
                                 </div>

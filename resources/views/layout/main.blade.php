@@ -83,7 +83,7 @@
                     <li class="pc-item pc-menu">
                         <a href="home" class="pc-link"><span class="pc-micon">
                             <svg class="pc-icon">
-                                <use xlink:href="#custom-status-up">
+                                <use xlink:href="#custom-text-align-justify-center">
                                 </use>
                             </svg>
                         </span>
@@ -150,11 +150,11 @@
                     </li>
 
                     <li class="pc-item">
-                        <a href="../other/sample-page.html" class="pc-link">
+                        <a href="#" class="pc-link">
                         <span class="pc-micon">
                             <svg class="pc-icon"><use xlink:href="#custom-notification-status"></use></svg>
                         </span>
-                            <span class="pc-mtext">Sample page</span>
+                            <span class="pc-mtext">Profile</span>
                         </a>
                     </li>
 
@@ -167,13 +167,24 @@
 
 
                     <li class="pc-item">
-                        <a href="../other/sample-page.html" class="pc-link">
+                        <a href="https://socialplugboost.com" class="pc-link">
                         <span class="pc-micon">
-                            <svg class="pc-icon"><use xlink:href="#custom-notification-status"></use></svg>
+                            <svg class="pc-icon"><use xlink:href="#custom-status-up"></use></svg>
                         </span>
-                            <span class="pc-mtext">Sample page</span>
+                            <span class="pc-mtext">Boost Social Account</span>
                         </a>
                     </li>
+
+                    <li class="pc-item">
+                        <a href="https://loggsplug.com" class="pc-link">
+                        <span class="pc-micon">
+                            <svg class="pc-icon"><use xlink:href="#custom-bag"></use></svg>
+                        </span>
+                            <span class="pc-mtext">Buy Account</span>
+                        </a>
+                    </li>
+
+
 
                     <hr>
 
