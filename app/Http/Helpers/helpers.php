@@ -72,8 +72,6 @@ function send_notification($message)
 
 
 
-
-
     function send_notification2($message)
     {
 

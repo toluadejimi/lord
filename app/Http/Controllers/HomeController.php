@@ -1139,17 +1139,21 @@ class HomeController extends Controller
 
 
 
-    public function webhook(request $request)
+    public function smspool_webhook(request $request)
     {
 
-        $activationId = $request->activationId;
+
+        $activationId = $request->orderid;
         $messageId = $request->messageId;
         $service = $request->service;
         $text = $request->text;
-        $code = $request->code;
+        $code = $request->sms;
         $country = $request->country;
         $receivedAt = $request->receivedAt;
+
         $orders = Verification::where('order_id', $activationId)->update(['sms' => $code]);
+
+
 
 
         $message = json_encode($request->all());
