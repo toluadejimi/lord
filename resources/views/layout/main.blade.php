@@ -296,9 +296,7 @@
                                                 src="{{url('')}}/public/assets/images/user/avatar-2.jpg"
                                                 alt="user-image" class="user-avtar wid-35"></div>
                                         <div class="flex-grow-1 ms-3"><h6 class="mb-1">{{Auth::user()->username}} 🖖</h6>
-                                            <span><a
-                                                    href="../cdn-cgi/l/email-protection.html" class="__cf_email__"
-                                                    data-cfemail="80e3e1f2f3efeeaee4e1f2f2e9eec0e3efedf0e1eef9aee9ef">[email&#160;protected]</a></span>
+                                            <span>{{Auth::user()->email}}</a></span>
                                         </div>
                                     </div>
                                     <hr class="border-secondary border-opacity-50">
@@ -311,37 +309,12 @@
                                     <a href="#" class="dropdown-item">
                                     <span><svg
                                             class="pc-icon text-muted me-2"><use xlink:href="#custom-share-bold"></use></svg> <span>Share</span> </span></a>
-                                    <a href="#" class="dropdown-item"><span>
+                                    <a href="/logout" class="dropdown-item"><span>
                                         <svg
                                             class="pc-icon text-muted me-2"><use
                                                 xlink:href="#custom-lock-outline"></use></svg> <span>Change Password</span></span></a>
                                     <hr class="border-secondary border-opacity-50">
-                                    <p class="text-span">Team</p><a href="#" class="dropdown-item"><span><svg
-                                                class="pc-icon text-muted me-2"><use
-                                                    xlink:href="#custom-profile-2user-outline"></use></svg> <span>UI Design team</span></span>
-                                        <div class="user-group"><img
-                                                src="{{url('')}}/public/assets/images/user/avatar-1.jpg"
-                                                alt="user-image" class="avtar"> <span
-                                                class="avtar bg-danger text-white">K</span> <span
-                                                class="avtar bg-success text-white"><svg class="pc-icon m-0"><use
-                                                        xlink:href="#custom-user"></use></svg> </span><span
-                                                class="avtar bg-light-primary text-primary">+2</span></div>
-                                    </a><a href="#" class="dropdown-item"><span><svg
-                                                class="pc-icon text-muted me-2"><use
-                                                    xlink:href="#custom-profile-2user-outline"></use></svg> <span>Friends Groups</span></span>
-                                        <div class="user-group"><img
-                                                src="{{url('')}}/public/assets/images/user/avatar-1.jpg"
-                                                alt="user-image" class="avtar"> <span
-                                                class="avtar bg-danger text-white">K</span> <span
-                                                class="avtar bg-success text-white"><svg class="pc-icon m-0"><use
-                                                        xlink:href="#custom-user"></use></svg></span></div>
-                                    </a><a href="#" class="dropdown-item"><span><svg
-                                                class="pc-icon text-muted me-2"><use
-                                                    xlink:href="#custom-add-outline"></use></svg> <span>Add new</span></span>
-                                        <div class="user-group"><span class="avtar bg-primary text-white"><svg
-                                                    class="pc-icon m-0"><use
-                                                        xlink:href="#custom-add-outline"></use></svg></span></div>
-                                    </a>
+
                                     <hr class="border-secondary border-opacity-50">
                                     <div class="d-grid mb-3">
                                         <button class="btn btn-primary">
@@ -351,33 +324,7 @@
                                             Logout
                                         </button>
                                     </div>
-                                    <div class="card border-0 shadow-none drp-upgrade-card mb-0"
-                                         style="background-image: url({{url('')}}/public/assets/images/layout/img-profile-card.jpg)">
-                                        <div class="card-body">
-                                            <div class="user-group"><img
-                                                    src="{{url('')}}/public/assets/images/user/avatar-1.jpg"
-                                                    alt="user-image" class="avtar"> <img
-                                                    src="{{url('')}}/public/assets/images/user/avatar-2.jpg"
-                                                    alt="user-image" class="avtar">
-                                                <img src="{{url('')}}/public/assets/images/user/avatar-3.jpg"
-                                                     alt="user-image"
-                                                     class="avtar"> <img
-                                                    src="{{url('')}}/public/assets/images/user/avatar-4.jpg"
-                                                    alt="user-image" class="avtar"> <img
-                                                    src="{{url('')}}/public/assets/images/user/avatar-5.jpg"
-                                                    alt="user-image" class="avtar">
-                                                <span class="avtar bg-light-primary text-primary">+20</span></div>
-                                            <h3 class="my-3 text-dark">245.3k <small
-                                                    class="text-muted">Followers</small>
-                                            </h3>
-                                            <div class="btn btn btn-warning">
-                                                <svg class="pc-icon me-2">
-                                                    <use xlink:href="#custom-logout-1-outline"></use>
-                                                </svg>
-                                                Upgrade to Business
-                                            </div>
-                                        </div>
-                                    </div>
+
                                 </div>
                             </div>
 
