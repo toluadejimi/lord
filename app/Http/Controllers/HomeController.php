@@ -1153,7 +1153,7 @@ class HomeController extends Controller
 
 
 
-        $orders = Verification::where('order_id', $activationId)->update(['sms' => $code]);
+        $orders = Verification::where('order_id', $activationId)->update(['sms' => $code, 'status' => 2]);
 
 
 
