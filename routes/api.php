@@ -18,7 +18,7 @@ use App\Http\Controllers\HomeController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::any('webhook',  [HomeController::class,'webhook']);
+Route::any('webhook',  [HomeController::class,'smspool_webhook']);
 
 
 
