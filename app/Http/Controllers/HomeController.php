@@ -1151,7 +1151,7 @@ class HomeController extends Controller
         $country = $request->country;
         $receivedAt = $request->receivedAt;
 
-        dd($activationId);
+
 
         $orders = Verification::where('order_id', $activationId)->update(['sms' => $code]);
 
