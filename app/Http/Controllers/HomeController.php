@@ -1162,6 +1162,29 @@ class HomeController extends Controller
 
     }
 
+    public function diasy_webhook(request $request)
+    {
+
+
+//        $activationId = $request->orderid;
+//        $messageId = $request->messageId;
+//        $service = $request->service;
+//        $text = $request->text;
+//        $code = $request->sms;
+//        $country = $request->country;
+//        $receivedAt = $request->receivedAt;
+//
+//        $orders = Verification::where('order_id', $activationId)->update(['sms' => $code]);
+
+
+
+
+        $message = json_encode($request->all());
+        send_notification($message);
+
+
+    }
+
 
     public function orders(request $request)
     {
