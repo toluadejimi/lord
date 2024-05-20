@@ -20,7 +20,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 Route::any('webhook',  [HomeController::class,'smspool_webhook']);
 
-Route::any('webhook',  [HomeController::class,'diasy_webhook']);
+Route::any('webhook2',  [HomeController::class,'diasy_webhook']);
 
 
 
