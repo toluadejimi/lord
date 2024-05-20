@@ -4,12 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3cdf45ff-cf72-4fd5-8d04-690270964b0e" name="Changes" comment="pushhhhhh">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/HomeController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/HomeController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/WorldNumberController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/WorldNumberController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Helpers/helpers.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Helpers/helpers.php" afterDir="false" />
-    </list>
+    <list default="true" id="3cdf45ff-cf72-4fd5-8d04-690270964b0e" name="Changes" comment="pushhhhhh" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -229,7 +224,7 @@
       <workItem from="1715418558957" duration="3165000" />
       <workItem from="1715499637349" duration="1195000" />
       <workItem from="1716027513643" duration="2555000" />
-      <workItem from="1716049127810" duration="1306000" />
+      <workItem from="1716049127810" duration="1690000" />
     </task>
     <task id="LOCAL-00001" summary="Out of stock number updated">
       <option name="closed" value="true" />
@@ -319,7 +314,31 @@
       <option name="project" value="LOCAL" />
       <updated>1716028934022</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="pushhhhhh">
+      <option name="closed" value="true" />
+      <created>1716215357795</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1716215357795</updated>
+    </task>
+    <task id="LOCAL-00013" summary="pushhhhhh">
+      <option name="closed" value="true" />
+      <created>1716215386913</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1716215386913</updated>
+    </task>
+    <task id="LOCAL-00014" summary="pushhhhhh">
+      <option name="closed" value="true" />
+      <created>1716215521147</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1716215521147</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -403,7 +422,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/app/Http/Controllers/HomeController.php</url>
-          <line>1171</line>
+          <line>1195</line>
           <properties>
             <option name="className" value="\App\Http\Controllers\HomeController" />
             <option name="methodName" value="about_us" />
