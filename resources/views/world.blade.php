@@ -53,8 +53,11 @@
                                 </div>
                             @endif
 
-                                <a href="https://wa.me/2349036138449?text=Chequest+i+want+to+Buy+Permanent+Tmobile+or+UltraMobile+Esim" style="margin-left: 95px"  class="text-center"> Buy Permanent Tmobile & UltraMobile Esim </a>
 
+                            <div class="d-flex justify-content-center my-3">
+                                <a href="https://wa.me/2349036138449?text=Chequest+i+want+to+Buy+Permanent+Tmobile+or+UltraMobile+Esim"
+                                   class="text-center" style="font-size: 16px;"> Buy Permanent Tmobile & UltraMobile Esim </a></strong>
+                            </div>
 
                             <div class="d-flex justify-content-center my-3">
                                 <div class="btn-group" role="group" aria-label="Third group">
@@ -76,12 +79,10 @@
                             </div>
 
 
-
                             <form action="check-av" method="POST">
                                 @csrf
 
                                 <div class="row">
-
 
 
                                     <div class="col-xl-10 col-md-10 col-sm-12 p-3">
@@ -231,74 +232,74 @@
 
             </div>
         </div>
-        </div>
+    </div>
 
 
-        <!-- /.content-wrapper -->
+    <!-- /.content-wrapper -->
 
 
-        <script src="/livewire/livewire.js?id=90730a3b0e7144480175" data-turbo-eval="false"
-                data-turbolinks-eval="false">
-        </script>
-        <script data-turbo-eval="false" data-turbolinks-eval="false">
-            window.livewire = new Livewire();
-            window.Livewire = window.livewire;
-            window.livewire_app_url = '';
-            window.livewire_token = 'JBt4aOzGju0YuBweWShPMRkAkmVxvzZzG4XOMx7V';
-            window.deferLoadingAlpine = function (callback) {
-                window.addEventListener('livewire:load', function () {
-                    callback();
-                });
-            };
-            let started = false;
-            window.addEventListener('alpine:initializing', function () {
-                if (!started) {
-                    window.livewire.start();
-                    started = true;
-                }
+    <script src="/livewire/livewire.js?id=90730a3b0e7144480175" data-turbo-eval="false"
+            data-turbolinks-eval="false">
+    </script>
+    <script data-turbo-eval="false" data-turbolinks-eval="false">
+        window.livewire = new Livewire();
+        window.Livewire = window.livewire;
+        window.livewire_app_url = '';
+        window.livewire_token = 'JBt4aOzGju0YuBweWShPMRkAkmVxvzZzG4XOMx7V';
+        window.deferLoadingAlpine = function (callback) {
+            window.addEventListener('livewire:load', function () {
+                callback();
             });
-            document.addEventListener("DOMContentLoaded", function () {
-                if (!started) {
-                    window.livewire.start();
-                    started = true;
-                }
+        };
+        let started = false;
+        window.addEventListener('alpine:initializing', function () {
+            if (!started) {
+                window.livewire.start();
+                started = true;
+            }
+        });
+        document.addEventListener("DOMContentLoaded", function () {
+            if (!started) {
+                window.livewire.start();
+                started = true;
+            }
+        });
+    </script>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const table = document.getElementById('data-table');
+            const rows = table.querySelectorAll('tbody tr');
+
+            rows.forEach(row => {
+                const countdownElement = row.cells[2]; // Assumes "Expires" is in the third column (index 2)
+                let seconds = parseInt(countdownElement.getAttribute('data-seconds'), 10);
+
+                const countdownInterval = setInterval(function () {
+                    countdownElement.textContent = seconds + 's';
+
+                    if (seconds <= 0) {
+                        clearInterval(countdownInterval);
+                        // Add your logic to handle the expiration, e.g., sendPostRequest(row);
+                        console.log('Expired:', row);
+                    }
+
+                    seconds--;
+                }, 1000);
             });
-        </script>
 
+            // You may add the sendPostRequest function here or modify the code accordingly
+        });
+    </script>
 
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                const table = document.getElementById('data-table');
-                const rows = table.querySelectorAll('tbody tr');
-
-                rows.forEach(row => {
-                    const countdownElement = row.cells[2]; // Assumes "Expires" is in the third column (index 2)
-                    let seconds = parseInt(countdownElement.getAttribute('data-seconds'), 10);
-
-                    const countdownInterval = setInterval(function () {
-                        countdownElement.textContent = seconds + 's';
-
-                        if (seconds <= 0) {
-                            clearInterval(countdownInterval);
-                            // Add your logic to handle the expiration, e.g., sendPostRequest(row);
-                            console.log('Expired:', row);
-                        }
-
-                        seconds--;
-                    }, 1000);
-                });
-
-                // You may add the sendPostRequest function here or modify the code accordingly
-            });
-        </script>
-
-        <script>
-            $(document).ready(function () {
+    <script>
+        $(document).ready(function () {
 //change selectboxes to selectize mode to be searchable
-                $("select").select2();
-            });
+            $("select").select2();
+        });
 
 
-        </script>
+    </script>
 
 @endsection

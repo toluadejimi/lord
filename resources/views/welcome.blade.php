@@ -82,8 +82,10 @@
                 <div class="card">
                     <div class="card-body">
 
-                        <a href="https://wa.me/2349036138449?text=Chequest+i+want+to+Buy+Permanent+Tmobile+or+UltraMobile+Esim" style="margin-left: 95px"  class="text-center"> Buy Permanent Tmobile & UltraMobile Esim </a>
-
+                        <div class="d-flex justify-content-center my-3">
+                         <strong></strong>   <a href="https://wa.me/2349036138449?text=Chequest+i+want+to+Buy+Permanent+Tmobile+or+UltraMobile+Esim"
+                               class="text-center" style="font-size: 16px;"> Buy Permanent Tmobile & UltraMobile Esim </a></strong>
+                        </div>
 
                         <div class="d-flex justify-content-center my-3">
                             <div class="btn-group" role="group" aria-label="Third group">
