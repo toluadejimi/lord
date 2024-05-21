@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
@@ -25,7 +26,7 @@ Route::any('webhook2',  [HomeController::class,'diasy_webhook']);
 
 
 
-Route::any('e_fund',  [HomeController::class,'e_fund']);
+Route::any('e_fund',  [ProductController::class,'e_fund']);
 Route::any('e_check',  [HomeController::class,'e_check']);
 
 
