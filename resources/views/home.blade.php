@@ -73,7 +73,6 @@
 
                             </div>
 
-                            <h6> Buy Permanent Tmobile & UltraMobile Esim </h6>
 
                             <p class="d-flex justify-content-center">You are on 🇺🇸 USA Numbers only Panel</p>
 
