@@ -5,12 +5,11 @@ namespace App\Http\Controllers;
 use App\Imports\MainItemsClass;
 use App\Models\Category;
 use App\Models\Item;
-use App\Models\Output;
+use App\Models\MainItem;
 use App\Models\Product;
 use App\Models\SoldLog;
 use App\Models\Transaction;
 use App\Models\User;
-use App\Models\MainItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -18,28 +17,26 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class ProductController extends Controller
 {
-    public function buy_now(request $request){
+    public function buy_now(request $request)
+    {
 
 
         $amount = Item::where('id', $request->item_id)->first()->amount;
         $product_id = Item::where('id', $request->item_id)->first()->product_id;
 
 
-        $pamount =  $amount * $request->quantity;
+        $pamount = $amount * $request->quantity;
         $in_stock = MainItem::where('product_id', $product_id)->count();
 
 
-
-
-
-        if($pamount > Auth::user()->wallet){
+        if ($pamount > Auth::user()->wallet) {
 
             return back()->with('error', 'Insufficient Funds, Fund your wallet');
 
         }
 
 
-        if($in_stock < $request->quantity){
+        if ($in_stock < $request->quantity) {
 
             return back()->with('error', "Insufficient Stock, You can only purchase $in_stock / pcs at the moment");
 
@@ -51,29 +48,23 @@ class ProductController extends Controller
         $get_item = MainItem::select('name')->where('product_id', $product_id)->take($request->quantity)->get();
 
 
-
-
         $formattedRow = [];
         foreach ($get_item as $value) {
-                $formattedRow[] = $value['name'];
+            $formattedRow[] = $value['name'];
         }
         $text = implode("\n", $formattedRow) . "\n";
-        $filename = date('ymdhis').'data.txt';
+        $filename = date('ymdhis') . 'data.txt';
         Storage::disk('local')->put($filename, $text);
 
         $get_item = MainItem::whereIn('name', $get_item->pluck('name'))
-        ->delete();
+            ->delete();
 
         Item::where('product_id', $product_id)->decrement('qty', $request->quantity);
 
-        $url =  url('')."/storage/app/$filename";
+        $url = url('') . "/storage/app/$filename";
 
 
-
-
-
-
-        $ref= random_int(000, 999).date('ymdhis');
+        $ref = random_int(000, 999) . date('ymdhis');
 
         $trx = new Transaction();
         $trx->user_id = Auth::id();
@@ -94,7 +85,7 @@ class ProductController extends Controller
 
 
         $data['main_url'] = "<a href='$url'> CLICK HERE TO VIEW YOUR ORDER 👉🏽 DOWNLOAD </a>";
-        $data['url'] =  url('')."/storage/app/$filename";
+        $data['url'] = url('') . "/storage/app/$filename";
         $data['user'] = Auth::id() ?? null;
         $data['fbaged'] = Category::where('id', 1)->get();
         $data['insta_cat'] = Category::where('id', 2)->get();
@@ -113,13 +104,6 @@ class ProductController extends Controller
         $data['strem'] = Category::where('id', 18)->get();
         $data['resell'] = Category::where('id', 19)->get();
         $data['special'] = Category::where('id', 20)->get();
-
-
-
-
-
-
-
 
 
         $data['fbaged_items'] = Item::where('cat_id', 1)->take(5)->get();
@@ -141,21 +125,18 @@ class ProductController extends Controller
         $data['special_items'] = Item::where('cat_id', 20)->take(5)->get();
 
 
-
-
         return view('welcome', $data);
 
 
     }
 
 
-
-    public function item_view(request $request){
-
+    public function item_view(request $request)
+    {
 
 
         $user = Auth::id();
-        if($user == null){
+        if ($user == null) {
             return back()->with('error', 'Login your account to buy product');
         }
 
@@ -175,24 +156,21 @@ class ProductController extends Controller
         $description = Item::where('id', $request->id)->first()->description;
 
 
-
-
         $item_id = $request->id;
         $user = Auth::id() ?? null;
 
 
-        return view('item-view',compact('title', 'inst', 'description', 'item_id', 'stock', 'amount', 'user'));
-
+        return view('item-view', compact('title', 'inst', 'description', 'item_id', 'stock', 'amount', 'user'));
 
 
     }
 
-    public function i_view(request $request){
-
+    public function i_view(request $request)
+    {
 
 
         $user = Auth::id();
-        if($user == null){
+        if ($user == null) {
             return back()->with('error', 'Login your account to buy product');
         }
         $item_id = $request->id;
@@ -207,98 +185,88 @@ class ProductController extends Controller
         $description = Item::where('id', $request->id)->first()->description;
 
 
-
-        return view('item-view',compact('title', 'instruction', 'description', 'item_id', 'stock', 'amount', 'user'));
+        return view('item-view', compact('title', 'instruction', 'description', 'item_id', 'stock', 'amount', 'user'));
 
 
     }
 
-    public function view_all_product(request $request){
+    public function view_all_product(request $request)
+    {
 
 
         $title = Category::where('id', $request->cat_id)->first()->title;
 
-           $items = Item::where('cat_id', $request->cat_id)->get();
+        $items = Item::where('cat_id', $request->cat_id)->get();
 
-           $user = Auth::id() ?? null;
+        $user = Auth::id() ?? null;
 
 
         return view('view-all', compact('title', 'user', 'items'));
-
-
-
-
-
 
 
     }
 
 
     public function add_new_product(Request $request)
-{
+    {
 
 
-    Item::where('product_id', $request->pr_id)->increment('qty', $request->qty);
+        Item::where('product_id', $request->pr_id)->increment('qty', $request->qty);
 
 
-    $file = $request->file('file');
+        $file = $request->file('file');
 
-    Excel::import(new MainItemsClass, $file);
-
-
-    return back()->with('message', "Stock has been successfully added ");
+        Excel::import(new MainItemsClass, $file);
 
 
-}
+        return back()->with('message', "Stock has been successfully added ");
 
 
-
-public function add_front_product(Request $request)
-{
-
-
-
-
-     if ($request->hasFile('image')) {
-        $image = $request->file('image');
-        $imageName = time() . '.' . $image->getClientOriginalExtension();
-        $image->move(public_path('storage/content/images'), $imageName); // Save the image to the "uploads" directory in the public folder
     }
 
 
-
-    $title = Product::where('id', $request->pro_id)->first()->name;
-
-    $tr = new Item();
-    $tr->title = $title;
-    $tr->amount = $request->amount;
-    $tr->product_id = $request->pro_id;
-    $tr->cat_id = $request->cat_id;
-    $tr->icon = $imageName;
-    $tr->save();
+    public function add_front_product(Request $request)
+    {
 
 
-
-    return back()->with('message', "Front Product Created successfully ");
-
-
-}
-
-
-public function delete_front_product(Request $request)
-{
-    Item::where('id', $request->id())->delete();
-    return back()->with('message', "Front Product Deleted successfully ");
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('storage/content/images'), $imageName); // Save the image to the "uploads" directory in the public folder
+        }
 
 
-}
+        $title = Product::where('id', $request->pro_id)->first()->name;
+
+        $tr = new Item();
+        $tr->title = $title;
+        $tr->amount = $request->amount;
+        $tr->product_id = $request->pro_id;
+        $tr->cat_id = $request->cat_id;
+        $tr->icon = $imageName;
+        $tr->save();
 
 
-    public function e_fund(request $request){
+        return back()->with('message', "Front Product Created successfully ");
 
-        $get_user =  User::where('email', $request->email)->first() ?? null;
 
-        if($get_user == null){
+    }
+
+
+    public function delete_front_product(Request $request)
+    {
+        Item::where('id', $request->id())->delete();
+        return back()->with('message', "Front Product Deleted successfully ");
+
+
+    }
+
+    public function e_fund(request $request)
+    {
+
+        $get_user = User::where('email', $request->email)->first() ?? null;
+
+        if ($get_user == null) {
 
             return response()->json([
                 'status' => false,
@@ -307,16 +275,12 @@ public function delete_front_product(Request $request)
         }
 
 
-
-
-
-        User::where('email', $request->email)->increment('wallet', $request->amount) ?? null;
+            User::where('email', $request->email)->increment('wallet', $request->amount) ?? null;
 
 
         $amount = number_format($request->amount, 2);
 
-        Transaction::where('ref_id', $request->order_id)->update(['status'=> 2]);
-
+        Transaction::where('ref_id', $request->order_id)->update(['status' => 2]);
 
 
         return response()->json([
@@ -324,14 +288,8 @@ public function delete_front_product(Request $request)
             'message' => "NGN $amount has been successfully added to your wallet",
         ]);
 
+
     }
-}
-
-
-
-
-
-
 
 
 }
