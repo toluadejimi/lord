@@ -172,7 +172,7 @@
                         <span class="pc-micon">
                             <svg class="pc-icon"><use xlink:href="#custom-bag"></use></svg>
                         </span>
-                            <span class="pc-mtext">Buy Account</span>
+                            <span class="pc-mtext">Buy Social Account</span>
                         </a>
                     </li>
 
