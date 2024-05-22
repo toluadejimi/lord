@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3cdf45ff-cf72-4fd5-8d04-690270964b0e" name="Changes" comment="pushhhhhh">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="3cdf45ff-cf72-4fd5-8d04-690270964b0e" name="Changes" comment="pushhhhhh" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -228,6 +226,7 @@
       <workItem from="1716027513643" duration="2555000" />
       <workItem from="1716049127810" duration="3935000" />
       <workItem from="1716309427385" duration="3000" />
+      <workItem from="1716309716016" duration="3385000" />
     </task>
     <task id="LOCAL-00001" summary="Out of stock number updated">
       <option name="closed" value="true" />
@@ -397,7 +396,47 @@
       <option name="project" value="LOCAL" />
       <updated>1716232690754</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="pushhhhhh">
+      <option name="closed" value="true" />
+      <created>1716320506206</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1716320506206</updated>
+    </task>
+    <task id="LOCAL-00023" summary="pushhhhhh">
+      <option name="closed" value="true" />
+      <created>1716320944953</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1716320944953</updated>
+    </task>
+    <task id="LOCAL-00024" summary="pushhhhhh">
+      <option name="closed" value="true" />
+      <created>1716321820226</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1716321820226</updated>
+    </task>
+    <task id="LOCAL-00025" summary="pushhhhhh">
+      <option name="closed" value="true" />
+      <created>1716322044859</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1716322044859</updated>
+    </task>
+    <task id="LOCAL-00026" summary="pushhhhhh">
+      <option name="closed" value="true" />
+      <created>1716328367959</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1716328367959</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -415,7 +454,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/resources/views/home.blade.php</url>
-          <line>269</line>
+          <line>274</line>
           <option name="timeStamp" value="2" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
@@ -435,7 +474,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/resources/views/world.blade.php</url>
-          <line>142</line>
+          <line>145</line>
           <option name="timeStamp" value="14" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
