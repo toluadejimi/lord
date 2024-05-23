@@ -70,8 +70,10 @@ class WorldNumberController extends Controller
             "key" => $key,
             "country" => $request->country,
             "service" => $request->service,
-            "pool" => '7',
+            "pool" => '',
         );
+
+
 
         $body = json_encode($databody);
 
@@ -95,9 +97,16 @@ class WorldNumberController extends Controller
         curl_close($curl);
         $var = json_decode($var);
 
-        $price = $var->price ?? null;
+
+
+        $get_s_price = $var->price ?? null;
+        $high_price = $var->high_price ?? null;
         $rate = $var->success_rate ?? null;
         $product = 1;
+
+
+            $price = $high_price;
+
 
 
 
