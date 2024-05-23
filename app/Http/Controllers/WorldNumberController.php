@@ -105,7 +105,7 @@ class WorldNumberController extends Controller
         $product = 1;
 
         if($high_price > 4){
-            $price = $high_price * 2;
+            $price = $high_price * 1.5;
         }else{
             $price = $high_price;
         }
