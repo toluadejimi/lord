@@ -179,6 +179,18 @@
 
                     <hr>
 
+                    <li class="pc-item">
+                        <a href="https://t.me/@smslorddotcom" class="pc-link">
+                        <span class="pc-micon">
+                            <i class="fab fa-telegram"></i>
+                        </span>
+                            <span class="pc-mtext">Join our Telegram Channel</span>
+                        </a>
+                    </li>
+
+
+                    <hr>
+
 
                     <li class="pc-item">
 
@@ -186,6 +198,8 @@
                             Logout
                         </a>
                     </li>
+
+
 
 
                 </ul>
