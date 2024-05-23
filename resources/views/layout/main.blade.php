@@ -180,7 +180,7 @@
                     <hr>
 
                     <li class="pc-item">
-                        <a href="https://t.me/@smslorddotcom" class="pc-link">
+                        <a href="https://t.me/smslorddotcom" class="pc-link">
                         <span class="pc-micon">
                             <i class="fab fa-telegram"></i>
                         </span>
