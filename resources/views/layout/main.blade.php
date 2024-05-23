@@ -184,7 +184,7 @@
                         <span class="pc-micon">
                             <i class="fab fa-telegram"></i>
                         </span>
-                            <span class="pc-mtext">Join our Telegram Channel</span>
+                            <span class="pc-mtext">Telegram Channel</span>
                         </a>
                     </li>
 
