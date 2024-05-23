@@ -104,8 +104,13 @@ class WorldNumberController extends Controller
         $rate = $var->success_rate ?? null;
         $product = 1;
 
-
+        if($high_price > 4){
+            $price = $high_price * 2;
+        }else{
             $price = $high_price;
+        }
+
+
 
 
 
