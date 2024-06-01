@@ -296,7 +296,19 @@ class WorldNumberController extends Controller
             $can_order = cancel_order($orderID);
 
             if ($can_order == 0) {
-                return back()->with('error', "Please wait and try again later");
+
+                $ck = Verification::where('id', $request->id)->first() ?? null;
+                if($ck != null){
+
+                    if($ck->status == 0){
+                        $amount = number_format($order->cost, 2);
+                        User::where('id', Auth::id())->increment('wallet', $order->cost);
+                        Verification::where('id', $request->id)->delete();
+                        return redirect('home')->with('message', "Order has been cancled, NGN$amount has been refunded");
+                    }
+                }
+
+                return back()->with('error', 'Order has been deleted or completed');
             }
 
 

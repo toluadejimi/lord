@@ -2,25 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use DateTime;
-use App\Models\Item;
-use App\Models\User;
-use App\Models\Country;
-use App\Models\Setting;
-use App\Models\SoldLog;
-use App\Models\Category;
-
-
-use App\Models\Transaction;
-use App\Models\Verification;
-use Illuminate\Http\Request;
 use App\Models\AccountDetail;
 use App\Models\ManualPayment;
 use App\Models\PaymentMethod;
+use App\Models\Setting;
+use App\Models\SoldLog;
+use App\Models\Transaction;
+use App\Models\User;
+use App\Models\Verification;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redirect;
+
 
 class HomeController extends Controller
 {
@@ -51,8 +46,6 @@ class HomeController extends Controller
 
 
         $data['order'] = 0;
-
-
 
 
         return view('home', $data);
@@ -95,10 +88,10 @@ class HomeController extends Controller
         if ($order == 9) {
 
             $ver = Verification::where('status', 1)->first() ?? null;
-            if($ver != null){
+            if ($ver != null) {
 
                 $data['sms_order'] = $ver;
-            $data['order'] = 1  ;
+                $data['order'] = 1;
 
                 return view('receivesms', $data);
 
@@ -134,7 +127,7 @@ class HomeController extends Controller
             $data['services'] = get_services();
             $data['get_rate'] = Setting::where('id', 1)->first()->rate;
             $data['margin'] = Setting::where('id', 1)->first()->margin;
-            $data['sms_order'] = Verification::where('user_id', Auth::id())->where('status' , 1)->first();
+            $data['sms_order'] = Verification::where('user_id', Auth::id())->where('status', 1)->first();
             $data['order'] = 1;
 
             $data['verification'] = Verification::where('user_id', Auth::id())->paginate(10);
@@ -144,11 +137,12 @@ class HomeController extends Controller
     }
 
 
-    public function receive_sms(Request $request){
+    public function receive_sms(Request $request)
+    {
 
-        $type = Verification::where('user_id', Auth::id())->where('id' , $request->phone)->first()->type;
-        if($type == 2){
-            $data['sms_order'] = Verification::where('user_id', Auth::id())->where('id' , $request->phone)->first();
+        $type = Verification::where('user_id', Auth::id())->where('id', $request->phone)->first()->type;
+        if ($type == 2) {
+            $data['sms_order'] = Verification::where('user_id', Auth::id())->where('id', $request->phone)->first();
             $data['order'] = 1;
 
             $data['verification'] = Verification::where('user_id', Auth::id())->paginate(10);
@@ -156,7 +150,7 @@ class HomeController extends Controller
             return view('receivesmsworld', $data);
 
         }
-        $data['sms_order'] = Verification::where('user_id', Auth::id())->where('id' , $request->phone)->first();
+        $data['sms_order'] = Verification::where('user_id', Auth::id())->where('id', $request->phone)->first();
         $data['order'] = 1;
 
         $data['verification'] = Verification::where('user_id', Auth::id())->paginate(10);
@@ -166,14 +160,8 @@ class HomeController extends Controller
     }
 
 
-
-
-
-
-
     public function cancle_sms(Request $request)
     {
-
 
 
         $order = Verification::where('id', $request->id)->first() ?? null;
@@ -192,9 +180,9 @@ class HomeController extends Controller
             $orderID = $order->order_id;
             $can_order = cancel_order($orderID);
 
-            if($request->delete == 1){
+            if ($request->delete == 1) {
 
-                if($order->status == 1){
+                if ($order->status == 1) {
 
                     $amount = number_format($order->cost, 2);
                     User::where('id', Auth::id())->increment('wallet', $order->cost);
@@ -236,15 +224,14 @@ class HomeController extends Controller
         if ($order->status == 1 && $order->type == 2) {
 
 
-
             $orderID = $order->order_id;
 
             $can_order = cancel_world_order($orderID);
 
-            if($request->delete == 1){
+            if ($request->delete == 1) {
 
 
-                if($order->status == 1){
+                if ($order->status == 1) {
 
                     $amount = number_format($order->cost, 2);
                     User::where('id', Auth::id())->increment('wallet', $order->cost);
@@ -291,11 +278,11 @@ class HomeController extends Controller
         $order = Verification::where('id', $request->id)->first() ?? null;
 
 
-        if($request->count == 1){
+        if ($request->count == 1) {
 
             $status = $order->status;
 
-            if($status == 1 || $status == 0){
+            if ($status == 1 || $status == 0) {
 
                 $amount = number_format($order->cost, 2);
                 User::where('id', Auth::id())->increment('wallet', $order->cost);
@@ -307,19 +294,19 @@ class HomeController extends Controller
 
         $orderID = $order->order_id;
         $chk = check_sms($orderID);
-        if($chk == 3){
+        if ($chk == 3) {
             return redirect('home')->with('message', 'Sms Received, order completed');
         }
 
-        if($chk == 1){
+        if ($chk == 1) {
             return back()->with('error', 'No order found');
         }
 
-        if($chk == 2){
+        if ($chk == 2) {
             return back()->with('message', 'Please wait we are getting your sms');
         }
 
-        if($chk == 4){
+        if ($chk == 4) {
             return back()->with('error', 'Order has been cancled');
         }
 
@@ -342,15 +329,11 @@ class HomeController extends Controller
     {
 
         $request->validate([
-            'amount'      => 'required|numeric|gt:0',
+            'amount' => 'required|numeric|gt:0',
         ]);
 
 
-
-
-
-        Transaction::where('user_id', Auth::id())->where('status', 1)->delete() ?? null;
-
+            Transaction::where('user_id', Auth::id())->where('status', 1)->delete() ?? null;
 
 
         if ($request->type == 1) {
@@ -365,8 +348,6 @@ class HomeController extends Controller
             }
 
 
-
-
             $key = env('WEBKEY');
             $ref = "VERF" . random_int(000, 999) . date('ymdhis');
             $email = Auth::user()->email;
@@ -374,12 +355,12 @@ class HomeController extends Controller
             $url = "https://web.enkpay.com/pay?amount=$request->amount&key=$key&ref=$ref&email=$email";
 
 
-            $data                  = new Transaction();
-            $data->user_id         = Auth::id();
-            $data->amount          = $request->amount;
-            $data->ref_id          = $ref;
-            $data->type            = 2;
-            $data->status          = 1; //initiate
+            $data = new Transaction();
+            $data->user_id = Auth::id();
+            $data->amount = $request->amount;
+            $data->ref_id = $ref;
+            $data->type = 2;
+            $data->status = 1; //initiate
             $data->save();
 
 
@@ -389,7 +370,6 @@ class HomeController extends Controller
 
             return Redirect::to($url);
         }
-
 
 
         if ($request->type == 2) {
@@ -404,28 +384,21 @@ class HomeController extends Controller
             }
 
 
-
-
             $ref = "VERFM" . random_int(000, 999) . date('ymdhis');
             $email = Auth::user()->email;
 
 
-            $data                  = new Transaction();
-            $data->user_id         = Auth::id();
-            $data->amount          = $request->amount;
-            $data->ref_id          = $ref;
-            $data->type            = 2; //manual funding
-            $data->status          = 1; //initiate
+            $data = new Transaction();
+            $data->user_id = Auth::id();
+            $data->amount = $request->amount;
+            $data->ref_id = $ref;
+            $data->type = 2; //manual funding
+            $data->status = 1; //initiate
             $data->save();
 
 
             $message = Auth::user()->email . "| wants to fund Manually |  NGN " . number_format($request->amount) . " | with ref | $ref |  on TWBNUMBER";
             send_notification2($message);
-
-
-
-
-
 
 
             $data['account_details'] = AccountDetail::where('id', 1)->first();
@@ -435,14 +408,11 @@ class HomeController extends Controller
         }
 
 
-
-
     }
 
 
     public function fund_manual_now(Request $request)
     {
-
 
 
         if ($request->receipt == null) {
@@ -467,7 +437,6 @@ class HomeController extends Controller
         send_notification2($message);
 
 
-
         return view('confirm-pay');
     }
 
@@ -477,7 +446,6 @@ class HomeController extends Controller
 
         return view('confirm-pay');
     }
-
 
 
     public function verify_payment(request $request)
@@ -500,16 +468,14 @@ class HomeController extends Controller
         }
 
 
-
-
         $trxstatus = Transaction::where('ref_id', $trx_id)->first()->status ?? null;
 
         if ($trxstatus == 2) {
 
-            $message =  Auth::user()->email . "| is trying to fund  with | " . number_format($request->amount, 2) . "\n\n IP ====> " . $request->ip();
+            $message = Auth::user()->email . "| is trying to fund  with | " . number_format($request->amount, 2) . "\n\n IP ====> " . $request->ip();
             send_notification($message);
 
-            $message =  Auth::user()->email . "| on TWBNUMBER | is trying to fund  with | " . number_format($request->amount, 2) . "\n\n IP ====> " . $request->ip();
+            $message = Auth::user()->email . "| on TWBNUMBER | is trying to fund  with | " . number_format($request->amount, 2) . "\n\n IP ====> " . $request->ip();
             send_notification2($message);
 
             return redirect('fund-wallet')->with('error', 'Transaction already confirmed or not found');
@@ -537,8 +503,6 @@ class HomeController extends Controller
         $amount = $var->price ?? null;
 
 
-
-
         if ($status1 == 'success') {
 
             $chk_trx = Transaction::where('ref_id', $trx_id)->first() ?? null;
@@ -549,11 +513,8 @@ class HomeController extends Controller
             Transaction::where('ref_id', $trx_id)->update(['status' => 2]);
             User::where('id', Auth::id())->increment('wallet', $amount);
 
-            $message =  Auth::user()->email . "| just funded NGN" . number_format($request->amount, 2) . " on Log market";
+            $message = Auth::user()->email . "| just funded NGN" . number_format($request->amount, 2) . " on Log market";
             send_notification($message);
-
-
-
 
 
             $order_id = $trx_id;
@@ -580,21 +541,11 @@ class HomeController extends Controller
             send_notification2($message);
 
 
-
-
-
-
             return redirect('fund-wallet')->with('message', "Wallet has been funded with $amount");
         }
 
         return redirect('fund-wallet')->with('error', 'Transaction already confirmed or not found');
     }
-
-
-
-
-
-
 
 
     public function login(Request $request)
@@ -622,11 +573,6 @@ class HomeController extends Controller
     {
         return view('Auth.login');
     }
-
-
-
-
-
 
 
     public function forget_password(Request $request)
@@ -659,9 +605,6 @@ class HomeController extends Controller
     }
 
 
-
-
-
     public function profile(request $request)
     {
 
@@ -672,8 +615,6 @@ class HomeController extends Controller
 
         return view('profile', compact('user', 'orders'));
     }
-
-
 
 
     public function logout(Request $request)
@@ -699,7 +640,6 @@ class HomeController extends Controller
         $message = $resolve[0]['message'];
 
 
-
         $trx = Transaction::where('ref_id', $request->ref_id)->first()->status ?? null;
         if ($trx == null) {
 
@@ -708,8 +648,6 @@ class HomeController extends Controller
 
             $message = Auth::user()->email . "is trying to reslove from deleted transaction on TWBNUMBER";
             send_notification2($message);
-
-
 
 
             return back()->with('error', "Transaction has been deleted");
@@ -727,11 +665,6 @@ class HomeController extends Controller
             send_notification2($message);
 
 
-
-
-
-
-
             return back()->with('message', "Error Occured");
         }
 
@@ -742,16 +675,15 @@ class HomeController extends Controller
             Transaction::where('ref_id', $request->ref_id)->update(['status' => 4]);
 
 
-
             $ref = "LOG-" . random_int(000, 999) . date('ymdhis');
 
 
-            $data                  = new Transaction();
-            $data->user_id         = Auth::id();
-            $data->amount          = $amount;
-            $data->ref_id          = $ref;
-            $data->type            = 2;
-            $data->status          = 2;
+            $data = new Transaction();
+            $data->user_id = Auth::id();
+            $data->amount = $amount;
+            $data->ref_id = $ref;
+            $data->type = 2;
+            $data->status = 2;
             $data->save();
 
 
@@ -760,12 +692,6 @@ class HomeController extends Controller
 
             $message = Auth::user()->email . "| just resolved with $request->session_id | NGN " . number_format($amount) . " on TWBNUMBER";
             send_notification2($message);
-
-
-
-
-
-
 
 
             return back()->with('message', "Transaction successfully Resolved, NGN $amount added to ur wallet");
@@ -777,7 +703,6 @@ class HomeController extends Controller
     }
 
 
-
     public function change_password(request $request)
     {
 
@@ -786,7 +711,6 @@ class HomeController extends Controller
 
         return view('change-password', compact('user'));
     }
-
 
 
     public function faq(request $request)
@@ -806,10 +730,6 @@ class HomeController extends Controller
         $user = Auth::id();
         return view('rules', compact('user'));
     }
-
-
-
-
 
 
     public function update_password_now(request $request)
@@ -869,7 +789,6 @@ class HomeController extends Controller
             });
 
 
-
             return redirect('/forgot-password')->with('message', "A reset password mail has been sent to $request->email, if not inside inbox check your spam folder");
         } else {
             return back()->with('error', 'Email can not be found on our system');
@@ -926,8 +845,6 @@ class HomeController extends Controller
     }
 
 
-
-
     public function resloveDeposit(Request $request)
     {
         $dep = Transaction::where('ref_id', $request->trx_ref)->first() ?? null;
@@ -952,13 +869,13 @@ class HomeController extends Controller
         } else {
 
             $ref = $request->trx_ref;
-            $user =  Auth::user() ?? null;
+            $user = Auth::user() ?? null;
             return view('resolve-page', compact('ref', 'user'));
         }
     }
 
 
-    public function  resolveNow(request $request)
+    public function resolveNow(request $request)
     {
 
         if ($request->trx_ref == null || $request->session_id == null) {
@@ -971,36 +888,26 @@ class HomeController extends Controller
         if ($ck_trx == 2) {
 
             $email = Auth::user()->email;
-            $message =  "$email | TWBNUMBER  | is trying to fund and a successful order with orderid $request->trx_ref";
+            $message = "$email | TWBNUMBER  | is trying to fund and a successful order with orderid $request->trx_ref";
             send_notification2($message);
 
-            $message =  "$email | TWBNUMBER  | is trying to fund and a successful order with orderid $request->trx_ref";
+            $message = "$email | TWBNUMBER  | is trying to fund and a successful order with orderid $request->trx_ref";
             send_notification($message);
-
-
-
-
-
 
 
             return back()->with('error', "This Transaction has been successful");
         }
 
 
-
         if ($ck_trx != 1) {
 
             $email = Auth::user()->email;
-            $message =  "$email | TWBNUMBER  | is trying to fund and a successful order with orderid $request->trx_ref";
+            $message = "$email | TWBNUMBER  | is trying to fund and a successful order with orderid $request->trx_ref";
             send_notification2($message);
 
 
-
-            $message =  "$email | TWBNUMBER | is trying to fund and a successful order with orderid $request->trx_ref";
+            $message = "$email | TWBNUMBER | is trying to fund and a successful order with orderid $request->trx_ref";
             send_notification($message);
-
-
-
 
 
             return back()->with('error', "This Transaction has been successful");
@@ -1009,16 +916,11 @@ class HomeController extends Controller
         if ($ck_trx == 2) {
 
             $email = Auth::user()->email;
-            $message =  "$email |TWBNUMBER | is trying to fund and a successful order with orderid $request->trx_ref";
+            $message = "$email |TWBNUMBER | is trying to fund and a successful order with orderid $request->trx_ref";
             send_notification2($message);
 
-            $message =  "$email | TWBNUMBER | is trying to fund and a successful order with orderid $request->trx_ref";
+            $message = "$email | TWBNUMBER | is trying to fund and a successful order with orderid $request->trx_ref";
             send_notification($message);
-
-
-
-
-
 
 
             return back()->with('error', "This Transaction has been successful");
@@ -1028,24 +930,15 @@ class HomeController extends Controller
         if ($ck_trx == 4) {
 
             $email = Auth::user()->email;
-            $message =  "$email |TWBNUMBER | is trying to fund and a successful order with orderid $request->trx_ref";
+            $message = "$email |TWBNUMBER | is trying to fund and a successful order with orderid $request->trx_ref";
             send_notification2($message);
 
-            $message =  "$email | TWBNUMBER | is trying to fund and a successful order with orderid $request->trx_ref";
+            $message = "$email | TWBNUMBER | is trying to fund and a successful order with orderid $request->trx_ref";
             send_notification($message);
-
-
-
-
-
 
 
             return back()->with('error', "This Transaction has been resolved");
         }
-
-
-
-
 
 
         if ($ck_trx == 1) {
@@ -1096,10 +989,6 @@ class HomeController extends Controller
                 send_notification2($message);
 
 
-
-
-
-
                 return redirect('fund-wallet')->with('message', "Transaction successfully Resolved, NGN $amount added to ur wallet");
             }
 
@@ -1112,12 +1001,12 @@ class HomeController extends Controller
     }
 
 
-    public function  get_smscode(request $request)
+    public function get_smscode(request $request)
     {
 
 
-        $sms =  Verification::where('phone', $request->num)->first()->sms ?? null;
-        $order_id =  Verification::where('phone', $request->num)->first()->order_id ?? null;
+        $sms = Verification::where('phone', $request->num)->first()->sms ?? null;
+        $order_id = Verification::where('phone', $request->num)->first()->order_id ?? null;
         check_sms($order_id);
 
 
@@ -1138,7 +1027,6 @@ class HomeController extends Controller
     }
 
 
-
     public function smspool_webhook(request $request)
     {
 
@@ -1152,10 +1040,7 @@ class HomeController extends Controller
         $receivedAt = $request->receivedAt;
 
 
-
         $orders = Verification::where('order_id', $activationId)->update(['sms' => $code, 'status' => 2]);
-
-
 
 
         $message = json_encode($request->all());
@@ -1176,7 +1061,7 @@ class HomeController extends Controller
         $country = $request->country;
         $receivedAt = $request->receivedAt;
 
-        $orders = Verification::where('order_id', $activationId)->update(['sms' => $code, 'status'=>2]);
+        $orders = Verification::where('order_id', $activationId)->update(['sms' => $code, 'status' => 2]);
 
         $message = json_encode($request->all());
         send_notification($message);
@@ -1226,7 +1111,12 @@ class HomeController extends Controller
             $can_order = cancel_order($orderID);
 
             if ($can_order == 0) {
-                return back()->with('error', "Please wait and try again later");
+
+                $amount = number_format($order->cost, 2);
+                User::where('id', Auth::id())->increment('wallet', $order->cost);
+                Verification::where('id', $request->id)->delete();
+                return redirect('home')->with('message', "Order has been cancled, NGN$amount has been refunded");
+
             }
 
 
@@ -1246,15 +1136,15 @@ class HomeController extends Controller
             }
         }
 
-        if ($order->status == 1 && $order->type == 2 ) {
+        if ($order->status == 1 && $order->type == 2) {
 
 
-            dd("hello");
+
             $orderID = $order->order_id;
             $can_order = cancel_world_order($orderID);
 
             if ($can_order == 0) {
-                return back()->with('error', "Please wait and try again later");
+                return back()->with('error', "Your order cannot be cancelled yet, please try again later");
             }
 
 
@@ -1273,16 +1163,15 @@ class HomeController extends Controller
                 return back()->with('message', "Order has been cancled, NGN$amount has been refunded");
             }
         }
+
+        return back()->with('error', 'Order has been deleted or completed');
     }
-
-
-
 
 
     public function e_check(request $request)
     {
 
-        $get_user =  User::where('email', $request->email)->first() ?? null;
+        $get_user = User::where('email', $request->email)->first() ?? null;
 
         if ($get_user == null) {
 
@@ -1303,7 +1192,7 @@ class HomeController extends Controller
     public function e_fund(request $request)
     {
 
-        $get_user =  User::where('email', $request->email)->first() ?? null;
+        $get_user = User::where('email', $request->email)->first() ?? null;
 
         if ($get_user == null) {
 
@@ -1313,7 +1202,7 @@ class HomeController extends Controller
             ]);
         }
 
-        User::where('email', $request->email)->increment('wallet', $request->amount) ?? null;
+            User::where('email', $request->email)->increment('wallet', $request->amount) ?? null;
 
         $amount = number_format($request->amount, 2);
 
