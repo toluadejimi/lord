@@ -109,10 +109,12 @@
                                                         </td>
                                                     @endif
 
-                                                    <td>
-                                                        <a href="delete-order?id={{$data->id}}"
-                                                           class="btn btn-sm btn-dark text-small">Delete</a>
-                                                    </td>
+                                                    @if($data->status == 1)
+                                                        <td>
+                                                            <a href="delete-order?id={{$data->id}}"
+                                                               class="btn btn-sm btn-dark text-small">Delete</a>
+                                                        </td>
+                                                    @endif
 
                                                 </tr>
 
