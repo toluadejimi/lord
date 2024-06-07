@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\WorldNumberController;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ItemController;
 
@@ -23,6 +24,18 @@ use App\Http\Controllers\ItemController;
 //     return view('welcome');
 // });
 
+
+//Clear Config cache:
+Route::get('/clear1', function() {
+    $exitCode = Artisan::call('config:cache');
+    return '<h1>Clear Config cache cleared</h1>';
+});
+
+
+Route::get('/clear2', function() {
+    $exitCode = Artisan::call('config:clear');
+    return '<h1>Clear config cleared</h1>';
+});
 
 
 
