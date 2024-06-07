@@ -368,7 +368,7 @@ function get_world_countries(){
 
     $var = curl_exec($curl);
 
-    dd($var);
+    dd($var, $key);
     curl_close($curl);
     $var = json_decode($var);
     $countries = $var ?? null;
