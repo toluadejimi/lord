@@ -36,7 +36,7 @@ class AdminController extends Controller
 
 
 
-    
+
     public function delete_user(request $request){
 
 
@@ -44,7 +44,7 @@ class AdminController extends Controller
         Verification::where('user_id', $request->id)->delete();
         Transaction::where('user_id', $request->id)->delete();
 
-        return back()->with('message', "User Deleted Successfully");
+        return redirect('users')->with('message', "User Deleted Successfully");
 
 
     }
