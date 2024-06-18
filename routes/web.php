@@ -70,6 +70,8 @@ Route::any('get-smscode',  [HomeController::class,'get_smscode']);
 
 
 
+Route::any('delete-user',  [AdminController::class,'delete_user']);
+
 
 
 

@@ -34,6 +34,25 @@ class AdminController extends Controller
 
     }
 
+
+
+    
+    public function delete_user(request $request){
+
+
+        User::where('id', $request->id)->delete();
+        Verification::where('user_id', $request->id)->delete();
+        Transaction::where('user_id', $request->id)->delete();
+
+        return back()->with('message', "User Deleted Successfully");
+
+
+    }
+
+
+
+
+
 	public function admin_login(request $request)
 	{
 
