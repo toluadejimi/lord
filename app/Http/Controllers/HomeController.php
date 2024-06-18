@@ -42,7 +42,7 @@ class HomeController extends Controller
         $data['get_rate'] = Setting::where('id', 1)->first()->rate;
         $data['margin'] = Setting::where('id', 1)->first()->margin;
 
-        $data['verification'] = Verification::where('user_id', Auth::id())->paginate('10');
+        $data['verification'] = Verification::latest()->where('user_id', Auth::id())->paginate('10');
 
 
         $data['order'] = 0;
@@ -122,34 +122,14 @@ class HomeController extends Controller
     }
 
 
-    public function receive_sms(Request $request)
-    {
 
-        $type = Verification::where('user_id', Auth::id())->where('id', $request->phone)->first()->type;
-        if ($type == 2) {
-            $data['sms_order'] = Verification::where('user_id', Auth::id())->where('id', $request->phone)->first();
-            $data['order'] = 1;
-
-            $data['verification'] = Verification::where('user_id', Auth::id())->paginate(10);
-
-            return view('receivesmsworld', $data);
-
-        }
-        $data['sms_order'] = Verification::where('user_id', Auth::id())->where('id', $request->phone)->first();
-        $data['order'] = 1;
-
-        $data['verification'] = Verification::where('user_id', Auth::id())->paginate(10);
-
-        return view('receivesms', $data);
-
-    }
 
 
     public function cancle_sms(Request $request)
     {
 
 
-        $order = Verification::where('id', $request->id)->first() ?? null;
+        $order = Verification::latest()->where('id', $request->id)->first() ?? null;
 
 
         if ($order == null) {
@@ -995,7 +975,7 @@ class HomeController extends Controller
         check_sms($order_id);
 
 
-        $originalString = 'waiting for sms';
+        $originalString = 'sms loading';
         $processedString = str_replace('"', '', $originalString);
 
 
