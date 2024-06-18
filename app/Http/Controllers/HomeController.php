@@ -25,7 +25,7 @@ class HomeController extends Controller
         $data['get_rate'] = Setting::where('id', 1)->first()->rate;
         $data['margin'] = Setting::where('id', 1)->first()->margin;
 
-        $data['verification'] = Verification::where('user_id', Auth::id())->paginate('10');
+        $data['verification'] = Verification::latest()->where('user_id', Auth::id())->paginate('10');
 
 
         $data['order'] = 0;
