@@ -19,37 +19,10 @@ class WorldNumberController extends Controller
         $services = get_world_services();
 
         $verification = Verification::where('user_id', Auth::id())->get();
-        $verifications = Verification::where('user_id', Auth::id())->where('status', 1)->get();
-
-
 
         $data['services'] = $services;
         $data['countries'] = $countries;
         $data['verification'] = $verification;
-
-        if ($verifications->count() == 1) {
-
-            $num = Verification::where('user_id', Auth::id())->where('status', 1)->first() ?? null;
-            $sms = Verification::where('user_id', Auth::id())->where('status', 1)->first()->sms ?? null;
-            $number = Verification::where('user_id', Auth::id())->where('status', 1)->first()->phone ?? null;
-
-            $data['number_order'] = 1;
-            $data['sms'] = $sms;
-            $data['number'] = $number;
-            $data['num'] = $num;
-
-            $data['services'] = get_world_services();
-            $data['get_rate'] = Setting::where('id', 1)->first()->rate;
-            $data['margin'] = Setting::where('id', 1)->first()->margin;
-            $data['sms_order'] = Verification::where('user_id', Auth::id())->where('status' , 1)->first();
-            $data['order'] = 1;
-
-            //$data['verification'] = Verification::where('user_id', Auth::id())
-
-            return view('receivesmsworld', $data);
-        } else {
-            $data['pend'] = 0;
-        }
 
         $data['product'] = null;
 
@@ -109,9 +82,6 @@ class WorldNumberController extends Controller
         }else{
             $price = $high_price;
         }
-
-
-
 
 
 
@@ -242,37 +212,7 @@ class WorldNumberController extends Controller
 
         if ($order == 3) {
 
-            $countries = get_world_countries();
-            $services = get_world_services();
-
-            $verification = Verification::where('user_id', Auth::id())->get();
-            $sms = Verification::where('user_id', Auth::id())->where('status', 1)->first()->sms;
-            $number = Verification::where('user_id', Auth::id())->where('status', 1)->first()->phone;
-            $num = Verification::where('user_id', Auth::id())->where('status', 1)->first();
-
-            $data['services'] = $services;
-            $data['countries'] = $countries;
-            $data['verification'] = $verification;
-            $data['sms'] = $sms;
-            $data['number'] = $number;
-            $data['product'] = null;
-
-            $data['number_order'] = 1;
-            $data['product'] = null;
-
-            $data['num'] = $num;
-
-
-            $data['services'] = get_world_services();
-            $data['get_rate'] = Setting::where('id', 1)->first()->rate;
-            $data['margin'] = Setting::where('id', 1)->first()->margin;
-            $data['sms_order'] = Verification::where('user_id', Auth::id())->where('status' , 1)->first();
-            $data['order'] = 1;
-
-            $data['verification'] = Verification::where('user_id', Auth::id())->paginate(10);
-
-
-            return view('receivesmsworld', $data);
+            return redirect('orders');
         }
     }
 
