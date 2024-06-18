@@ -181,8 +181,8 @@
 
                                     <div class="p-2 col-lg-6">
                                         <strong>
-                                            <h4>Verifications</h4>
-                                            <p class="text-warning">The page automaticaly refresh no need to refresh.</p>
+                                            <h5>Verifications</h5>
+                                            <p style="font-size: 10px" class="text-warning">The page automaticaly refresh no need to refresh.</p>
                                         </strong>
                                     </div>
 
