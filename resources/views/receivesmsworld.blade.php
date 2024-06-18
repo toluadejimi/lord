@@ -112,8 +112,12 @@
 
                             <a style="font-size: 10px; border:0px;"
                                class="me-2 col btn btn-primary btn-sm btn-block"
-                               href="cancle-sms?id={{ $sms_order->id }}" role="button"><i class=""> Delete
+                               href="cancle-sms?id={{ $sms_order->id }}" role="button"><i class="fa fa-trash"> Delete
                                     Order</a></i>
+
+                            <a style="font-size: 10px; border:0px;"
+                               class="me-2 col btn btn-dark btn-sm btn-block"
+                               href="/world" role="button"><i class="fa fa-sticky-note"> New Order </a></i>
 
                             {{-- <a style="font-size: 10px" class="col text-white btn btn-success btn-sm btn-block"
                                 href="check-sms?id={{ $sms_order->id}}" role="button"><i
