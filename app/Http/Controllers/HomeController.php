@@ -975,7 +975,7 @@ class HomeController extends Controller
         check_sms($order_id);
 
 
-        $originalString = 'sms loading';
+        $originalString = 'sms loading...';
         $processedString = str_replace('"', '', $originalString);
 
 
