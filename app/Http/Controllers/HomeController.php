@@ -82,22 +82,7 @@ class HomeController extends Controller
 
         $order = create_order($service, $price, $cost, $service_name);
 
-
         //dd($order);
-
-        if ($order == 9) {
-
-            $ver = Verification::where('status', 1)->first() ?? null;
-            if ($ver != null) {
-
-                $data['sms_order'] = $ver;
-                $data['order'] = 1;
-
-                return view('receivesms', $data);
-
-            }
-            return redirect('home');
-        }
 
         if ($order == 0) {
             User::where('id', Auth::id())->increment('wallet', $request->price);
@@ -132,7 +117,7 @@ class HomeController extends Controller
 
             $data['verification'] = Verification::where('user_id', Auth::id())->paginate(10);
 
-            return view('receivesms', $data);
+            return redirect('home');
         }
     }
 

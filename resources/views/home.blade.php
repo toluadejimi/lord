@@ -125,10 +125,14 @@
 
                                             <div class="col mr-3">
                                                 @auth
-                                                    <a class="myButton" onclick="hideButton(this)"
-                                                       href="/order-now?service={{ $key }}&price={{ $cost }}&cost={{ $innerValue->cost }}&name={{ $innerValue->name }}">
-                                                        <i class="fa fa-shopping-bag"> Buy</i>
-                                                    </a>
+
+                                                    <form action="order-usano">
+                                                        <input hidden name="service" value="{{ $key }}">
+                                                        <input hidden name="price" value="{{ $cost }}">
+                                                        <input hidden name="cost" value="{{ $innerValue->cost }}">
+                                                        <input hidden name="name" value="{{ $innerValue->name }}">
+                                                        <button class="myButton" style="border: 0px; background: transparent" onclick="hideButton(this)"><i class="fa fa-shopping-bag"></i></button>
+                                                    </form>
                                                 @else
 
                                                     <a class=""
@@ -166,6 +170,8 @@
                     </div>
                 </div>
 
+
+
                 @auth
                     <div class="col-md-6">
                         <div class="card">
@@ -176,6 +182,7 @@
                                     <div class="p-2 col-lg-6">
                                         <strong>
                                             <h4>Verifications</h4>
+                                            <p class="text-warning">The page automaticaly refresh no need to refresh.</p>
                                         </strong>
                                     </div>
 
@@ -204,10 +211,97 @@
                                                     <tr>
                                                         <td style="font-size: 12px;">{{ $data->id }}</td>
                                                         <td style="font-size: 12px;">{{ $data->service }}</td>
-                                                        <td style="font-size: 12px; color: green"><a
-                                                                href="receive-sms?phone={{ $data->id }}">{{ $data->phone }} </a>
+                                                        <td style="font-size: 12px; color: green">{{ $data->phone }}
                                                         </td>
-                                                        <td style="font-size: 12px;">{{ $data->sms }}</td>
+
+                                                        @if($data->sms != null)
+                                                            <td style="font-size: 12px;">{{ $data->sms }}
+                                                            </td>
+                                                        @else
+                                                            <style>
+                                                                /* HTML: <div class="loader"></div> */
+                                                                .loader {
+                                                                    width: 50px;
+                                                                    aspect-ratio: 1;
+                                                                    display: grid;
+                                                                    animation: l14 4s infinite;
+                                                                }
+                                                                .loader::before,
+                                                                .loader::after {
+                                                                    content: "";
+                                                                    grid-area: 1/1;
+                                                                    border: 8px solid;
+                                                                    border-radius: 50%;
+                                                                    border-color: red red #0000 #0000;
+                                                                    mix-blend-mode: darken;
+                                                                    animation: l14 1s infinite linear;
+                                                                }
+                                                                .loader::after {
+                                                                    border-color: #0000 #0000 blue blue;
+                                                                    animation-direction: reverse;
+                                                                }
+                                                                @keyframes l14{
+                                                                    100%{transform: rotate(1turn)}
+                                                                }
+                                                            </style>
+
+                                                            <style>#l1 {
+                                                                    width: 15px;
+                                                                    aspect-ratio: 1;
+                                                                    border-radius: 50%;
+                                                                    border: 1px solid;
+                                                                    border-color: #000 #0000;
+                                                                    animation: l1 1s infinite;
+                                                                }
+                                                                @keyframes l1 {to{transform: rotate(.5turn)}}
+                                                            </style>
+
+                                                            <td>
+                                                                <div class="justify-content-start">
+                                                                </div>
+                                                                <div>
+                                                                    <input class="border-0 justify-content-end" id="response-input{{$data->id}}">
+                                                                </div>
+
+
+                                                                <script>
+                                                                    makeRequest{{$data->id}}();
+                                                                    setInterval(makeRequest{{$data->id}}, 5000);
+
+                                                                    function makeRequest{{$data->id}}() {
+                                                                        fetch('{{ url('') }}/get-smscode?num={{ $data->phone }}')
+                                                                            .then(response => {
+                                                                                if (!response.ok) {
+                                                                                    throw new Error(`HTTP error! Status: ${response.status}`);
+                                                                                }
+                                                                                return response.json();
+                                                                            })
+                                                                            .then(data => {
+
+                                                                                console.log(data.message);
+                                                                                displayResponse{{$data->id}}(data.message);
+
+                                                                            })
+                                                                            .catch(error => {
+                                                                                console.error('Error:', error);
+                                                                                displayResponse{{$data->id}}({
+                                                                                    error: 'An error occurred while fetching the data.'
+                                                                                });
+                                                                            });
+                                                                    }
+
+                                                                    function displayResponse{{$data->id}}(data) {
+                                                                        const responseInput = document.getElementById('response-input{{$data->id}}');
+                                                                        responseInput.value = data;
+                                                                    }
+
+                                                                </script>
+                                                            </td>
+                                                        @endif
+
+
+
+
                                                         <td style="font-size: 12px;">
                                                             ₦{{ number_format($data->cost, 2) }}</td>
                                                         <td>
@@ -235,7 +329,7 @@
 
                                                 </tbody>
 
-                                                {{ $verification->links() }}
+
 
                                             </table>
                                         </div>
@@ -247,8 +341,9 @@
 
                             </div>
                         </div><!-- [ sample-page ] end -->
-                        @endauth
+
                     </div>
+                @endauth
             </div><!-- [ Main Content ] end --></div>
     </div><!-- [ Main Content ] end -->
 
