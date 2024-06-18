@@ -774,7 +774,7 @@ class HomeController extends Controller
             ]);
 
             $data = array(
-                'fromsender' => 'noreply@verifyasap.com', 'TWBNUMBER',
+                'fromsender' => 'noreply@smslord.com', 'SMSLORD',
                 'subject' => "Reset Password",
                 'toreceiver' => $email,
                 'url' => $url,
