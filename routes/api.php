@@ -29,5 +29,8 @@ Route::any('webhook2',  [HomeController::class,'diasy_webhook']);
 Route::any('e_fund',  [ProductController::class,'e_fund']);
 Route::any('e_check',  [HomeController::class,'e_check']);
 
+Route::any('verify',  [ProductController::class,'verify_username']);
+
+
 
 
