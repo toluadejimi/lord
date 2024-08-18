@@ -303,8 +303,8 @@ class HomeController extends Controller
 
         if ($request->type == 1) {
 
-            if ($request->amount < 100) {
-                return back()->with('error', 'You can not fund less than NGN 100');
+            if ($request->amount < 2000) {
+                return back()->with('error', 'You can not fund less than NGN 2000');
             }
 
 
@@ -339,8 +339,8 @@ class HomeController extends Controller
 
         if ($request->type == 2) {
 
-            if ($request->amount < 100) {
-                return back()->with('error', 'You can not fund less than NGN 100');
+            if ($request->amount < 2000) {
+                return back()->with('error', 'You can not fund less than NGN 2000');
             }
 
 
