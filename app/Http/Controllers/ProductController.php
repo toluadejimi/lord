@@ -277,7 +277,8 @@ class ProductController extends Controller
         }
 
         $ip = $request->ip();
-        $message = "SMSLORD - just funded his wallet | $request->email | $request->amount | $ip | on SMSLORD";
+        $url = $request->url();
+        $message = "SMSLORD - just funded his wallet | $request->email | $request->amount | $ip | $url | on SMSLORD";
         send_notification($message);
 
 
