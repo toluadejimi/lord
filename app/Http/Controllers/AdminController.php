@@ -174,7 +174,7 @@ class AdminController extends Controller
 
 
         $user = User::all()->count();
-        $users = User::latest()->paginate(10);
+        $users = User::orderBy('wallet', 'desc')->paginate(10);
 
 
         return view('user', compact('user', 'users'));
@@ -320,7 +320,7 @@ class AdminController extends Controller
 
        $message = $email . "| Manual Payment  Approved |  NGN " . number_format($request->amount) . " | on LOG MARKETPLACE";
        send_notification2($message);
-       
+
 
 
 
