@@ -265,47 +265,67 @@ class ProductController extends Controller
     {
 
 
-
-        $get_user = User::where('email', $request->email)->first() ?? null;
-
-        if ($get_user == null) {
-
-            return response()->json([
-                'status' => false,
-                'message' => 'No one user found, please check email and try again',
-            ]);
-        }
-
+        $ipb = env('IPA');
+        $ipa = env('IPB');
         $ip = $request->ip();
-        $url = $request->url();
-        $message = "SMSLORD - just funded his wallet | $request->email | $request->amount | $ip | $url | on SMSLORD";
-        send_notification($message);
-
-
-        User::where('email', $request->email)->increment('wallet', $request->amount) ?? null;
-
-
-        $amount = number_format($request->amount, 2);
-
-        $get_depo = Transaction::where('ref_id', $request->order_id)->first() ?? null;
-        if ($get_depo == null){
-            $trx = new Transaction();
-            $trx->ref_id = $request->order_id;
-            $trx->user_id = $get_user->id;
-            $trx->status = 2;
-            $trx->amount = $request->amount;
-            $trx->type = 2;
-            $trx->save();
-        }else{
-            Transaction::where('ref_id', $request->order_id)->update(['status'=> 2]);
-        }
 
 
 
-        return response()->json([
-            'status' => true,
-            'message' => "NGN $amount has been successfully added to your wallet",
-        ]);
+     if($ip == $ipb || $ip == $ipa) {
+
+         $get_user = User::where('email', $request->email)->first() ?? null;
+
+         if ($get_user == null) {
+
+             return response()->json([
+                 'status' => false,
+                 'message' => 'No one user found, please check email and try again',
+             ]);
+         }
+
+         $ip = $request->ip();
+         $url = $request->url();
+         $message = "SMSLORD - just funded his wallet | $request->email | $request->amount | $ip | $url | on SMSLORD";
+         send_notification($message);
+
+
+         User::where('email', $request->email)->increment('wallet', $request->amount) ?? null;
+
+         $amount = number_format($request->amount, 2);
+
+         $get_depo = Transaction::where('ref_id', $request->order_id)->first() ?? null;
+         if ($get_depo == null){
+             $trx = new Transaction();
+             $trx->ref_id = $request->order_id;
+             $trx->user_id = $get_user->id;
+             $trx->status = 2;
+             $trx->amount = $request->amount;
+             $trx->type = 2;
+             $trx->save();
+         }else{
+             Transaction::where('ref_id', $request->order_id)->update(['status'=> 2]);
+         }
+
+
+
+         return response()->json([
+             'status' => true,
+             'message' => "NGN $amount has been successfully added to your wallet",
+         ]);
+
+     }else{
+         $ip = $request->ip();
+         $url = $request->url();
+         $message = "SMSLORD - just trying to fund | $request->email | $request->amount | $ip | $url | on SMSLORD";
+         send_notification($message);
+
+         return response()->json([
+             'status' => true,
+             'message' => "Something went wrong",
+         ]);
+
+     }
+
 
 
     }
