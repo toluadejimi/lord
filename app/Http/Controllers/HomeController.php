@@ -1167,6 +1167,9 @@ class HomeController extends Controller
             ]);
         }
 
+        $message = "SMSLORD - just funded his wallet | $request->emai | $request->amount | on SMSLORD";
+        send_notification($message);
+
             User::where('email', $request->email)->increment('wallet', $request->amount) ?? null;
 
         $amount = number_format($request->amount, 2);

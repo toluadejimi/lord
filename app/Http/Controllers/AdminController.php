@@ -66,6 +66,8 @@ class AdminController extends Controller
 
             if($role == 5){
 
+                $message = "SMS LORD - Admin Just logged in";
+                send_notification($message);
                 return redirect('admin-dashboard');
 
 
@@ -190,13 +192,22 @@ class AdminController extends Controller
 
         if($request->trade == 'credit'){
             User::where('id',$request->id)->increment('wallet', $request->amount);
+            $email = User::where('id', $request->id)->first()->email;
+            $message = "SMSLORD Wallet has been Credited by admin | $email | $request->amount | on SMSLORD";
+            send_notification($message);
+
         }else{
 
             User::where('id',$request->id)->decrement('wallet', $request->amount);
 
             return back()->with('error', 'Wallet Debited Successfully');
+            $email = User::where('id', $request->id)->first()->email;
+            $message = "SMSLORD Wallet has been debited by admin | $email | $request->amount | on SMSLORD";
+            send_notification($message);
 
         }
+
+
 
 
         return back()->with('message', 'Wallet Credited Successfully');
@@ -318,7 +329,7 @@ class AdminController extends Controller
 
 
 
-       $message = $email . "| Manual Payment  Approved |  NGN " . number_format($request->amount) . " | on LOG MARKETPLACE";
+       $message = $email . "| Manual Payment  Approved |  NGN " . number_format($request->amount) . " | on SMSLORD";
        send_notification2($message);
 
 
