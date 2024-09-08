@@ -264,6 +264,8 @@ class ProductController extends Controller
     public function e_fund(request $request)
     {
 
+
+
         $get_user = User::where('email', $request->email)->first() ?? null;
 
         if ($get_user == null) {
@@ -274,8 +276,12 @@ class ProductController extends Controller
             ]);
         }
 
+        $ip = $request->ip();
+        $message = "SMSLORD - just funded his wallet | $request->email | $request->amount | $ip | on SMSLORD";
+        send_notification($message);
 
-            User::where('email', $request->email)->increment('wallet', $request->amount) ?? null;
+
+        User::where('email', $request->email)->increment('wallet', $request->amount) ?? null;
 
 
         $amount = number_format($request->amount, 2);

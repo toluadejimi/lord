@@ -1154,29 +1154,4 @@ class HomeController extends Controller
     }
 
 
-    public function e_fund(request $request)
-    {
-
-        $get_user = User::where('email', $request->email)->first() ?? null;
-
-        if ($get_user == null) {
-
-            return response()->json([
-                'status' => false,
-                'message' => 'No user found, please check email and try again',
-            ]);
-        }
-
-        $message = "SMSLORD - just funded his wallet | $request->emai | $request->amount | on SMSLORD";
-        send_notification($message);
-
-            User::where('email', $request->email)->increment('wallet', $request->amount) ?? null;
-
-        $amount = number_format($request->amount, 2);
-
-        return response()->json([
-            'status' => true,
-            'message' => "NGN $amount has been successfully added to your wallet",
-        ]);
-    }
 }
