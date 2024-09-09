@@ -15,7 +15,7 @@
                                     <h2 class="d-flex justify-content-start">Welcome</h2>
                                 </div>
                             </div>
-                            <div class="col-6 d-flex text-danger justify-content-end">
+                            <div class="col-6">
                                 <div class="row">
                                     @if(Auth::user()->hold_wallet > 0)
                                         <div class="col-3">
