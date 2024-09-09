@@ -200,13 +200,12 @@
                                            class="btn btn-secondary text-white btn-lg">Fund Wallet</a>
                                     @else
 
-                                        <form action="order_now" method="POST">
+                                        <form action="order_now_world" method="POST">
                                             @csrf
-
                                             <input type="text" name="country" hidden value="{{ $count_id }}">
                                             <input type="text" name="price" hidden value="{{ $price }}">
                                             <input type="text" name="service" hidden value="{{ $serv }}">
-
+                                            <input type="text" name="ppe" hidden value="{{ $price }}">
 
                                             <button type="submit" class="btn btn-primary w-100 btn-sm mt-6">Buy Number
                                                 Now

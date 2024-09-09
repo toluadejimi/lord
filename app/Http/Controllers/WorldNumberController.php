@@ -172,16 +172,25 @@ class WorldNumberController extends Controller
         }
 
 
+        if($request->ppe != $request->price){
+            return back()->with('error', "Insufficient Funds");
+        }
 
 
-        User::where('id', Auth::id())->decrement('wallet', $request->price);
 
         $country = $request->country;
         $service = $request->service;
         $price = $request->price;
 
 
-        $order = create_world_order($country, $service, $price);
+        User::where('id', Auth::id())->decrement('wallet', $request->price);
+        $hold =  User::where('id', Auth::id())->increment('hold_wallet', $request->price);
+
+        if($hold == 1){
+            $order = create_world_order($country, $service, $price);
+        }else{
+            return redirect('home')->with('error', "Insufficient Funds");
+        }
 
         if ($order == 5) {
             User::where('id', Auth::id())->increment('wallet', $request->price);
