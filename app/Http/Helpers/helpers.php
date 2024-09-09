@@ -3,6 +3,7 @@
 use App\Constants\Status;
 use App\Lib\GoogleAuthenticator;
 use App\Models\Extension;
+use App\Models\User;
 use App\Models\Verification;
 use Illuminate\Support\Facades\Auth;
 
@@ -235,6 +236,7 @@ function create_order($service, $price, $cost, $service_name)
 
     if (strstr($result, "ACCESS_NUMBER") !== false) {
 
+        User::where('id', Auth::id())->increment('hold_wallet', $cost);
 
         $parts = explode(":", $result);
         $accessNumber = $parts[0];
