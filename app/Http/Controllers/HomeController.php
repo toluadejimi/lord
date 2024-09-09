@@ -63,7 +63,6 @@ class HomeController extends Controller
     public function order_now(Request $request)
     {
 
-
         $service = $request->service;
         $price = $request->price;
         $service_name = $request->name;
@@ -75,9 +74,7 @@ class HomeController extends Controller
         $data['services'] = get_services();
         $data['get_rate'] = Setting::where('id', 1)->first()->rate;
         $data['margin'] = Setting::where('id', 1)->first()->margin;
-
         $innerValue =  get_d_price($service);
-
         $cost = $data['get_rate'] * $innerValue + $data['margin'];
 
 
