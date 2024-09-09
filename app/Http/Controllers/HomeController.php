@@ -77,6 +77,9 @@ class HomeController extends Controller
         $innerValue =  get_d_price($service);
         $cost = $data['get_rate'] * $innerValue + $data['margin'];
 
+        if($cost < $request->price){
+            return redirect('home')->with('error', "Insufficient Funds");
+        }
 
 
         if (Auth::user()->wallet < $cost) {
