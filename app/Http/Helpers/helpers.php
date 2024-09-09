@@ -174,8 +174,45 @@ function get_services()
 }
 
 
+function get_d_price($service){
+    $APIKEY = env('KEY');
+    $curl = curl_init();
+    curl_setopt_array($curl, array(
+        CURLOPT_URL => "https://daisysms.com/stubs/handler_api.php?api_key=$APIKEY&action=getPrices&service=$service",
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'GET',
+        CURLOPT_HTTPHEADER => array(
+            'Content-Type: application/json',
+            'Accept: application/json',
+        ),
+    ));
+
+    $var = curl_exec($curl);
+    curl_close($curl);
+    $var = json_decode($var);
+
+
+    foreach($var as $key => $value){
+
+        $service2['data'] =  $value;
+
+    }
+
+    $result = $service2["data"]->$service->cost;
+    return $result;
+
+}
+
+
 function create_order($service, $price, $cost, $service_name)
 {
+
+
 
 
     $APIKEY = env('KEY');

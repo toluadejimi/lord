@@ -64,25 +64,35 @@ class HomeController extends Controller
     {
 
 
-        if (Auth::user()->wallet < $request->price) {
-            return back()->with('error', "Insufficient Funds");
-        }
-
-        if (Auth::user()->wallet < $request->price) {
-            return back()->with('error', "Insufficient Funds");
-        }
-
-
-        User::where('id', Auth::id())->decrement('wallet', $request->price);
-
         $service = $request->service;
         $price = $request->price;
         $cost = $request->cost;
         $service_name = $request->name;
 
-        $order = create_order($service, $price, $cost, $service_name);
+        $service = $request->service;
+        $price = $request->price;
+        $service_name = $request->name;
 
-        //dd($order);
+        $data['services'] = get_services();
+        $data['get_rate'] = Setting::where('id', 1)->first()->rate;
+        $data['margin'] = Setting::where('id', 1)->first()->margin;
+
+        $innerValue =  get_d_price($service);
+
+        $cost = $data['get_rate'] * $innerValue + $data['margin'];
+
+        dd($service, $price, $cost, $service_name);
+
+
+        if (Auth::user()->wallet < $cost) {
+            return back()->with('error', "Insufficient Funds");
+        }
+
+
+        User::where('id', Auth::id())->decrement('wallet', $cost);
+
+
+        $order = create_order($service, $price, $cost, $service_name);
 
         if ($order == 0) {
             User::where('id', Auth::id())->increment('wallet', $request->price);
