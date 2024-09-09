@@ -88,17 +88,18 @@ class HomeController extends Controller
 
 
         User::where('id', Auth::id())->decrement('wallet', $cost);
+        $hold =  User::where('id', Auth::id())->increment('hold_wallet', $cost);
 
-       $hold =  User::where('id', Auth::id())->increment('hold_wallet', $cost);
-
-       dd($hold);
-
-
-        if(Auth::user()->hold_wallet != $cost || Auth::user()->hold_wallet > $cost ){
+        if($hold == 1){
+            $order = create_order($service, $price, $cost, $service_name);
+        }else{
             return redirect('home')->with('error', "Insufficient Funds");
         }
 
-        $order = create_order($service, $price, $cost, $service_name);
+
+
+
+
 
 
 
