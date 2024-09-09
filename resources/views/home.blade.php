@@ -10,12 +10,12 @@
 
                         </div>
                         <div class="col-12 row">
-                            <div class="col-7">
+                            <div class="col-6">
                                 <div class="page-header-title">
                                     <h2 class="d-flex justify-content-start">Welcome</h2>
                                 </div>
                             </div>
-                            <div class="col-5">
+                            <div class="col-6 d-flex text-danger justify-content-end">
                                 <div class="row">
                                     @if(Auth::user()->hold_wallet > 0)
                                         <div class="col-3">
@@ -27,7 +27,7 @@
                                     @endif
 
 
-                                    <div class="col-2">
+                                    <div class="col-3">
                                         <a href="fund-wallet">
                                             <h4 class="mt-2 d-flex text-white justify-content-end">
                                                 N{{number_format(Auth::user()->wallet, 2)}}</h4>
