@@ -90,8 +90,16 @@ class HomeController extends Controller
 
         User::where('id', Auth::id())->decrement('wallet', $cost);
 
+        User::where('id', Auth::id())->increment('hold_wallet', $cost);
 
-        $order = create_order($service, $price, $cost, $service_name);
+
+
+        if($cost < Auth::user()->hold_wallet){
+            $order = create_order($service, $price, $cost, $service_name);
+        }else{
+            return redirect('home')->with('error', "Insufficient Funds");
+        }
+
 
         if ($order == 0) {
             User::where('id', Auth::id())->increment('wallet', $request->price);
@@ -102,8 +110,6 @@ class HomeController extends Controller
             User::where('id', Auth::id())->increment('wallet', $request->price);
             $message = "SMSLORD | Low balance";
             send_notification($message);
-
-
             return redirect('home')->with('error', 'Error occurred, Please try again');
         }
 
@@ -1016,9 +1022,11 @@ class HomeController extends Controller
 
         $orders = Verification::where('order_id', $activationId)->update(['sms' => $code, 'status' => 2]);
 
+        $user_id = Verification::where('order_id', $activationId)->first()->user_id;
+        $cost = Verification::where('order_id', $activationId)->first()->cost;
+        $orders = Verification::where('order_id', $activationId)->update(['sms' => $code, 'status' => 2]);
+        User::where('id', $user_id)->decrement('hold_wallet', $cost);
 
-        $message = json_encode($request->all());
-        send_notification($message);
 
 
     }
@@ -1035,10 +1043,11 @@ class HomeController extends Controller
         $country = $request->country;
         $receivedAt = $request->receivedAt;
 
+        $user_id = Verification::where('order_id', $activationId)->first()->user_id;
+        $cost = Verification::where('order_id', $activationId)->first()->cost;
         $orders = Verification::where('order_id', $activationId)->update(['sms' => $code, 'status' => 2]);
+        User::where('id', $user_id)->decrement('hold_wallet', $cost);
 
-        $message = json_encode($request->all());
-        send_notification($message);
 
 
     }

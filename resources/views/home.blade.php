@@ -10,16 +10,29 @@
 
                         </div>
                         <div class="col-12 row">
-                            <div class="col-8">
+                            <div class="col-6">
                                 <div class="page-header-title">
                                     <h2 class="d-flex justify-content-start">Welcome</h2>
                                 </div>
                             </div>
-                            <div class="col-4">
-                                <a href="fund-wallet">
-                                    <h3 class="mt-2 d-flex text-white justify-content-end">
-                                        N{{number_format(Auth::user()->wallet, 2)}}</h3>
-                                </a>
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col-3">
+                                        <a href="fund-wallet">
+                                            <h3 class="mt-2 d-flex text-white justify-content-end">
+                                                N{{number_format(Auth::user()->wallet, 2)}}</h3>
+                                        </a>
+                                    </div>
+                                    @if(Auth::user()->hold_wallet > 0)
+                                        <div class="col-3">
+                                            <a href="#">
+                                                <h3 class="mt-2 d-flex text-danger justify-content-end">
+                                                    N{{number_format(Auth::user()->hold_wallet, 2)}}</h3>
+                                            </a>
+                                        </div>
+                                    @endif
+                                </div>
+
                             </div>
                         </div>
                     </div>
