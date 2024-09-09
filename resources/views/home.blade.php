@@ -17,12 +17,7 @@
                             </div>
                             <div class="col-6">
                                 <div class="row">
-                                    <div class="col-3">
-                                        <a href="fund-wallet">
-                                            <h3 class="mt-2 d-flex text-white justify-content-end">
-                                                N{{number_format(Auth::user()->wallet, 2)}}</h3>
-                                        </a>
-                                    </div>
+
                                     @if(Auth::user()->hold_wallet > 0)
                                         <div class="col-3">
                                             <a href="#">
@@ -31,6 +26,15 @@
                                             </a>
                                         </div>
                                     @endif
+
+
+                                    <div class="col-3">
+                                        <a href="fund-wallet">
+                                            <h3 class="mt-2 d-flex text-white justify-content-end">
+                                                N{{number_format(Auth::user()->wallet, 2)}}</h3>
+                                        </a>
+                                    </div>
+
                                 </div>
 
                             </div>
