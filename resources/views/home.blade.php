@@ -10,12 +10,12 @@
 
                         </div>
                         <div class="col-12 row">
-                            <div class="col-6">
-                                <div class="page-header-title">
+                            <div class="col-xl-6 col-sm-12">
+                            <div class="page-header-title">
                                     <h2 class="d-flex justify-content-start">Welcome</h2>
                                 </div>
                             </div>
-                            <div class="col-6">
+                            <div class="col-xl-6 col-sm-12">
                                 <div class="row">
                                     @if(Auth::user()->hold_wallet > 0)
                                         <div class="col-3">
@@ -27,7 +27,7 @@
                                     @endif
 
 
-                                    <div class="col-3">
+                                    <div class="col-xl-6 col-sm-12">
                                         <a href="fund-wallet">
                                             <h4 class="mt-2 d-flex text-white justify-content-end">
                                                 N{{number_format(Auth::user()->wallet, 2)}}</h4>
@@ -68,10 +68,10 @@
                     <div class="card">
                         <div class="card-body">
 
-{{--                            <div class="d-flex justify-content-center my-3">--}}
-{{--                                <a href="https://wa.me/2349036138449?text=Chequest+i+want+to+Buy+Permanent+Tmobile+or+UltraMobile+Esim"--}}
-{{--                                   class="text-center" style="font-size: 16px;"> Buy Permanent Tmobile & UltraMobile Esim </a></strong>--}}
-{{--                            </div>--}}
+                            {{--                            <div class="d-flex justify-content-center my-3">--}}
+                            {{--                                <a href="https://wa.me/2349036138449?text=Chequest+i+want+to+Buy+Permanent+Tmobile+or+UltraMobile+Esim"--}}
+                            {{--                                   class="text-center" style="font-size: 16px;"> Buy Permanent Tmobile & UltraMobile Esim </a></strong>--}}
+                            {{--                            </div>--}}
 
 
                             <div class="d-flex justify-content-center my-3">
@@ -148,7 +148,10 @@
                                                         <input hidden name="price" value="{{ $cost }}">
                                                         <input hidden name="cost" value="{{ $innerValue->cost }}">
                                                         <input hidden name="name" value="{{ $innerValue->name }}">
-                                                        <button class="myButton" style="border: 0px; background: transparent" onclick="hideButton(this)"><i class="fa fa-shopping-bag"></i></button>
+                                                        <button class="myButton"
+                                                                style="border: 0px; background: transparent"
+                                                                onclick="hideButton(this)"><i
+                                                                class="fa fa-shopping-bag"></i></button>
                                                     </form>
                                                 @else
 
@@ -188,7 +191,6 @@
                 </div>
 
 
-
                 @auth
                     <div class="col-md-6">
                         <div class="card">
@@ -199,7 +201,8 @@
                                     <div class="p-2 col-lg-6">
                                         <strong>
                                             <h5>Verifications</h5>
-                                            <p style="font-size: 10px" class="text-warning">The page automaticaly refresh no need to refresh.</p>
+                                            <p style="font-size: 10px" class="text-warning">The page automaticaly
+                                                refresh no need to refresh.</p>
                                         </strong>
                                     </div>
 
@@ -243,6 +246,7 @@
                                                                     display: grid;
                                                                     animation: l14 4s infinite;
                                                                 }
+
                                                                 .loader::before,
                                                                 .loader::after {
                                                                     content: "";
@@ -253,12 +257,16 @@
                                                                     mix-blend-mode: darken;
                                                                     animation: l14 1s infinite linear;
                                                                 }
+
                                                                 .loader::after {
                                                                     border-color: #0000 #0000 blue blue;
                                                                     animation-direction: reverse;
                                                                 }
-                                                                @keyframes l14{
-                                                                    100%{transform: rotate(1turn)}
+
+                                                                @keyframes l14 {
+                                                                    100% {
+                                                                        transform: rotate(1turn)
+                                                                    }
                                                                 }
                                                             </style>
 
@@ -270,14 +278,20 @@
                                                                     border-color: #000 #0000;
                                                                     animation: l1 1s infinite;
                                                                 }
-                                                                @keyframes l1 {to{transform: rotate(.5turn)}}
+
+                                                                @keyframes l1 {
+                                                                    to {
+                                                                        transform: rotate(.5turn)
+                                                                    }
+                                                                }
                                                             </style>
 
                                                             <td>
                                                                 <div class="justify-content-start">
                                                                 </div>
                                                                 <div>
-                                                                    <input class="border-0 justify-content-end" id="response-input{{$data->id}}">
+                                                                    <input class="border-0 justify-content-end"
+                                                                           id="response-input{{$data->id}}">
                                                                 </div>
 
 
@@ -317,8 +331,6 @@
                                                         @endif
 
 
-
-
                                                         <td style="font-size: 12px;">
                                                             ₦{{ number_format($data->cost, 2) }}</td>
                                                         <td>
@@ -345,7 +357,6 @@
                                                 @endforelse
 
                                                 </tbody>
-
 
 
                                             </table>
