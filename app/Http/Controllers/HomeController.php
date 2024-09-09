@@ -94,7 +94,7 @@ class HomeController extends Controller
 
 
 
-        if( Auth::user()->hold_wallet >= $cost){
+        if(Auth::user()->hold_wallet == $cost || Auth::user()->hold_wallet > $cost ){
             $order = create_order($service, $price, $cost, $service_name);
         }else{
             return redirect('home')->with('error', "Insufficient Funds");
