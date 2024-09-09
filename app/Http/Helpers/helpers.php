@@ -236,7 +236,6 @@ function create_order($service, $price, $cost, $service_name)
 
     if (strstr($result, "ACCESS_NUMBER") !== false) {
 
-        User::where('id', Auth::id())->increment('hold_wallet', $cost);
 
         $parts = explode(":", $result);
         $accessNumber = $parts[0];
