@@ -81,7 +81,6 @@ class HomeController extends Controller
 
         $cost = $data['get_rate'] * $innerValue + $data['margin'];
 
-        dd($service, $price, $cost, $service_name);
 
 
         if (Auth::user()->wallet < $cost) {
