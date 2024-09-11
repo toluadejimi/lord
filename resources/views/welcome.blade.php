@@ -107,6 +107,7 @@
                         </div>
 
 
+                        @auth
                         <div class="row">
 
 
@@ -136,15 +137,7 @@
                                            placeholder="Search for services...">
                                 </div>
 
-                                @auth
-                                    <div class="mt-5" id="responseData"></div>
 
-                                @else
-                                    <div class="col-6 d-flex justify-content-end">
-                                        <button class="btn btn-dark"><i
-                                                class="fa fa-padlock"></i></button>
-                                    </div>
-                                @endauth
 
 
                             </div>
@@ -313,6 +306,24 @@
                             </script>
 
                         </div>
+                        @else
+                            <div class="card">
+                                <div class="card-body">
+
+
+                                    <a href="register" class="btn btn-dark w-100 my-3  btn-block">
+                                        Register
+                                    </a>
+
+                                    <a href="login" class="btn btn-primary w-100  btn-block">
+                                        Login
+                                    </a>
+
+
+                                </div>
+
+                            </div>
+                        @endauth
 
 
                     </div>
