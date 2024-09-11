@@ -274,7 +274,7 @@
                                                         </td>
                                                     @else
                                                         <td>
-                                                            <span class="badge badge-pill badge-warning">Pendong</span>
+                                                            <span class="badge badge-pill badge-warning">Pending</span>
 
                                                         </td>
                                                     @endif
