@@ -550,7 +550,7 @@ class HomeController extends Controller
 
 
             $user = Auth::id() ?? null;
-            return redirect('home');
+            return redirect('cworld');
         }
 
         return back()->with('error', "Email or Password Incorrect");
