@@ -227,7 +227,6 @@ class SimController extends Controller
 
             Verification::where('id', $request->id)->delete();
             User::where('id', $user_id)->increment('wallet', $cost);
-
             return back()->with('message', "Number Canceled, NGN $cost has been refunded");
 
         }
