@@ -263,7 +263,7 @@
 
                                                                         <script>
                                                                             makeRequest{{$data->id}}();
-                                                                            setInterval(makeRequest{{$data->id}}, 5000);
+                                                                            setInterval(makeRequest{{$data->id}}, 10000);
 
                                                                             function makeRequest{{$data->id}}() {
                                                                                 fetch('{{ url('') }}/get-csms?id={{ $data->order_id }}')
