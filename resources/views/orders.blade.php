@@ -166,10 +166,10 @@
 
                                                                         <script>
                                                                             makeRequest{{$data->id}}();
-                                                                            setInterval(makeRequest{{$data->id}}, 5000);
+                                                                            setInterval(makeRequest{{$data->id}}, 8000);
 
                                                                             function makeRequest{{$data->id}}() {
-                                                                                fetch('{{ url('') }}/get-smscode?num={{ $data->phone }}')
+                                                                                fetch('{{ url('') }}/get-smscode?id={{ $data->id }}')
                                                                                     .then(response => {
                                                                                         if (!response.ok) {
                                                                                             throw new Error(`HTTP error! Status: ${response.status}`);

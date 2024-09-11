@@ -241,8 +241,6 @@ class SimController extends Controller
 
         $token = env('SIMTOKEN');
         $ch = curl_init();
-
-
         curl_setopt($ch, CURLOPT_URL, 'https://5sim.net/v1/user/check/' . $request->id);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
@@ -260,24 +258,11 @@ class SimController extends Controller
 
         if($status == 'RECEIVED'){
 
-            if($var->sms == []){
-                $sms = null;
-            }
-
             $originalString = 'sms loading...';
             $processedString = str_replace('"', '', $originalString);
-
-            if ($sms == null) {
-                return response()->json([
-                    'message' => $processedString
-                ]);
-            } else {
-
-                return response()->json([
-                    'message' => $sms
-                ]);
-            }
-
+            return response()->json([
+                'message' => $processedString
+            ]);
 
         }
 
@@ -285,8 +270,6 @@ class SimController extends Controller
         if($status == "FINISHED"){
             Verification::where('order_id', $request->id)->update(['full_sms' => $var->sms[0]->text, 'sms' => $var->sms[0]->code, 'status' => 2]);
         }
-
-
 
         $originalString = 'sms loading...';
         $processedString = str_replace('"', '', $originalString);
