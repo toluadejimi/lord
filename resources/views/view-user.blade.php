@@ -463,7 +463,6 @@
                                                          <th class="border-0">Phone</th>
                                                         <th class="border-0">SMS</th>
                                                         <th class="border-0">Amount</th>
-                                                        <th class="border-0">Status</th>
                                                         <th class="border-0">Date</th>
                                                         <th class="border-0">Time</th>
                                                         <th class="border-0">Action</th>
@@ -489,16 +488,6 @@
                                                          <td>{{ $data->order_id }} </td>
                                                          <td>{{ $data->full_sms }} </td>
                                                         <td>{{ $data->cost }} </td>
-                                                        @if($data->status == 2)
-                                                        <td>
-                                                            <span class="badge badge-pill badge-success">Successful</span>
-                                                        </td>
-                                                        @else
-                                                        <td>
-                                                            <span class="badge badge-pill badge-warning">Pendong</span>
-
-                                                        </td>
-                                                        @endif
 
 
                                                         <td>{{ date('d/m/y', strtotime($data->created_at)) }} </td>
