@@ -136,7 +136,15 @@
                                            placeholder="Search for services...">
                                 </div>
 
-                                <div class="mt-5" id="responseData"></div>
+                                @auth
+                                    <div class="mt-5" id="responseData"></div>
+
+                                @else
+                                    <div class="col-6 d-flex justify-content-end">
+                                        <button class="btn btn-dark"><i
+                                                class="fa fa-padlock"></i></button>
+                                    </div>
+                                @endauth
 
 
                             </div>
@@ -215,6 +223,7 @@
                                                                     <div class="col-6 d-flex justify-content-start mt-2">
                                                                     <p>Available: ${providerData.count}</p>
                                                                     </div>
+
 
                                                                 <div class="col-6 d-flex justify-content-end">
                                                                     <button class="btn btn-dark"><i

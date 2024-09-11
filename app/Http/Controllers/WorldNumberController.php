@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Country;
 use App\Models\Setting;
+use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Verification;
 use Illuminate\Http\Request;
@@ -36,17 +37,20 @@ class WorldNumberController extends Controller
     public function check_av(Request $request)
     {
 
+        $data['transaction'] = Transaction::query()
+            ->orderByRaw('updated_at DESC')
+            ->where('user_id', Auth::id())
+            ->take(10)->get();
+
         $key = env('WKEY');
 
 
         $databody = array(
             "key" => $key,
-            "country" => $request->country,
-            "service" => $request->service,
-            "pool" => '',
+            "country" => $request->selectedID,
+            "service" => $request->serviceID,
+            "pool" => '7',
         );
-
-
 
         $body = json_encode($databody);
 
@@ -62,7 +66,7 @@ class WorldNumberController extends Controller
             CURLOPT_CUSTOMREQUEST => 'POST',
             CURLOPT_POSTFIELDS => $databody,
             CURLOPT_HTTPHEADER => array(
-                'Authorization: Bearer {{apikey}}'
+                "Authorization: Bearer $key"
             ),
         ));
 
@@ -70,23 +74,13 @@ class WorldNumberController extends Controller
         curl_close($curl);
         $var = json_decode($var);
 
-
-
-        $get_s_price = $var->price ?? null;
-        $high_price = $var->high_price ?? null;
+        $price = $var->price ?? null;
         $rate = $var->success_rate ?? null;
         $product = 1;
 
-        if($high_price > 4){
-            $price = $high_price * 1.3;
-        }else{
-            $price = $high_price;
-        }
-
-
 
         if ($price == null) {
-            return redirect('world')->with('error', 'Verification not available for selected service');
+            return redirect('home')->with('error', 'Verification not available for selected service');
         } else {
 
             $get_rate = Setting::where('id', 1)->first()->rate;
@@ -97,8 +91,8 @@ class WorldNumberController extends Controller
             $ngnprice = ($price * $get_rate) + $margin;
 
 
-            $data['count_id'] = $count_id;
-            $data['serv'] = $request->service;
+            $data['count_id'] = $request->selectedID;
+            $data['serv'] = $request->serviceID;
             $data['verification'] = $verification;
             $countries = get_world_countries();
             $services = get_world_services();
@@ -107,6 +101,7 @@ class WorldNumberController extends Controller
             $data['rate'] = $rate;
             $data['price'] = $ngnprice;
             $data['product'] = 1;
+            $data['country_name'] = $request->country_name;
 
             $data['number_order'] = null;
 
@@ -116,6 +111,7 @@ class WorldNumberController extends Controller
             } else {
                 $data['pend'] = 0;
             }
+
 
 
             return view('world', $data);

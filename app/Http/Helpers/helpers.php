@@ -469,7 +469,6 @@ function create_world_order($country, $service, $price)
         'service' => $service,
         'key' => $key,
 
-
     );
     curl_setopt_array($curl, array(
         CURLOPT_URL => 'https://api.smspool.net/purchase/sms',
