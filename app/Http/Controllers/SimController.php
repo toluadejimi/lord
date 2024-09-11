@@ -256,7 +256,7 @@ class SimController extends Controller
         $var = json_decode($result);
         $status = $var->status ?? null;
 
-        dd($var);
+        dd($var->status);
 
         if($status == 'RECEIVED'){
 
