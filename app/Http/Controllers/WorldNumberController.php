@@ -182,6 +182,10 @@ class WorldNumberController extends Controller
         User::where('id', Auth::id())->decrement('wallet', $request->price);
         $hold =  User::where('id', Auth::id())->increment('hold_wallet', $request->price);
 
+        if(Auth::user()->hold_wallet < Auth::user()->wallet){
+            return redirect('home')->with('error', "Insufficient Funds");
+        }
+
         if($hold == 1){
             $order = create_world_order($country, $service, $price);
         }else{
