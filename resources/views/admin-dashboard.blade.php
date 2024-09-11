@@ -265,7 +265,7 @@
                                                         <td> Diasy </td>
                                                         @endif
 
-                                                    <td>{{ $data->full_sms }} </td>
+                                                    <td>{{ $data->sms }} </td>
                                                     <td>{{ $data->cost }} </td>
                                                     @if($data->status == 2)
                                                         <td>
