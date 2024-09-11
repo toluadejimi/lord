@@ -1,6 +1,39 @@
 @extends('layout.main')
 @section('content')
 
+
+    <style>
+        .search-box {
+            width: 300px;
+            top: 10px;
+            padding: 10px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        .dropdown2 {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 70px;
+        }
+
+        .dropdown2 .item {
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .dropdown2 .item:hover {
+            background-color: #ddd;
+        }
+
+
+    </style>
     <div class="pc-container">
         <div class="pc-content"><!-- [ breadcrumb ] start -->
             <div class="page-header">
@@ -83,62 +116,50 @@
                             </div>
 
 
-                            <form action="check-av" method="POST">
-                                @csrf
-
-                                <div class="row">
-
-
-                                    <div class="col-xl-10 col-md-10 col-sm-12 p-3">
-
-                                        <p class="d-flex justify-content-center">You are on all 🌎 countries Panel</p>
-
-
-                                        <p class="mb-3 text-muted d-flex justify-content-center"> Choose country and
-                                            service
-                                        </p>
-
-                                        <hr>
-
-                                        <label for="country" class="mb-2 mt-3 text-muted">🌎 Select
-                                            Country</label>
-                                        <div>
-                                            <select style="border-color:rgb(0, 11, 136);" class="w-100"
-                                                    id="select_page" class="operator" name="country">
-                                                <option style="background: black" value=""> Select Country</option>
-                                                @foreach ($countries as $data)
-                                                    <option value="{{ $data->ID }}">{{ $data->name }}
-                                                    </option>
-                                                @endforeach
-
-                                            </select>
+                                <form action="check-av" method="POST">
+                                    @csrf
+                                    <label for="country" class="col-12 my-3"> Choose Country </label>
+                                    <div class="search-container mb-3">
+                                        <input type="text" id="search" name="country_name"
+                                               class="form-control search-box d-flex justify-content-center"
+                                               placeholder="Search country"
+                                               onkeyup="filterItems()" onclick="toggleDropdown()">
+                                        <div id="dropdown" class="dropdown2">
+                                            @foreach ($countries as $data)
+                                                <div class="item" data-id="{{ $data->ID }}" onclick="selectCountry(this)">
+                                                    {{ $data->name }}
+                                                </div>
+                                            @endforeach
                                         </div>
-
-
-                                        <label for="country" class="mt-3 text-muted mb-2">💬 Select
-                                            Services</label>
-                                        <div>
-                                            <select class="form-control w-100"
-                                                    id="select_page2" name="service">
-
-                                                <option value=""> Choose Service</option>
-                                                @foreach ($services as $data)
-                                                    <option value="{{ $data->ID }}">{{ $data->name }}
-                                                    </option>
-                                                @endforeach
-
-                                            </select>
-                                        </div>
-
-
-                                        <button style="border: 0px" type="submit"
-                                                class="btn btn-primary w-100 mt-3 border-0">Check
-                                            availability
-                                        </button>
-
                                     </div>
-                                </div>
-                            </form>
+
+
+                                    <label for="service" class="col-12 my-3"> Choose
+                                        Service </label>
+                                    <div class="search-container mb-3">
+                                        <input type="text" id="searchservice"
+                                               class="form-control search-box"
+                                               placeholder="Search service"
+                                               onkeyup="filterItemsservice()" onclick="toggleDropdownservice()">
+                                        <div id="dropdownservice" class="dropdown2">
+                                            @foreach ($services as $data)
+                                                <div class="item" data-id="{{ $data->ID }}" onclick="selectService(this)">
+                                                    {{ $data->name }}
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+
+                                    <input type="hidden" name="selectedID" id="selectedID">
+                                    <input type="hidden" name="serviceID" id="serviceID">
+
+
+                                    <button type="submit"
+                                            class="btn btn-primary btn-lg mt-3">Check Service Availability
+                                    </button>
+
+
+                                </form>
 
 
                         </div>

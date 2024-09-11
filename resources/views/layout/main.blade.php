@@ -54,7 +54,28 @@
         .search-results li:hover {
             background: #eee;
         }
+
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+
+        .search-container {
+            position: relative;
+            display: inline-block;
+        }
+
+
+
     </style>
+
+
 
 
 </head><!-- [Head] end --><!-- [Body] Start -->
@@ -649,31 +670,76 @@
 <script>main_layout_change('vertical');</script>
 
 
-{{--<style>--}}
-{{--    .float {--}}
-{{--        position: fixed;--}}
-{{--        width: 60px;--}}
-{{--        height: 60px;--}}
-{{--        bottom: 40px;--}}
-{{--        right: 40px;--}}
-{{--        background-color: #000000;--}}
-{{--        color: #FFF;--}}
-{{--        border-radius: 50px;--}}
-{{--        text-align: center;--}}
-{{--        font-size: 30px;--}}
-{{--        box-shadow: 2px 2px 3px #999;--}}
-{{--        z-index: 100;--}}
-{{--    }--}}
 
-{{--    .my-float {--}}
-{{--        margin-top: 16px;--}}
-{{--    }--}}
-{{--</style>--}}
+<script>
+    // Toggle for country dropdown
+    function toggleDropdown() {
+        document.getElementById('dropdown').style.display = 'block';
+    }
 
-{{--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">--}}
-{{--<a href="https://t.me/verifyasapp" class="float" target="_blank">--}}
-{{--    <i class="fa fa-comment my-float"></i>--}}
-{{--</a>--}}
+    // Toggle for service dropdown
+    function toggleDropdownservice() {
+        document.getElementById('dropdownservice').style.display = 'block';
+    }
+
+    // Filter for country items
+    function filterItems() {
+        const searchInput = document.getElementById('search').value.toLowerCase();
+        const items = document.querySelectorAll('#dropdown .item');
+
+        items.forEach(item => {
+            const text = item.textContent.toLowerCase();
+            if (text.includes(searchInput)) {
+                item.style.display = 'block';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    }
+
+    // Filter for service items
+    function filterItemsservice() {
+        const searchInput = document.getElementById('searchservice').value.toLowerCase();
+        const items = document.querySelectorAll('#dropdownservice .item');
+
+        items.forEach(item => {
+            const text = item.textContent.toLowerCase();
+            if (text.includes(searchInput)) {
+                item.style.display = 'block';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    }
+
+    // Select country
+    function selectCountry(element) {
+        document.getElementById('search').value = element.textContent;
+        document.getElementById('dropdown').style.display = 'none';
+        document.getElementById('selectedID').value = element.getAttribute('data-id');
+    }
+
+    // Select service
+    function selectService(element) {
+        document.getElementById('searchservice').value = element.textContent;
+        document.getElementById('dropdownservice').style.display = 'none';
+        document.getElementById('serviceID').value = element.getAttribute('data-id');
+    }
+
+    // Close dropdowns if clicked outside
+    document.addEventListener('click', function (event) {
+        const searchContainerCountry = document.querySelector('#search');
+        const searchContainerService = document.querySelector('#searchservice');
+
+        if (!searchContainerCountry.contains(event.target)) {
+            document.getElementById('dropdown').style.display = 'none';
+        }
+
+        if (!searchContainerService.contains(event.target)) {
+            document.getElementById('dropdownservice').style.display = 'none';
+        }
+    });
+</script>
 
 
 <script>function changebrand(presetColor) {
