@@ -256,16 +256,9 @@ class SimController extends Controller
         $var = json_decode($result);
         $status = $var->status ?? null;
 
-        dd($var->status);
 
         if($status == 'RECEIVED'){
-
-            $originalString = 'sms loading...';
-            $processedString = str_replace('"', '', $originalString);
-            return response()->json([
-                'message' => $processedString
-            ]);
-
+            Verification::where('order_id', $request->id)->update(['full_sms' => $var->sms[0]->text, 'sms' => $var->sms[0]->code, 'status' => 2]);
         }
 
 
