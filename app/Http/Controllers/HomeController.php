@@ -23,7 +23,7 @@ class HomeController extends Controller
     {
         $countries = get_s_countries();
 
-        $verification = Verification::where('user_id', Auth::id())->get();
+        $verification = Verification::where('user_id', Auth::id())->paginate(10);
         $s_rate = Setting::where('id', 3)->first();
 
         //$data['services'] = $services;
