@@ -497,9 +497,7 @@ function create_world_order($country, $service, $price)
 
     if ($success == 1) {
 
-
         Verification::where('phone', $var->cc . $var->phonenumber)->where('status', 2)->delete() ?? null;
-
         $ver = new Verification();
         $ver->user_id = Auth::id();
         $ver->phone = $var->cc . $var->phonenumber;
@@ -767,4 +765,42 @@ function get_s_product_cost($operator, $country, $product)
 }
 
 
+function pool_cost($service, $country){
+
+    $key = env('WKEY');
+
+    $databody = array(
+        "key" => $key,
+        "country" => $country,
+        "service" => $service,
+        "pool" => '7',
+    );
+
+    $body = json_encode($databody);
+
+    $curl = curl_init();
+    curl_setopt_array($curl, array(
+        CURLOPT_URL => 'https://api.smspool.net/request/price',
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'POST',
+        CURLOPT_POSTFIELDS => $databody,
+        CURLOPT_HTTPHEADER => array(
+            "Authorization: Bearer $key"
+        ),
+    ));
+
+    $var = curl_exec($curl);
+    curl_close($curl);
+    $var = json_decode($var);
+
+    $price = $var->price ?? null;
+
+    return $price;
+
+}
 
