@@ -21,14 +21,19 @@ class HomeController extends Controller
 {
     public function index(request $request)
     {
-        $data['services'] = get_services();
-        $data['get_rate'] = Setting::where('id', 1)->first()->rate;
-        $data['margin'] = Setting::where('id', 1)->first()->margin;
+        $countries = get_s_countries();
 
-        $data['verification'] = Verification::latest()->where('user_id', Auth::id())->paginate('10');
+        $verification = Verification::where('user_id', Auth::id())->get();
+        $s_rate = Setting::where('id', 3)->first();
 
+        //$data['services'] = $services;
+        $data['countries'] = $countries;
+        $data['verification'] = $verification;
 
-        $data['order'] = 0;
+        $data['product'] = null;
+
+        $data['rate'] = $s_rate->rate;
+        $data['margin']= $s_rate->margin;
 
 
         return view('welcome', $data);
