@@ -89,15 +89,15 @@
 
                         <div class="d-flex justify-content-center my-3">
                             <div class="btn-group" role="group" aria-label="Third group">
-                                <a style="font-size: 12px;" href="/home"
-                                   class="btn btn-primary w-200 mt-1">
-                                    🇺🇸 USA NUMBERS
-
-                                </a>
-
                                 <a style="font-size: 12px;" href="/world"
+                                   class="btn btn-primary w-200 mt-1">
+                                    🌎 SERVER 1
+
+                                </a>
+
+                                <a style="font-size: 12px;" href="/cworld"
                                    class="btn btn-dark w-200 mt-1">
-                                    🌎 ALL COUNTRIES
+                                    🌎 SERVER 2
 
                                 </a>
 
@@ -106,85 +106,202 @@
 
                         </div>
 
-                        <p class="d-flex justify-content-center">You are on 🇺🇸 USA Numbers only Panel</p>
+
+                        <div class="row">
 
 
-                        <div class="">
+                            <div class="col-xl-10 col-md-10 col-sm-12 p-3">
 
-                            <div class="p-2 col-lg-6">
-                                <input type="text" id="searchInput" class="form-control"
-                                       placeholder="Search for a service..." onkeyup="filterServices()">
+                                <p class="d-flex justify-content-center">You are on cheap all 🌎 countries
+                                    Panel</p>
+
+
+                                <p class="mb-3 text-muted d-flex justify-content-center"> Choose country and
+                                    service
+                                </p>
+
+                                <hr>
+
+
+                                <div class="form-group position-relative">
+                                    <input type="text" class="form-control" id="countrySearch"
+                                           placeholder="Search for a country...">
+                                    <ul class="list-group search-results" id="countryList"></ul>
+                                </div>
+
+
+                                <!-- Filter Search Input -->
+                                <div class="mt-3" id="filterSearch">
+                                    <input type="text" id="filterSearchInput" class="form-control"
+                                           placeholder="Search for services...">
+                                </div>
+
+                                <div class="mt-5" id="responseData"></div>
+
+
                             </div>
 
+                            <script>
+                                var countries = @json($countries);
+                                var currentData = {}; // Holds the raw API response data
 
-                            <div class="row my-3 p-1 text-white"
-                                 style="background: #dedede; border-radius: 10px; font-size: 10px; border-radius: 12px">
-                                <div class="col-5">
-                                    <h5 class="mt-2">Services</h5>
-                                </div>
-                                <div class="col">
-                                    <h5 class="mt-2">Price</h5>
-                                </div>
-                            </div>
+                                $(document).ready(function () {
+                                    $('#filterSearch').hide();
 
+                                    $('#countrySearch').on('input', function () {
+                                        let searchValue = $(this).val().toLowerCase();
+                                        let matchedCountries = '';
 
-                        </div>
-
-
-                        <div style="height:300px; width:100%; overflow-y: scroll;" class="p-2">
-
-
-                            @foreach ($services as $key => $value)
-                                <div class="row service-row">
-                                    @foreach ($value as $innerKey => $innerValue)
-                                        <div style="font-size: 11px" class="col-5 service-name">
-                                            🇺🇸 {{ $innerValue->name }}
-                                        </div>
-
-                                        <div style="font-size: 11px" class="col">
-                                            @php $cost = $get_rate * $innerValue->cost + $margin  @endphp
-                                            <strong>N{{ number_format($cost, 2) }}</strong>
-                                        </div>
-
-                                        <div style="font-size: 11px" class="col">
-
-                                        </div>
-
-
-                                        <div class="col mr-3">
-                                            @auth
-                                            <a class="myButton" onclick="hideButton(this)"
-                                               href="/order-now?service={{ $key }}&price={{ $cost }}&cost={{ $innerValue->cost }}&name={{ $innerValue->name }}">
-                                                <i class="fa fa-shopping-bag"></i>
-                                            </a>
-                                            @endauth
-
-                                                <a class=""
-                                                   href="/login">
-                                                    <i class="fa fa-lock text-dark"> Login</i>
-                                                </a>
-
-
-                                            <script>
-                                                function hideButton(link) {
-                                                    // Hide the clicked link
-                                                    link.style.display = 'none';
-
-                                                    setTimeout(function () {
-                                                        link.style.display = 'inline'; // or 'block' depending on your layout
-                                                    }, 5000); // 5 seconds
+                                        if (searchValue) {
+                                            for (let key in countries) {
+                                                if (countries[key].toLowerCase().includes(searchValue)) {
+                                                    matchedCountries += `<li class="list-group-item" data-country="${key}">${countries[key]}</li>`;
                                                 }
-                                            </script>
+                                            }
+                                            $('#countryList').html(matchedCountries).show();
+                                        } else {
+                                            $('#countryList').hide();
+                                        }
+                                    });
+
+                                    // When a country is clicked, trigger an AJAX request
+                                    $('#countryList').on('click', 'li', function () {
+                                        let country = $(this).data('country');
+                                        $('#countrySearch').val($(this).text());
+                                        $('#countryList').hide();
+
+                                        // AJAX request to get country-specific data
+                                        $.ajax({
+                                            url: `/proxy/prices?country=${country}`,
+                                            type: 'GET',
+                                            success: function (response) {
+                                                currentData = response; // Save data for filtering later
+                                                let output = generateCards(response);
+                                                $('#responseData').html(output);
+                                                $('#filterSearch').show();
+                                            },
+                                            error: function (error) {
+                                                console.log(error);
+                                                $('#responseData').html('<p class="text-danger">Failed to retrieve data.</p>');
+                                            }
+                                        });
+                                    });
+
+                                    // Function to generate card HTML from data
+                                    function generateCards(data) {
+                                        let output = '';
+                                        for (let key in data) {
+                                            output += `<h6>${key.toUpperCase()}</h6>`;
+                                            for (let providerId in data[key]) {
+                                                for (let provider in data[key][providerId]) {
+                                                    let providerData = data[key][providerId][provider];
+                                                    let multipliedCost = providerData.cost * {{$rate}} + {{$margin}};
+                                                    let formattedMultipliedCost = multipliedCost.toLocaleString('en-US', {
+                                                        style: 'currency',
+                                                        currency: 'NGN'
+                                                    });
 
 
-                                        </div>
+                                                    output += `<div class="card mb-3 operator-card" data-country="${key}" data-operator="${provider}" data-product="${providerId}" data-count="${providerData.count}">
+                                                            <div class="card-body">
+                                                                   <div class="row">
+                                                                    <div class="col-6 d-flex justify-content-start">
+                                                                     <h6>${providerId}</h6>
+                                                                    </div>
+                                                                    <div class="col-6 d-flex justify-content-end">
+
+                                                                    <h6 style="color: #0a3622;">${formattedMultipliedCost} </h6>
+                                                                    </div>
+                                                                    <div class="col-6 d-flex justify-content-start mt-2">
+                                                                    <p>Available: ${providerData.count}</p>
+                                                                    </div>
+
+                                                                <div class="col-6 d-flex justify-content-end">
+                                                                    <button class="btn btn-dark"><i
+                                                                class="fa fa-shopping-bag"></i></button>
+                                                                    </div>
 
 
-                                        <hr style="border-color: #cccccc" class=" my-2">
-                                    @endforeach
-                                </div>
-                            @endforeach
+                                                        </div>
+                                                    </div>
+                                                    </div>`;
 
+
+                                                }
+                                            }
+                                        }
+                                        return output;
+                                    }
+
+                                    // Search within the loaded results
+                                    $('#filterSearchInput').on('input', function () {
+                                        let searchValue = $(this).val().toLowerCase();
+                                        let filteredData = {};
+
+                                        // Filter data based on the operator name or provider ID
+                                        for (let key in currentData) {
+                                            for (let providerId in currentData[key]) {
+                                                for (let provider in currentData[key][providerId]) {
+                                                    if (provider.toLowerCase().includes(searchValue) || providerId.toLowerCase().includes(searchValue)) {
+                                                        if (!filteredData[key]) filteredData[key] = {};
+                                                        filteredData[key][providerId] = filteredData[key][providerId] || {};
+                                                        filteredData[key][providerId][provider] = currentData[key][providerId][provider];
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        // Update results
+                                        let output = generateCards(filteredData);
+                                        $('#responseData').html(output);
+                                    });
+
+                                    // When an operator is clicked, send a request to the backend controller
+                                    $('#responseData').on('click', '.operator-card', function () {
+                                        let country = $(this).data('country');
+                                        let operator = $(this).data('operator');
+                                        let product = $(this).data('product');
+                                        let count = $(this).data('count');
+
+
+                                        // Send to backend
+                                        $.ajax({
+                                            url: `/buy-csms`,
+                                            type: 'POST',
+                                            data: {
+                                                country: country,
+                                                operator: operator,
+                                                product: product,
+                                                count: count,
+                                                _token: '{{ csrf_token() }}' // Include CSRF token for security
+                                            },
+
+
+                                            success: function (response) {
+
+                                                if (response === "2") {
+                                                    alert('Verification Not Available.');
+                                                } else if (response === "4") {
+                                                    window.location.href = '/orders'; // Modify the URL as needed
+                                                } else if (response === "9") {
+                                                    window.location.href = '/fund-wallet'; // Modify the URL as needed
+                                                } else if (response === "0") {
+                                                    alert('Verification Not Available.');
+                                                }else {
+                                                    if (response.code === 200) {
+                                                        var id =response.id;
+                                                        window.location.href = '/orders?id=' + id; // Modify the URL as needed
+                                                    }
+                                                }
+                                            },
+                                            error: function (error) {
+                                                console.log(error);
+                                                alert('Failed to complete purchase.');
+                                            }
+                                        });
+                                    });
+                                });
+                            </script>
 
                         </div>
 
