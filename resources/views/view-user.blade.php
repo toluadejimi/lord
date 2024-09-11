@@ -376,7 +376,6 @@
                                                     <th class="border-0">Ref</th>
                                                     <th class="border-0">Type</th>
                                                     <th class="border-0">Wallet(NGN)</th>
-                                                    <th class="border-0">Type</th>
                                                     <th class="border-0">Status</th>
                                                     <th class="border-0">Date/Time</th>
 
@@ -390,13 +389,7 @@
 
                                                 <tr>
                                                     <td>{{ $data->ref_id }} </td>
-                                                    @if($data->type == 3)
-                                                        <td> 3SIM </td>
-                                                    @elseif($data->type == 2)
-                                                        <td> SMSPOOL </td>
-                                                    @else
-                                                        <td> Diasy </td>
-                                                    @endif
+
                                                     <td>{{ number_format($data->amount, 2) }} </td>
                                                     @if($data->type == 2)
                                                     <td><span class="badge badge-success">Credit</span>
@@ -430,26 +423,7 @@
                                                     @endif
                                                     <td>{{ $data->created_at }} </td>
 
-                                                    @if($data->type == 3 && $data->status == 1)
-                                                        <span
-                                                            style="background: orange; border:0px; font-size: 10px"
-                                                            class="btn btn-warning btn-sm">Pending</span>
-                                                        <a href="c-sms?id={{  $data->id }}&delete=1"
-                                                           style="background: rgb(168, 0, 14); border:0px; font-size: 10px"
-                                                           class="btn btn-warning btn-sm">Delete</span>
 
-                                                            @elseif ($data->type == 2 && $data->status == 1)
-                                                                <span
-                                                                    style="background: orange; border:0px; font-size: 10px"
-                                                                    class="btn btn-warning btn-sm">Pending</span>
-                                                                <a href="cancle-sms?id={{  $data->id }}&delete=1"
-                                                                   style="background: rgb(168, 0, 14); border:0px; font-size: 10px"
-                                                                   class="btn btn-warning btn-sm">Delete</span>
-
-                                                                    @else
-                                                                        <span style="font-size: 10px;"
-                                                                              class="text-white btn btn-success btn-sm">Completed</span>
-                                                    @endif
 
 
 
@@ -483,6 +457,7 @@
                                             <table class="table">
                                                 <thead class="bg-dark">
                                                     <tr class="border-0">
+                                                        <th class="border-0">Type</th>
                                                         <th class="border-0">Order ID</th>
                                                         <th class="border-0">Service</th>
                                                          <th class="border-0">Phone</th>
@@ -491,6 +466,8 @@
                                                         <th class="border-0">Status</th>
                                                         <th class="border-0">Date</th>
                                                         <th class="border-0">Time</th>
+                                                        <th class="border-0">Action</th>
+
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -500,6 +477,13 @@
 
                                                     <tr>
 
+                                                        @if($data->type == 3)
+                                                            <td> 3SIM </td>
+                                                        @elseif($data->type == 2)
+                                                            <td> SMSPOOL </td>
+                                                        @else
+                                                            <td> Diasy </td>
+                                                        @endif
                                                         <td>{{ $data->phone }} </td>
                                                         <td>{{ $data->service }} </td>
                                                          <td>{{ $data->order_id }} </td>
@@ -519,6 +503,27 @@
 
                                                         <td>{{ date('d/m/y', strtotime($data->created_at)) }} </td>
                                                         <td>{{ date('h:i', strtotime($data->created_at)) }} </td>
+
+                                                        @if($data->type == 3 && $data->status == 1)
+                                                            <span
+                                                                style="background: orange; border:0px; font-size: 10px"
+                                                                class="btn btn-warning btn-sm">Pending</span>
+                                                            <a href="c-sms?id={{  $data->id }}&delete=1"
+                                                               style="background: rgb(168, 0, 14); border:0px; font-size: 10px"
+                                                               class="btn btn-warning btn-sm">Delete</span>
+
+                                                                @elseif ($data->type == 2 && $data->status == 1)
+                                                                    <span
+                                                                        style="background: orange; border:0px; font-size: 10px"
+                                                                        class="btn btn-warning btn-sm">Pending</span>
+                                                                    <a href="cancle-sms?id={{  $data->id }}&delete=1"
+                                                                       style="background: rgb(168, 0, 14); border:0px; font-size: 10px"
+                                                                       class="btn btn-warning btn-sm">Delete</span>
+
+                                                                        @else
+                                                                            <span style="font-size: 10px;"
+                                                                                  class="text-white btn btn-success btn-sm">Completed</span>
+                                                        @endif
 
 
 
