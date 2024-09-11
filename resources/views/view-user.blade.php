@@ -498,7 +498,7 @@
                                                             <span
                                                                 style="background: orange; border:0px; font-size: 10px"
                                                                 class="btn btn-warning btn-sm">Pending</span>
-                                                            <a href="c-sms?id={{  $data->id }}&delete=1"
+                                                            <a href="admin-c-sms?id={{  $data->id }}&delete=1"
                                                                style="background: rgb(168, 0, 14); border:0px; font-size: 10px"
                                                                class="btn btn-warning btn-sm">Delete
                                                             </a>
@@ -508,7 +508,7 @@
                                                                     <span
                                                                         style="background: orange; border:0px; font-size: 10px"
                                                                         class="btn btn-warning btn-sm">Pending</span>
-                                                                    <a href="cancle-sms?id={{  $data->id }}&delete=1"
+                                                                    <a href="admin-cancle-sms?id={{  $data->id }}&delete=1"
                                                                        style="background: rgb(168, 0, 14); border:0px; font-size: 10px"
                                                                        class="btn btn-warning btn-sm">Delete
 

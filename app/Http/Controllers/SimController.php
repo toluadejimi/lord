@@ -234,6 +234,45 @@ class SimController extends Controller
         return back()->with('error', "Number Canceled");
 
     }
+    public function admin_delete_sms(request $request)
+    {
+
+
+
+        $token = env('SIMTOKEN');
+        $ch = curl_init();
+        $id = Verification::where('id', $request->id)->first()->order_id;
+        $cost = Verification::where('id', $request->id)->first()->cost;
+        $user_id = Verification::where('id', $request->id)->first()->user_id;
+
+        curl_setopt($ch, CURLOPT_URL, 'https://5sim.net/v1/user/cancel/' . $id);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+
+
+        $headers = array();
+        $headers[] = 'Authorization: Bearer ' . $token;
+        $headers[] = 'Accept: application/json';
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+        $result = curl_exec($ch);
+        curl_close($ch);
+        $var = json_decode($result);
+        $status = $var->status ?? null;
+
+
+
+        if($status == "CANCELED"){
+
+            Verification::where('id', $request->id)->delete();
+            User::where('id', $user_id)->increment('wallet', $cost);
+            return back()->with('message', "Number Canceled, NGN $cost has been refunded");
+
+        }
+        Verification::where('id', $request->id)->delete();
+        return back()->with('error', "Number Canceled");
+
+    }
 
 
     public function get_c_sms(request $request){

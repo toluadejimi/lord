@@ -106,6 +106,8 @@ Route::group(['middleware' => ['auth', 'user', 'session.timeout']], function () 
     Route::post('buy-csms',  [SimController::class,'order_csms']);
 
     Route::get('c-sms',  [SimController::class,'delete_sms']);
+    Route::get('admin-c-sms',  [SimController::class,'admin_delete_sms']);
+
     Route::get('get-csms',  [SimController::class,'get_c_sms']);
 
 
@@ -143,6 +145,8 @@ Route::group(['middleware' => ['auth', 'user', 'session.timeout']], function () 
 
 
     Route::any('cancle-sms',  [HomeController::class,'cancle_sms']);
+    Route::any('admin-cancle-sms',  [HomeController::class,'admin_cancle_sms']);
+
     Route::any('check-sms',  [HomeController::class,'check_sms']);
 
 
