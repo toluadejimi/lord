@@ -35,8 +35,6 @@ class SimController extends Controller
         return view('simworld', $data);
 
     }
-
-
     public function order_csms(request $request)
     {
 
@@ -71,7 +69,6 @@ class SimController extends Controller
             return 9;
         }
 
-        User::where('id', Auth::id())->decrement('wallet', $cost);
         $client = new Client();
 
         try {
@@ -83,6 +80,8 @@ class SimController extends Controller
 
             $responseBody = json_decode($response->getBody(), true);
             $phone = str_replace("+", "", $responseBody['phone']);
+
+            User::where('id', Auth::id())->decrement('wallet', $cost);
 
             Verification::where('phone', $phone)->where('status', 2)->delete() ?? null;
             $ver = new Verification();
@@ -100,11 +99,7 @@ class SimController extends Controller
 
             $data['id'] = $responseBody['id'];
             $data['code'] = 200;
-
-
             return $data;
-
-
         } catch (\Exception $e) {
             // Handle errors
             return response()->json([
@@ -113,12 +108,6 @@ class SimController extends Controller
             ], 500);
         }
     }
-
-
-
-
-
-
     public function get_s_country(request $request)
     {
 
@@ -127,8 +116,6 @@ class SimController extends Controller
         dd($balance);
 
     }
-
-
     public function check_av(Request $request)
     {
 
