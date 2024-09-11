@@ -255,10 +255,22 @@ class SimController extends Controller
         curl_close($ch);
         $var = json_decode($result);
         $status = $var->status ?? null;
+        $sms = $var->sms[0]->text ?? null;
+
 
 
         if($status == 'RECEIVED'){
-            Verification::where('order_id', $request->id)->update(['full_sms' => $var->sms[0]->text, 'sms' => $var->sms[0]->code, 'status' => 2]);
+
+            if($sms == null){
+                $originalString = 'sms loading...';
+                $processedString = str_replace('"', '', $originalString);
+                return response()->json([
+                    'message' => $processedString
+                ]);
+            }else{
+                Verification::where('order_id', $request->id)->update(['full_sms' => $var->sms[0]->text, 'sms' => $var->sms[0]->code, 'status' => 2]);
+            }
+
         }
 
 
