@@ -191,9 +191,8 @@
                                                                     <p>Available: ${providerData.count}</p>
                                                                     </div>
 
-                                                                <div class="col-6 d-flex justify-content-end">
-                                                                    <button class="btn btn-dark"><i
-                                                                class="fa fa-shopping-bag"></i></button>
+                                                                   <div class="col-6 d-flex justify-content-end">
+                                                                    <i class="fa fa-shopping-bag text-dark"></i>
                                                                     </div>
 
 
