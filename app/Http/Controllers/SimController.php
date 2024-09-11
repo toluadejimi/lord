@@ -265,7 +265,7 @@ class SimController extends Controller
         if($status == "CANCELED"){
 
             Verification::where('id', $request->id)->delete();
-            User::where('id', $user_id)->increment('wallet', $cost);
+            User::where('id', $request->user_id)->increment('wallet', $cost);
             return back()->with('message', "Number Canceled, NGN $cost has been refunded");
 
         }

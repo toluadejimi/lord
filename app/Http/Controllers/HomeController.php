@@ -290,8 +290,8 @@ class HomeController extends Controller
                 if ($order->status == 1) {
 
                     $amount = number_format($order->cost, 2);
-                    User::where('id', Auth::id())->increment('wallet', $order->cost);
-                    User::where('id', Auth::id())->decrement('hold_wallet', $order->cost);
+                    User::where('id', $request->user_id)->increment('wallet', $order->cost);
+                    User::where('id', $request->user_id)->decrement('hold_wallet', $order->cost);
                     Verification::where('id', $request->id)->delete();
                     return back()->with('message', "Order has been canceled, NGN$amount has been refunded");
 
@@ -309,8 +309,8 @@ class HomeController extends Controller
 
             if ($can_order == 1) {
                 $amount = number_format($order->cost, 2);
-                User::where('id', Auth::id())->increment('wallet', $order->cost);
-                User::where('id', Auth::id())->decrement('hold_wallet', $order->cost);
+                User::where('id', $request->user_id)->increment('wallet', $order->cost);
+                User::where('id', $request->user_id)->decrement('hold_wallet', $order->cost);
                 Verification::where('id', $request->id)->delete();
                 return back()->with('message', "Order has been canceled, NGN$amount has been refunded");
             }
@@ -322,8 +322,8 @@ class HomeController extends Controller
                     return back()->with('error', "Please try again later");
                 }
                 $amount = number_format($order->cost, 2);
-                User::where('id', Auth::id())->increment('wallet', $order->cost);
-                User::where('id', Auth::id())->decrement('hold_wallet', $order->cost);
+                User::where('id', $request->user_id)->increment('wallet', $order->cost);
+                User::where('id', $request->user_id)->decrement('hold_wallet', $order->cost);
                 Verification::where('id', $request->id)->delete();
                 return back()->with('message', "Order has been canceled, NGN$amount has been refunded");
             }
@@ -342,8 +342,8 @@ class HomeController extends Controller
                 if ($order->status == 1) {
 
                     $amount = number_format($order->cost, 2);
-                    User::where('id', Auth::id())->increment('wallet', $order->cost);
-                    User::where('id', Auth::id())->decrement('hold_wallet', $order->cost);
+                    User::where('id', $request->user_id)->increment('wallet', $order->cost);
+                    User::where('id', $request->user_id)->decrement('hold_wallet', $order->cost);
                     Verification::where('id', $request->id)->delete();
                     return back()->with('message', "Order has been canceled, NGN$amount has been refunded");
 
@@ -361,8 +361,8 @@ class HomeController extends Controller
 
             if ($can_order == 1) {
                 $amount = number_format($order->cost, 2);
-                User::where('id', Auth::id())->increment('wallet', $order->cost);
-                User::where('id', Auth::id())->decrement('hold_wallet', $order->cost);
+                User::where('id', $request->user_id)->increment('wallet', $order->cost);
+                User::where('id', $request->user_id)->decrement('hold_wallet', $order->cost);
                 Verification::where('id', $request->id)->delete();
                 return back()->with('message', "Order has been canceled, NGN$amount has been refunded");
             }
@@ -374,8 +374,8 @@ class HomeController extends Controller
                     return back()->with('error', "Please try again later");
                 }
                 $amount = number_format($order->cost, 2);
-                User::where('id', Auth::id())->increment('wallet', $order->cost);
-                User::where('id', Auth::id())->decrement('hold_wallet', $order->cost);
+                User::where('id', $request->user_id)->increment('wallet', $order->cost);
+                User::where('id', $request->user_id)->decrement('hold_wallet', $order->cost);
                 Verification::where('id', $request->id)->delete();
                 return back()->with('message', "Order has been canceled, NGN$amount has been refunded");
             }
