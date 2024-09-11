@@ -61,17 +61,21 @@
 
                             <div class="d-flex justify-content-center my-3">
                                 <div class="btn-group" role="group" aria-label="Third group">
-                                    <a style="font-size: 12px;" href="/home"
-                                       class="btn btn-primary w-200 mt-1">
-                                        🇺🇸 USA NUMBERS
+                                    <div class="btn-group" role="group" aria-label="Third group">
+                                        <a style="font-size: 12px;" href="/world"
+                                           class="btn btn-primary w-200 mt-1">
+                                            🌎 SERVER 1
 
-                                    </a>
+                                        </a>
 
-                                    <a style="font-size: 12px; box-shadow: deeppink" href="/world"
-                                       class="btn btn-dark w-200 mt-1">
-                                        🌎 ALL COUNTRIES
+                                        <a style="font-size: 12px;" href="/cworld"
+                                           class="btn btn-dark w-200 mt-1">
+                                            🌎 SERVER 2
 
-                                    </a>
+                                        </a>
+
+
+                                    </div>
 
 
                                 </div>

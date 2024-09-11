@@ -287,6 +287,8 @@ class ProductController extends Controller
          $url = $request->url();
          $message = "SMSLORD - just funded his wallet | $request->email | $request->amount | $ip | $url | on SMSLORD";
          send_notification($message);
+         send_notification2($message);
+
 
 
          User::where('email', $request->email)->increment('wallet', $request->amount) ?? null;
@@ -318,6 +320,8 @@ class ProductController extends Controller
          $url = $request->url();
          $message = "SMSLORD - just trying to fund | $request->email | $request->amount | $ip | $url | on SMSLORD";
          send_notification($message);
+         send_notification2($message);
+
 
          return response()->json([
              'status' => true,
