@@ -3,8 +3,10 @@
 use App\Constants\Status;
 use App\Lib\GoogleAuthenticator;
 use App\Models\Extension;
+use App\Models\Setting;
 use App\Models\User;
 use App\Models\Verification;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -392,7 +394,6 @@ function get_world_countries()
     ));
 
     $var = curl_exec($curl);
-
     curl_close($curl);
     $var = json_decode($var);
     $countries = $var ?? null;
@@ -418,6 +419,7 @@ function get_world_countries()
 
     return $countries;
 }
+
 
 
 function get_world_services()
@@ -645,4 +647,125 @@ function check_world_sms($orderID)
 
     dd($var);
 }
+
+
+ function balance()
+{
+    $token = env('SIMTOKEN');
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, 'https://5sim.net/v1/user/profile');
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+    $headers = array();
+    $headers[] = 'Authorization: Bearer ' . $token;
+    $headers[] = 'Accept: application/json';
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+    $var = curl_exec($ch);
+    curl_close($ch);
+    $var = json_decode($var);
+
+    return $var->balance;
+
+}
+
+
+function get_s_countries()
+{
+    $token = env('SIMTOKEN');
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, 'https://5sim.net/v1/guest/countries');
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+    $headers = array();
+    $headers[] = 'Authorization: Bearer ' . $token;
+    $headers[] = 'Accept: application/json';
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+    $var = curl_exec($ch);
+    curl_close($ch);
+    $inputArray = json_decode($var, true);
+
+    $result = [];
+    foreach ($inputArray as $key => $value) {
+        $result[$key] = $value['text_en'];
+    }
+
+    return $result;
+
+
+}
+
+
+function get_s_services()
+{
+    $token = env('SIMTOKEN');
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, 'https://5sim.net/v1/guest/countries');
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+    $headers = array();
+    $headers[] = 'Authorization: Bearer ' . $token;
+    $headers[] = 'Accept: application/json';
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+    $var = curl_exec($ch);
+    curl_close($ch);
+    $var = json_decode($var);
+
+    return $var;
+}
+
+
+function get_s_product_cost($operator, $country, $product)
+{
+    $token = env('SIMTOKEN');
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, 'https://5sim.net/v1/guest/products/' . $country . '/' . $operator);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+    $headers = array();
+    $headers[] = 'Authorization: Bearer ' . $token;
+    $headers[] = 'Accept: application/json';
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+    $var = curl_exec($ch);
+    curl_close($ch);
+    $var = json_decode($var);
+
+    $filterKeyword = $product ?? '';
+
+    if (is_object($var)) {
+        $data = json_decode(json_encode($var), true);
+    }
+
+    $filteredData = array_filter($data, function($key) use ($filterKeyword) {
+        return stripos($key, $filterKeyword) !== false;
+    }, ARRAY_FILTER_USE_KEY);
+
+   if($filteredData == []){
+       return 0;
+   }
+
+
+    $prices = [];
+    foreach ($filteredData as $item) {
+        if (isset($item['Price'])) {
+            $prices[] = $item['Price'];
+        }
+    }
+
+
+    $s_rate = Setting::where('id', 3)->first();
+    $data['rate'] = $s_rate->rate;
+    $data['margin']= $s_rate->margin;
+
+    $fcost = $data['rate'] * $prices[0] + $data['margin'];
+
+    return $fcost;
+
+
+}
+
+
 

@@ -34,6 +34,29 @@
           crossorigin="anonymous"/>
 
 
+    <!-- Include Bootstrap CSS for styling -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .search-results {
+            max-height: 300px;
+            overflow-y: auto;
+            position: absolute;
+            width: 100%;
+            background: #fff;
+            border: 1px solid #ddd;
+        }
+        .search-results li {
+            padding: 10px;
+            cursor: pointer;
+        }
+        .search-results li:hover {
+            background: #eee;
+        }
+    </style>
+
+
 </head><!-- [Head] end --><!-- [Body] Start -->
 <body data-pc-preset="preset-1" data-pc-sidebar-caption="true" data-pc-layout="vertical" data-pc-direction="ltr"
       data-pc-theme_contrast="" data-pc-theme="light"><!-- [ Pre-loader ] start -->
@@ -119,12 +142,21 @@
                             <use xlink:href="#custom-presentation-chart"></use>
                         </svg>
                     </li>
+{{--                    <li class="pc-item">--}}
+{{--                        <a href="home" class="pc-link">--}}
+{{--                        <span class="pc-micon">--}}
+{{--                            <img src="{{url('')}}/public/assets/images/usa.svg" height="20" width="20">--}}
+{{--                        </span>--}}
+{{--                            <span class="pc-mtext">Verify USA Numbers</span>--}}
+{{--                        </a>--}}
+{{--                    </li>--}}
+
                     <li class="pc-item">
-                        <a href="home" class="pc-link">
+                        <a href="cworld" class="pc-link">
                         <span class="pc-micon">
-                            <img src="{{url('')}}/public/assets/images/usa.svg" height="20" width="20">
+                            <img src="{{url('')}}/public/assets/images/world.svg" height="20" width="20">
                         </span>
-                            <span class="pc-mtext">Verify USA Numbers</span>
+                            <span class="pc-mtext">All Countries (Server 1)</span>
                         </a>
                     </li>
 
@@ -133,7 +165,7 @@
                         <span class="pc-micon">
                             <img src="{{url('')}}/public/assets/images/world.svg" height="20" width="20">
                         </span>
-                            <span class="pc-mtext">Verify All Countries</span>
+                            <span class="pc-mtext">All Countries (Server 2)</span>
                         </a>
                     </li>
 

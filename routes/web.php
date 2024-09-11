@@ -3,8 +3,10 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\SimController;
 use App\Http\Controllers\WorldNumberController;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ItemController;
 
@@ -35,6 +37,19 @@ Route::get('/clear1', function() {
 Route::get('/clear2', function() {
     $exitCode = Artisan::call('config:clear');
     return '<h1>Clear config cleared</h1>';
+});
+
+
+Route::get('/proxy/prices', function (Illuminate\Http\Request $request) {
+    // Get the 'country' query parameter
+    $country = $request->query('country');
+
+    // Make the request to the 5sim API from the Laravel server
+    $response = Http::get('https://5sim.net/v1/guest/prices', [
+        'country' => $country,
+    ]);
+
+    return $response->json();
 });
 
 
@@ -83,7 +98,24 @@ Route::any('delete-user',  [AdminController::class,'delete_user']);
 
 Route::group(['middleware' => ['auth', 'user', 'session.timeout']], function () {
 
-    Route::get('home',  [HomeController::class,'home']);
+
+
+
+    Route::get('cworld',  [SimController::class,'index']);
+
+    Route::post('buy-csms',  [SimController::class,'order_csms']);
+
+    Route::get('c-sms',  [SimController::class,'delete_sms']);
+    Route::get('get-csms',  [SimController::class,'get_c_sms']);
+
+
+
+
+
+
+    Route::get('home',  [WorldNumberController::class,'home']);
+
+
 
     Route::any('world',  [WorldNumberController::class,'home']);
     Route::any('check-av',  [WorldNumberController::class,'check_av']);
