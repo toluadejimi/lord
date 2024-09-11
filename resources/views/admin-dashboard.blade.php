@@ -310,9 +310,9 @@
 
                                         <div class="col-12 p-3">
 
-                                        <form method="post" action="update-rate">
+                                        <form method="post" action="update-smspool-rate">
                                         @csrf
-                                        <label>RATE</label>
+                                        <label>SMS POOL RATE</label>
                                         <input class="form-control2 text-dark" name="rate" value="{{ $usdtongn }}">
 
                                         <button type="submit" class="btn btn-primary" >Update Rate</button>
@@ -322,19 +322,41 @@
                                         </div>
 
 
-                                        <hr>
-
-
                                         <div class="col-12 p-3">
-                                        <form method="post" action="update-cost">
+                                        <form method="post" action="update-sim-cost">
                                         @csrf
-                                        <label>COST</label>
+                                        <label>SMS POOL COST</label>
                                         <input class="form-control2 text-dark" name="cost" value="{{ $margin }}">
 
                                         <button type="submit" class="btn btn-primary" >Update Cost</button>
                                         </form>
 
                                         </div>
+
+                                        <hr>
+
+                                        <label>SIM RATE</label>
+                                        <input class="form-control2 text-dark" name="rate" value="{{ $simrate}}">
+
+                                        <button type="submit" class="btn btn-primary" >Update Rate</button>
+
+                                        </form>
+
+                                    </div>
+
+
+                                    <div class="col-12 p-3">
+                                        <form method="post" action="update-sim-cost">
+                                            @csrf
+                                            <label>SIM COST</label>
+                                            <input class="form-control2 text-dark" name="cost" value="{{ $simcost }}">
+
+                                            <button type="submit" class="btn btn-primary" >Update Cost</button>
+                                        </form>
+
+                                    </div>
+
+
 
 
                                     </div>

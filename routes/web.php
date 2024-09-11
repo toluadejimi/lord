@@ -196,8 +196,11 @@ Route::get('admin',  [AdminController::class,'index']);
 Route::get('admin-dashboard',  [AdminController::class,'admin_dashboard']);
 
 
-Route::any('update-rate',  [AdminController::class,'update_rate']);
-Route::any('update-cost',  [AdminController::class,'update_cost']);
+Route::any('update-smspool-rate',  [AdminController::class,'update_smspool_rate']);
+Route::any('update-smspool-cost',  [AdminController::class,'update_smspool_cost']);
+
+Route::any('update-sim-rate',  [AdminController::class,'update_sim_rate']);
+Route::any('update-sim-cost',  [AdminController::class,'update_sim_cost']);
 
 Route::get('manual-payment',  [AdminController::class,'manual_payment_view']);
 Route::any('verify-payment',  [AdminController::class,'approve_payment']);
