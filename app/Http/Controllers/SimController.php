@@ -256,6 +256,8 @@ class SimController extends Controller
         $var = json_decode($result);
         $status = $var->status ?? null;
 
+        dd($var);
+
         if($status == 'RECEIVED'){
 
             $originalString = 'sms loading...';
