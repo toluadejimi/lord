@@ -234,6 +234,8 @@
                                             <tr class="border-0">
                                                 <th class="border-0">User</th>
                                                 <th class="border-0">Order ID</th>
+                                                <th class="border-0">Country</th>
+                                                <th class="border-0">Type</th>
                                                 <th class="border-0">Service</th>
                                                 <th class="border-0">Phone</th>
                                                 <th class="border-0">SMS</th>
@@ -253,6 +255,16 @@
                                                     <td>{{ $data->phone }} </td>
                                                     <td>{{ $data->service }} </td>
                                                     <td>{{ $data->order_id }} </td>
+                                                    <td>{{ $data->country }} </td>
+
+                                                        @if($data->type == 3)
+                                                        <td> 3SIM </td>
+                                                        @elseif($data->type == 2)
+                                                        <td> SMSPOOL </td>
+                                                        @else
+                                                        <td> Diasy </td>
+                                                        @endif
+
                                                     <td>{{ $data->full_sms }} </td>
                                                     <td>{{ $data->cost }} </td>
                                                     @if($data->status == 2)
