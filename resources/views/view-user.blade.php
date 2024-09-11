@@ -504,6 +504,7 @@
                                                         <td>{{ date('d/m/y', strtotime($data->created_at)) }} </td>
                                                         <td>{{ date('h:i', strtotime($data->created_at)) }} </td>
 
+                                                            <td>
                                                         @if($data->type == 3 && $data->status == 1)
                                                             <span
                                                                 style="background: orange; border:0px; font-size: 10px"
@@ -530,6 +531,7 @@
                                                                                   class="text-white btn btn-success btn-sm">Completed</span>
                                                         @endif
 
+                                                            </td>
 
 
 
