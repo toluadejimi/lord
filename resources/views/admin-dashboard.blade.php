@@ -251,7 +251,7 @@
 
                                                 <tr>
 
-                                                    <td><a href="view-user?id={{ $data->user->id }}">{{ $data->user->username }}</a> </td>
+                                                    <td><a href="view-user?id={{ $data->user->id ?? "ID" }}">{{ $data->user->username ?? "username" }}</a> </td>
                                                     <td>{{ $data->phone }} </td>
                                                     <td>{{ $data->service }} </td>
                                                     <td>{{ $data->order_id }} </td>
