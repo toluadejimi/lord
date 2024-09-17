@@ -173,7 +173,7 @@
 {{--                    </li>--}}
 
                     <li class="pc-item">
-                        <a href="cworld" class="pc-link">
+                        <a href="world" class="pc-link">
                         <span class="pc-micon">
                             <img src="{{url('')}}/public/assets/images/world.svg" height="20" width="20">
                         </span>
@@ -182,7 +182,7 @@
                     </li>
 
                     <li class="pc-item">
-                        <a href="world" class="pc-link">
+                        <a href="cworld" class="pc-link">
                         <span class="pc-micon">
                             <img src="{{url('')}}/public/assets/images/world.svg" height="20" width="20">
                         </span>
