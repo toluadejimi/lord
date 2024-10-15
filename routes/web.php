@@ -100,14 +100,10 @@ Route::group(['middleware' => ['auth', 'user', 'session.timeout']], function () 
 
 
 
-
     Route::get('cworld',  [SimController::class,'index']);
-
     Route::post('buy-csms',  [SimController::class,'order_csms']);
-
     Route::get('c-sms',  [SimController::class,'delete_sms']);
     Route::get('admin-c-sms',  [SimController::class,'admin_delete_sms']);
-
     Route::get('get-csms',  [SimController::class,'get_c_sms']);
 
 

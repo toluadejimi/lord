@@ -231,7 +231,7 @@
                                             <input type="text" name="price" hidden value="{{ $price }}">
                                             <input type="text" name="service" hidden value="{{ $serv }}">
                                             <input type="text" name="ppe" hidden value="{{ $price }}">
-                                            <button type="submit" class="btn btn-primary w-100 btn-sm mt-6">Buy Number
+                                            <button type="submit" class="btn btn-primary w-100 btn-sm mt-6" onclick="this.style.display='none'">Buy Number
                                                 Now
                                             </button>
                                         </form>

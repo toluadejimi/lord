@@ -664,13 +664,32 @@ class HomeController extends Controller
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
-
+            $user = Auth::user();
+            if ($user->session_id && $user->session_id !== session()->getId()) {
+                session()->getHandler()->destroy($user->session_id);
+            }
+            $user->session_id = session()->getId();
+            $user->save();
 
             $user = Auth::id() ?? null;
             return redirect('cworld');
         }
 
         return back()->with('error', "Email or Password Incorrect");
+    }
+
+
+    public function destroy(Request $request)
+    {
+        $user = Auth::user();
+        $user->session_id = null; // Clear session ID
+        $user->save();
+
+        Auth::guard('web')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/');
     }
 
 

@@ -6,6 +6,13 @@
   <component name="ChangeListManager">
     <list default="true" id="3cdf45ff-cf72-4fd5-8d04-690270964b0e" name="Changes" comment="pushhhhhh">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/HomeController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/HomeController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/SimController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/SimController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Helpers/helpers.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Helpers/helpers.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Kernel.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Kernel.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/layout/main.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/layout/main.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/simworld.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/simworld.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -237,14 +244,24 @@
       <workItem from="1717738386490" duration="2907000" />
       <workItem from="1717935721243" duration="141000" />
       <workItem from="1717990027210" duration="592000" />
-    </task>
-    <task id="LOCAL-00001" summary="Out of stock number updated">
-      <option name="closed" value="true" />
-      <created>1708984197291</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1708984197291</updated>
+      <workItem from="1718731583081" duration="3316000" />
+      <workItem from="1719241274652" duration="31000" />
+      <workItem from="1719763315198" duration="1327000" />
+      <workItem from="1724020301981" duration="822000" />
+      <workItem from="1724232068869" duration="11000" />
+      <workItem from="1724287546813" duration="244000" />
+      <workItem from="1724300335624" duration="138000" />
+      <workItem from="1724420395549" duration="571000" />
+      <workItem from="1726610939451" duration="1786000" />
+      <workItem from="1726714301912" duration="244000" />
+      <workItem from="1726766961589" duration="598000" />
+      <workItem from="1726847864156" duration="121000" />
+      <workItem from="1726848007290" duration="2475000" />
+      <workItem from="1727023391650" duration="1154000" />
+      <workItem from="1727361898541" duration="187000" />
+      <workItem from="1727415508023" duration="598000" />
+      <workItem from="1727420776589" duration="7531000" />
+      <workItem from="1728751825882" duration="2567000" />
     </task>
     <task id="LOCAL-00002" summary="Out of stock number updated">
       <option name="closed" value="true" />
@@ -558,7 +575,87 @@
       <option name="project" value="LOCAL" />
       <updated>1717740323761</updated>
     </task>
-    <option name="localTasksCounter" value="41" />
+    <task id="LOCAL-00041" summary="pushhhhhh">
+      <option name="closed" value="true" />
+      <created>1718733141233</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1718733141233</updated>
+    </task>
+    <task id="LOCAL-00042" summary="pushhhhhh">
+      <option name="closed" value="true" />
+      <created>1718733284178</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1718733284178</updated>
+    </task>
+    <task id="LOCAL-00043" summary="pushhhhhh">
+      <option name="closed" value="true" />
+      <created>1718733464845</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1718733464845</updated>
+    </task>
+    <task id="LOCAL-00044" summary="pushhhhhh">
+      <option name="closed" value="true" />
+      <created>1718733552657</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1718733552657</updated>
+    </task>
+    <task id="LOCAL-00045" summary="pushhhhhh">
+      <option name="closed" value="true" />
+      <created>1718733614291</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1718733614291</updated>
+    </task>
+    <task id="LOCAL-00046" summary="pushhhhhh">
+      <option name="closed" value="true" />
+      <created>1718733920252</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1718733920252</updated>
+    </task>
+    <task id="LOCAL-00047" summary="pushhhhhh">
+      <option name="closed" value="true" />
+      <created>1718734194017</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1718734194017</updated>
+    </task>
+    <task id="LOCAL-00048" summary="pushhhhhh">
+      <option name="closed" value="true" />
+      <created>1718734253553</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1718734253553</updated>
+    </task>
+    <task id="LOCAL-00049" summary="pushhhhhh">
+      <option name="closed" value="true" />
+      <created>1724020387591</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1724020387591</updated>
+    </task>
+    <task id="LOCAL-00050" summary="pushhhhhh">
+      <option name="closed" value="true" />
+      <created>1726613413749</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1726613413749</updated>
+    </task>
+    <option name="localTasksCounter" value="51" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -576,7 +673,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/resources/views/home.blade.php</url>
-          <line>274</line>
+          <line>369</line>
           <option name="timeStamp" value="2" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
@@ -601,7 +698,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/resources/views/orders.blade.php</url>
-          <line>143</line>
+          <line>252</line>
           <option name="timeStamp" value="16" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
@@ -615,7 +712,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/app/Http/Controllers/HomeController.php</url>
-          <line>314</line>
+          <line>279</line>
           <properties>
             <option name="className" value="\App\Http\Controllers\HomeController" />
             <option name="methodName" value="fund_wallet" />
@@ -624,7 +721,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/app/Http/Controllers/HomeController.php</url>
-          <line>758</line>
+          <line>742</line>
           <properties>
             <option name="className" value="\App\Http\Controllers\HomeController" />
             <option name="methodName" value="reset_password" />
@@ -633,7 +730,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/app/Http/Controllers/HomeController.php</url>
-          <line>1029</line>
+          <line>1013</line>
           <properties>
             <option name="className" value="\App\Http\Controllers\HomeController" />
             <option name="methodName" value="webhook" />
@@ -642,7 +739,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/app/Http/Controllers/HomeController.php</url>
-          <line>1079</line>
+          <line>1063</line>
           <properties>
             <option name="className" value="\App\Http\Controllers\HomeController" />
             <option name="methodName" value="about_us" />
@@ -651,12 +748,21 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/app/Http/Controllers/WorldNumberController.php</url>
-          <line>182</line>
+          <line>152</line>
           <properties>
             <option name="className" value="\App\Http\Controllers\WorldNumberController" />
             <option name="methodName" value="webhook" />
           </properties>
           <option name="timeStamp" value="15" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php-line-method">
+          <url>file://$PROJECT_DIR$/app/Http/Controllers/SimController.php</url>
+          <line>37</line>
+          <properties>
+            <option name="className" value="\App\Http\Controllers\SimController" />
+            <option name="methodName" value="order_csms" />
+          </properties>
+          <option name="timeStamp" value="17" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

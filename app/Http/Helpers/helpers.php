@@ -694,26 +694,6 @@ function get_s_countries()
 }
 
 
-function get_s_services()
-{
-    $token = env('SIMTOKEN');
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, 'https://5sim.net/v1/guest/countries');
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
-    $headers = array();
-    $headers[] = 'Authorization: Bearer ' . $token;
-    $headers[] = 'Accept: application/json';
-    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-
-    $var = curl_exec($ch);
-    curl_close($ch);
-    $var = json_decode($var);
-
-    return $var;
-}
-
-
 function get_s_product_cost($operator, $country, $product)
 {
     $token = env('SIMTOKEN');

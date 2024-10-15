@@ -177,7 +177,7 @@
                                                         });
 
 
-                                                        output += `<div class="card mb-3 operator-card" data-country="${key}" data-operator="${provider}" data-product="${providerId}" data-count="${providerData.count}">
+                                                        output += `<div class="card mb-3 operator-card" data-country="${key}" data-operator="${provider}" data-product="${providerId}" data-count="${providerData.count}" onclick="this.style.display='none'">
                                                             <div class="card-body">
                                                                    <div class="row">
                                                                     <div class="col-6 d-flex justify-content-start">
