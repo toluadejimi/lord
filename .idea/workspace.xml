@@ -6,13 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="3cdf45ff-cf72-4fd5-8d04-690270964b0e" name="Changes" comment="pushhhhhh">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/HomeController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/HomeController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/SimController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/SimController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Helpers/helpers.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Helpers/helpers.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Kernel.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Kernel.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/layout/main.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/layout/main.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/simworld.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/simworld.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/fund-wallet.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/fund-wallet.blade.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -261,15 +255,7 @@
       <workItem from="1727361898541" duration="187000" />
       <workItem from="1727415508023" duration="598000" />
       <workItem from="1727420776589" duration="7531000" />
-      <workItem from="1728751825882" duration="2567000" />
-    </task>
-    <task id="LOCAL-00002" summary="Out of stock number updated">
-      <option name="closed" value="true" />
-      <created>1708984661385</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1708984661385</updated>
+      <workItem from="1728751825882" duration="4030000" />
     </task>
     <task id="LOCAL-00003" summary="Out of stock number updated">
       <option name="closed" value="true" />
@@ -655,7 +641,15 @@
       <option name="project" value="LOCAL" />
       <updated>1726613413749</updated>
     </task>
-    <option name="localTasksCounter" value="51" />
+    <task id="LOCAL-00051" summary="pushhhhhh">
+      <option name="closed" value="true" />
+      <created>1728977799983</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1728977799983</updated>
+    </task>
+    <option name="localTasksCounter" value="52" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
