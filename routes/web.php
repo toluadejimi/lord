@@ -55,6 +55,8 @@ Route::get('/proxy/prices', function (Illuminate\Http\Request $request) {
 
 
 
+
+
 //auth
 
 Route::get('/',  [HomeController::class,'index']);
@@ -65,6 +67,7 @@ Route::post('login_now',  [HomeController::class,'login']);
 Route::get('login',  [HomeController::class,'login_index'])->name('login');
 Route::post('register_now',  [HomeController::class,'register']);
 Route::get('register',  [HomeController::class,'register_index']);
+Route::post('user-ban',  [HomeController::class,'user_ban']);
 
 
 

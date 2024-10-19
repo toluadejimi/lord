@@ -678,6 +678,14 @@ class HomeController extends Controller
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
+
+
+            if(Auth::user()->status == 9){
+                Auth::logout();
+                return redirect('/user-ban');
+            }
+
+
             $user = Auth::user();
             if ($user->session_id && $user->session_id !== session()->getId()) {
                 session()->getHandler()->destroy($user->session_id);
@@ -1375,6 +1383,13 @@ class HomeController extends Controller
         User::where('id', $request->id)->update(['status' => 9]);
         return back()->with('message', 'User Banned');
     }
+
+
+    public function user_ban(request $request)
+    {
+        return view('ban');
+    }
+
 
 
 
