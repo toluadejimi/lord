@@ -56,20 +56,23 @@ class AdminController extends Controller
 	public function admin_login(request $request)
 	{
 
-
-
         $credentials = $request->only('username', 'password');
-
         if (Auth::attempt($credentials)) {
+
+            $user = Auth::user();
+            if ($user->session_id && $user->session_id !== session()->getId()) {
+                session()->getHandler()->destroy($user->session_id);
+            }
+            $user->session_id = session()->getId();
+            $user->save();
+
 
             $role = User::where('username', $request->username)->first()->role_id;
 
             if($role == 5){
-
                 $message = "SMS LORD - Admin Just logged in";
                 send_notification($message);
                 return redirect('admin-dashboard');
-
 
             }else{
                 Auth::logout();
