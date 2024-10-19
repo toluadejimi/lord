@@ -215,6 +215,6 @@
     </div>
 </div>
 <div class="txt3">For more information please </div>
-<a href="https://t.me/acesmsverify"><div class="button">Contact us</div></a>
+<a href="https://t.me/smslorddotcom"><div class="button">Contact us</div></a>
 </body>
 </html>
