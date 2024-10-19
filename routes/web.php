@@ -68,7 +68,7 @@ Route::get('login',  [HomeController::class,'login_index'])->name('login');
 Route::post('register_now',  [HomeController::class,'register']);
 Route::get('register',  [HomeController::class,'register_index']);
 Route::post('user-ban',  [HomeController::class,'user_ban']);
-Route::any('ban-users',  [HomeController::class,'ban_users']);
+Route::any('ban-user',  [HomeController::class,'ban_users']);
 Route::any('unban-users',  [HomeController::class,'unban_users']);
 
 
