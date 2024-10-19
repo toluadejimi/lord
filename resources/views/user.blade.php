@@ -217,38 +217,64 @@
                                         <div class="table-responsive">
                                             <table class="table">
                                                 <thead class="bg-light">
-                                                    <tr class="border-0">
-                                                        <th class="border-0">Username</th>
-                                                        <th class="border-0">Email</th>
-                                                        <th class="border-0">Wallet(NGN)</th>
-                                                        <th class="border-0">Hold Wallet(NGN)</th>
-                                                        <th class="border-0">Action</th>
-                                                        <th class="border-0">Action</th>
+                                                <tr class="border-0">
+                                                    <th class="border-0 text-dark">Username</th>
+                                                    <th class="border-0 text-dark">Email</th>
+                                                    <th class="border-0 text-dark">Wallet(NGN)</th>
+                                                    <th class="border-0 text-dark">Funded</th>
+                                                    <th class="border-0 text-dark">Bought</th>
+                                                    <th class="border-0 text-dark">Action</th>
+                                                    <th class="border-0 text-dark">Action</th>
+                                                    <th class="border-0 text-dark">Action</th>
 
 
-                                                    </tr>
+                                                </tr>
                                                 </thead>
                                                 <tbody>
-                                                    @forelse ($users as $data)
+
+
+                                                @forelse ($users as $data)
+
+                                                    @php
+                                                        $total_bought = \App\Models\Verification::where('user_id', $data->id)
+                                                            ->where('status', 2)
+                                                            ->sum('cost');
+
+
+                                                        $total_funded = \App\Models\Transaction::where('user_id', $data->id)
+                                                            ->where('status', 2)
+                                                            ->sum('amount');
+                                                    @endphp
 
                                                     <tr>
                                                         <td><a href="view-user?id={{ $data->id }}">{{ $data->username }}</a> </td>
                                                         <td><a href="view-user?id={{ $data->id }}">{{ $data->email }} </td></a>
                                                         <td>{{ number_format($data->wallet, 2) }} </td>
-                                                        <td>{{ number_format($data->hold_wallet, 2) }} </td>
+                                                        <td>{{ number_format($total_funded,2) }}</td>
+
+                                                        @if($total_funded < $total_bought)
+                                                            <td class="text-danger">{{ number_format($total_bought,2) }}</td>
+                                                        @else
+                                                            <td>{{ number_format($total_bought,2) }}</td>
+                                                        @endif
                                                         <td><a href="view-user?id={{ $data->id }}" class="btn btn-success btn-sm">View User</a> </td>
-                                                        <td><a href="delete-user?id={{ $data->id }}" class="btn btn-danger btn-sm">Delete User</a> </td>
+                                                        @if($data->status == 9)
+                                                            <td><a href="unban-users?id={{ $data->id }}" class="btn btn-success btn-sm">Unban User</a> </td>
+                                                        @else
+                                                            <td><a href="ban-user?id={{ $data->id }}" class="btn btn-warning btn-sm">Ban User</a> </td>
+                                                        @endif
+                                                        <td><a href="remove-user?id={{ $data->id }}" class="btn btn-danger btn-sm">Delete User</a> </td>
 
 
                                                     </tr>
 
-                                                    @empty
+                                                @empty
 
                                                     <tr>
                                                         <td> No Record Found</td>
                                                     </tr>
 
-                                                    @endforelse
+                                                @endforelse
                                                 </tbody>
 
 

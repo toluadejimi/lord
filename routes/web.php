@@ -158,6 +158,10 @@ Route::any('resolve-now',  [HomeController::class,'resolveNow']);
 Route::get('change-password',  [HomeController::class,'change_password']);
 
 
+    Route::any('ban-users',  [HomeController::class,'ban_users']);
+    Route::any('unban-users',  [HomeController::class,'unban_users']);
+
+
 
 
 });

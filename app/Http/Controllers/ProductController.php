@@ -10,6 +10,7 @@ use App\Models\Product;
 use App\Models\SoldLog;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Models\Verification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -19,6 +20,21 @@ class ProductController extends Controller
 {
     public function buy_now(request $request)
     {
+
+
+        $total_funded = Transaction::where('user_id', Auth::id())->where('status', 2)->sum('amount');
+        $total_bought = verification::where('user_id', Auth::id())->where('status', 2)->sum('cost');
+        if ($total_bought > $total_funded) {
+
+            $message = Auth::user()->email . " has been banned for cheating";
+            send_notification($message);
+            send_notification2($message);
+
+            User::where('id', Auth::id())->update(['status' => 9]);
+            Auth::logout();
+            return redirect('ban');
+
+        }
 
 
         $amount = Item::where('id', $request->item_id)->first()->amount;

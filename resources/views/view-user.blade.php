@@ -293,8 +293,12 @@
                                             <div class="card-body p-3">
                                                 <h5 class="">Status</h5>
 
+                                                @if($user->status == 9)
+                                                    <span class="text-warning">{{"Banned"}} </span>
+                                                @else
+                                                    {{"Active"}}
+                                                @endif
 
-                                                {{"Active"}}
 
 
                                             </div>
@@ -305,6 +309,38 @@
                                     </div>
                                 </div>
                             </div>
+
+
+                            <div class="col-xl-12 col-lg-12 col-md-6 col-sm-12 col-12">
+                                <div class="card">
+
+                                    <div class="card-body">
+
+                                        <div class="row">
+
+                                            <div class="col-4">
+                                                <h4>Total Funded</h4>
+                                                NGN {{number_format($total_funded, 2)}}
+
+                                            </div>
+
+                                            <div class="col-4">
+                                                <h4>Total Bought</h4>
+                                                {{number_format($total_bought, 2)}}
+                                            </div>
+
+                                            <div class="col-4">
+                                                <h4>Balance</h4>
+                                                {{number_format($total_balance, 2)}}
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+
+                            </div>
+
 
                             <div class="col-xl-12 col-lg-12 col-md-6 col-sm-12 col-12">
                                 <div class="card">

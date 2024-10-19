@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Country;
 use App\Models\Setting;
+use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Verification;
 use GuzzleHttp\Client;
@@ -39,13 +40,18 @@ class SimController extends Controller
     {
 
 
-        if (Auth::check()) {
-            $user = Auth::user();
-            if ($user->session_id !== session()->getId()) {
-                // If session IDs do not match, log out the user
-                Auth::logout();
-                return redirect('/login')->withErrors('You have been logged out due to another login.');
-            }
+        $total_funded = Transaction::where('user_id', Auth::id())->where('status', 2)->sum('amount');
+        $total_bought = verification::where('user_id', Auth::id())->where('status', 2)->sum('cost');
+        if ($total_bought > $total_funded) {
+
+            $message = Auth::user()->email . " has been banned for cheating";
+            send_notification($message);
+            send_notification2($message);
+
+            User::where('id', Auth::id())->update(['status' => 9]);
+            Auth::logout();
+            return redirect('ban');
+
         }
 
 
