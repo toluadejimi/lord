@@ -163,8 +163,6 @@ class WorldNumberController extends Controller
     public function order_now(Request $request)
     {
 
-
-
         $total_funded = Transaction::where('user_id', Auth::id())->where('status', 2)->sum('amount');
         $total_bought = verification::where('user_id', Auth::id())->where('status', 2)->sum('cost');
         if ($total_bought > $total_funded) {
@@ -213,8 +211,6 @@ class WorldNumberController extends Controller
         }
 
 
-
-
         if ($order == 5) {
             User::where('id', Auth::id())->increment('wallet', $request->price);
             return redirect('world')->with('error', 'Number Currently out of stock, Please check back later');
@@ -238,7 +234,6 @@ class WorldNumberController extends Controller
         }
 
         if ($order == 3) {
-
             return redirect('orders');
         }
     }
