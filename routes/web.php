@@ -68,6 +68,10 @@ Route::get('login',  [HomeController::class,'login_index'])->name('login');
 Route::post('register_now',  [HomeController::class,'register']);
 Route::get('register',  [HomeController::class,'register_index']);
 Route::post('user-ban',  [HomeController::class,'user_ban']);
+Route::any('ban-users',  [HomeController::class,'ban_users']);
+Route::any('unban-users',  [HomeController::class,'unban_users']);
+
+
 
 
 
@@ -160,9 +164,6 @@ Route::get('resolve-page',  [HomeController::class,'resloveDeposit']);
 Route::any('resolve-now',  [HomeController::class,'resolveNow']);
 Route::get('change-password',  [HomeController::class,'change_password']);
 
-
-    Route::any('ban-users',  [HomeController::class,'ban_users']);
-    Route::any('unban-users',  [HomeController::class,'unban_users']);
 
 
 
