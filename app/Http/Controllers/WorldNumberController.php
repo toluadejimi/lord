@@ -49,7 +49,7 @@ class WorldNumberController extends Controller
             "key" => $key,
             "country" => $request->selectedID,
             "service" => $request->serviceID,
-            "pool" => '7',
+            "pool" => ' ',
         );
 
         $body = json_encode($databody);
@@ -73,8 +73,12 @@ class WorldNumberController extends Controller
         $var = curl_exec($curl);
         curl_close($curl);
         $var = json_decode($var);
-
-        $price = $var->price ?? null;
+        $hp = $var->high_price ?? null;
+        if($hp !== null){
+            $price = $hp;
+        }else{
+            $price = $var->price ?? null;
+        }
         $rate = $var->success_rate ?? null;
         $product = 1;
 
@@ -192,8 +196,6 @@ class WorldNumberController extends Controller
         $country = $request->country;
         $service = $request->service;
         $price = $request->price;
-
-
 
 
         $ser_cost = pool_cost($service, $country);

@@ -753,7 +753,7 @@ function pool_cost($service, $country){
         "key" => $key,
         "country" => $country,
         "service" => $service,
-        "pool" => '7',
+        "pool" => '',
     );
 
     $body = json_encode($databody);
@@ -778,7 +778,13 @@ function pool_cost($service, $country){
     curl_close($curl);
     $var = json_decode($var);
 
-    $price = $var->price ?? null;
+    $hp = $var->high_price ?? null;
+    if($hp !== null){
+        $price = $hp;
+    }else{
+        $price = $var->price ?? null;
+    }
+
 
     return $price;
 
