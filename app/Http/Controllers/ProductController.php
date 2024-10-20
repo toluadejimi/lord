@@ -311,6 +311,7 @@ class ProductController extends Controller
 
          $amount = number_format($request->amount, 2);
 
+
          $get_depo = Transaction::where('ref_id', $request->order_id)->first() ?? null;
          if ($get_depo == null){
              $trx = new Transaction();

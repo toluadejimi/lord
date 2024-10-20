@@ -215,9 +215,17 @@ class AdminController extends Controller
 
         if($request->trade == 'credit'){
             User::where('id',$request->id)->increment('wallet', $request->amount);
+            $trx = new Transaction();
+            $trx->ref_id = $request->order_id;
+            $trx->user_id = $request->id;
+            $trx->status = 2;
+            $trx->amount = $request->amount;
+            $trx->type = 2;
+            $trx->save();
+
             $email = User::where('id', $request->id)->first()->email;
             $message = "SMSLORD Wallet has been Credited by admin | $email | $request->amount | on SMSLORD";
-            send_notification($message);
+            //send_notification($message);
 
         }else{
 
