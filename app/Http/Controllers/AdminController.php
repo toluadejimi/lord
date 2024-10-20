@@ -216,7 +216,7 @@ class AdminController extends Controller
         if($request->trade == 'credit'){
             User::where('id',$request->id)->increment('wallet', $request->amount);
             $trx = new Transaction();
-            $trx->ref_id = $request->order_id;
+            $trx->ref_id = "ADMINFUND".date('his');
             $trx->user_id = $request->id;
             $trx->status = 2;
             $trx->amount = $request->amount;
