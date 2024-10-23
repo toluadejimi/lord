@@ -940,7 +940,6 @@ class HomeController extends Controller
                 $message->subject($data['subject']);
             });
 
-
             return redirect('/forgot-password')->with('message', "A reset password mail has been sent to $request->email, if not inside inbox check your spam folder");
         } else {
             return back()->with('error', 'Email can not be found on our system');
