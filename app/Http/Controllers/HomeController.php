@@ -477,7 +477,7 @@ class HomeController extends Controller
             $ref = "VERF" . random_int(000, 999) . date('ymdhis');
             $email = Auth::user()->email;
 
-            $url = "https://web.enkpay.com/pay?amount=$request->amount&key=$key&ref=$ref&email=$email";
+            $url = "https://web.sprintpay.online/pay?amount=$request->amount&key=$key&ref=$ref&email=$email";
 
 
             $data = new Transaction();
@@ -609,7 +609,7 @@ class HomeController extends Controller
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://web.enkpay.com/api/verify',
+            CURLOPT_URL => 'https://web.sprintpay.online/api/verify',
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
             CURLOPT_MAXREDIRS => 10,
@@ -646,7 +646,7 @@ class HomeController extends Controller
             $databody = array('order_id' => "$order_id");
 
             curl_setopt_array($curl, array(
-                CURLOPT_URL => 'https://web.enkpay.com/api/resolve-complete',
+                CURLOPT_URL => 'https://web.sprintpay.online/api/resolve-complete',
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
                 CURLOPT_MAXREDIRS => 10,
@@ -1108,7 +1108,7 @@ class HomeController extends Controller
             );
 
             curl_setopt_array($curl, array(
-                CURLOPT_URL => 'https://web.enkpay.com/api/resolve',
+                CURLOPT_URL => 'https://web.sprintpay.online/api/resolve',
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
                 CURLOPT_MAXREDIRS => 10,

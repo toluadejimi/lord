@@ -134,7 +134,7 @@
                                                             <span
                                                                 style="background: orange; border:0px; font-size: 10px"
                                                                 class="btn btn-warning btn-sm">Pending</span>
-                                                            <a href="https://web.enkpay.com/resolve?user_id=88844773374747433&check_url=https://smslord.com/api/verify"
+                                                            <a href="https://web.sprintpay.online/resolve?user_id=88844773374747433&check_url=https://smslord.com/api/verify"
                                                                style="background: rgb(168, 0, 14); border:0px; font-size: 10px"
                                                                class="btn btn-warning btn-sm">Reslove</span>
                                                                 @elseif ($data->status == 2)
