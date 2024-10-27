@@ -16,7 +16,7 @@
           href="{{ url('') }}/public/concept/assets/vendor/fonts/material-design-iconic-font/css/materialdesignicons.min.css">
     <link rel="stylesheet" href="{{ url('') }}/public/concept/assets/vendor/charts/c3charts/c3.css">
     <link rel="stylesheet" href="{{ url('') }}/public/concept/assets/vendor/fonts/flag-icon-css/flag-icon.min.css">
-    <title>Log Marketplace - BRST LOG SITE</title>
+    <title>SMSLORD - Best Verification platform</title>
 </head>
 
 <body>
