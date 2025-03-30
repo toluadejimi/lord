@@ -97,6 +97,8 @@ class SimController extends Controller
             ]);
 
             $responseBody = json_decode($response->getBody(), true);
+
+            dd($responseBody);
             $phone = str_replace("+", "", $responseBody['phone']);
 
             User::where('id', Auth::id())->decrement('wallet', $cost);
@@ -126,6 +128,9 @@ class SimController extends Controller
             ], 500);
         }
     }
+
+
+
     public function get_s_country(request $request)
     {
 

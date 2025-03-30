@@ -163,14 +163,14 @@
                             <use xlink:href="#custom-presentation-chart"></use>
                         </svg>
                     </li>
-{{--                    <li class="pc-item">--}}
-{{--                        <a href="home" class="pc-link">--}}
-{{--                        <span class="pc-micon">--}}
-{{--                            <img src="{{url('')}}/public/assets/images/usa.svg" height="20" width="20">--}}
-{{--                        </span>--}}
-{{--                            <span class="pc-mtext">Verify USA Numbers</span>--}}
-{{--                        </a>--}}
-{{--                    </li>--}}
+                    <li class="pc-item">
+                        <a href="usno" class="pc-link">
+                        <span class="pc-micon">
+                            <img src="{{url('')}}/public/assets/images/usa.svg" height="20" width="20">
+                        </span>
+                            <span class="pc-mtext">Verify USA Numbers</span>
+                        </a>
+                    </li>
 
                     <li class="pc-item">
                         <a href="world" class="pc-link">

@@ -749,11 +749,8 @@ class HomeController extends Controller
             'password' => Hash::make($validatedData['password']),
         ]);
 
-        // Log in the user after registration (optional)
         auth()->login($user);
-
-        // Redirect the user to a protected route or dashboard
-        return redirect('home');
+        return redirect('home')->with('message', 'Welcome your account has been successfully created');
     }
 
 

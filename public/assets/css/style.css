@@ -26,7 +26,7 @@ label, output {
 
 :root {
     --pc-heading-color: #1d2630;
-    --pc-active-background: #f3f5f7;
+    --pc-active-background: #020202;
     --pc-sidebar-background: transparent;
     --pc-sidebar-color: #5b6b79;
     --pc-sidebar-color-rgb: 91, 107, 121;
@@ -22794,9 +22794,9 @@ pre[class*=language-]:after, pre[class*=language-]:before {
 }
 
 [data-pc-layout=color-header] {
-    --pc-sidebar-background: #fff;
+    --pc-sidebar-background: #020000;
     --pc-sidebar-border: none;
-    --pc-header-color: #fff;
+    --pc-header-color: #ece9e9;
     --pc-layout-2-color: #030f1c;
     background: var(--pc-layout-2-color);
     position: relative

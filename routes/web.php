@@ -103,7 +103,7 @@ Route::any('delete-user',  [AdminController::class,'delete_user']);
 
 
 
-Route::group(['middleware' => ['auth', 'user', 'session.timeout']], function () {
+Route::group(['middleware' => ['auth', 'user']], function () {
 
 
 
@@ -118,7 +118,7 @@ Route::group(['middleware' => ['auth', 'user', 'session.timeout']], function () 
 
 
 
-    Route::get('home',  [WorldNumberController::class,'home']);
+    Route::get('home',  [HomeController::class,'home']);
 
 
 
@@ -127,33 +127,23 @@ Route::group(['middleware' => ['auth', 'user', 'session.timeout']], function () 
     Route::post('order_now_world',  [WorldNumberController::class,'order_now']);
     Route::any('get-smscodeworld',  [WorldNumberController::class,'get_smscode']);
 
+
+
+    Route::get('usno',  [HomeController::class,'home']);
     Route::any('orders',  [HomeController::class,'orders']);
-
-
-
-
-
-
     Route::any('receive-sms',  [HomeController::class,'receive_sms']);
-
-
-
     Route::any('delete-order',  [HomeController::class,'delete_order']);
-
-
-
-
     Route::post('order-usanumber-now',  [HomeController::class,'order_now']);
-
-
-
     Route::any('cancle-sms',  [HomeController::class,'cancle_sms']);
     Route::any('admin-cancle-sms',  [HomeController::class,'admin_cancle_sms']);
-
     Route::any('check-sms',  [HomeController::class,'check_sms']);
 
 
 Route::get('welcome',  [HomeController::class,'welcome_index']);
+
+
+
+
 Route::get('fund-wallet',  [HomeController::class,'fund_wallet']);
 Route::get('profile',  [HomeController::class,'profile']);
 Route::post('fund-now',  [HomeController::class,'fund_now']);
