@@ -44,8 +44,8 @@ class HomeController extends Controller
     {
 
         $data['services'] = get_services();
-        $data['get_rate'] = Setting::where('id', 1)->first()->rate;
-        $data['margin'] = Setting::where('id', 1)->first()->margin;
+        $data['get_rate'] = Setting::where('id', 4)->first()->rate;
+        $data['margin'] = Setting::where('id', 4)->first()->margin;
 
         $data['verification'] = Verification::latest()->where('user_id', Auth::id())->paginate('10');
 
@@ -91,8 +91,8 @@ class HomeController extends Controller
         $service_name = $request->name;
 
         $data['services'] = get_services();
-        $data['get_rate'] = Setting::where('id', 1)->first()->rate;
-        $data['margin'] = Setting::where('id', 1)->first()->margin;
+        $data['get_rate'] = Setting::where('id', 4)->first()->rate;
+        $data['margin'] = Setting::where('id', 4)->first()->margin;
         $innerValue =  get_d_price($service);
         $cost = $data['get_rate'] * $innerValue + $data['margin'];
 

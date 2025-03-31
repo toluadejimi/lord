@@ -87,8 +87,8 @@ class WorldNumberController extends Controller
             return redirect('home')->with('error', 'Verification not available for selected service');
         } else {
 
-            $get_rate = Setting::where('id', 1)->first()->rate;
-            $margin = Setting::where('id', 1)->first()->margin;
+            $get_rate = Setting::where('id', 2)->first()->rate;
+            $margin = Setting::where('id', 2)->first()->margin;
             $verification = Verification::where('user_id', Auth::id())->get();
             $count_id = Country::where('country_id', $request->country)->first()->short_name ?? null;
 
@@ -199,8 +199,8 @@ class WorldNumberController extends Controller
 
 
         $ser_cost = pool_cost($service, $country);
-        $get_rate = Setting::where('id', 1)->first()->rate;
-        $margin = Setting::where('id', 1)->first()->margin;
+        $get_rate = Setting::where('id', 2)->first()->rate;
+        $margin = Setting::where('id', 2)->first()->margin;
 
         $f_cost = $get_rate * $ser_cost + $margin;
 

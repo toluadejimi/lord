@@ -182,8 +182,8 @@ class SimController extends Controller
             return redirect('world')->with('error', 'Verification not available for selected service');
         } else {
 
-            $get_rate = Setting::where('id', 1)->first()->rate;
-            $margin = Setting::where('id', 1)->first()->margin;
+            $get_rate = Setting::where('id', 3)->first()->rate;
+            $margin = Setting::where('id', 3)->first()->margin;
             $verification = Verification::where('user_id', Auth::id())->get();
             $count_id = Country::where('country_id', $request->country)->first()->short_name ?? null;
 
