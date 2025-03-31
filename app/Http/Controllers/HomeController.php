@@ -694,7 +694,7 @@ class HomeController extends Controller
             $user->save();
 
             $user = Auth::id() ?? null;
-            return redirect('cworld');
+            return redirect('usno');
         }
 
         return back()->with('error', "Email or Password Incorrect");
