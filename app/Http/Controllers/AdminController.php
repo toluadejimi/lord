@@ -134,10 +134,12 @@ class AdminController extends Controller
         $data['total_out'] = Verification::where('status', 2)->sum('cost');
         $data['total_verified_message'] = Verification::where('status', 2)->count();
         $data['user_wallet'] = User::where('role_id', 2)->sum('wallet');
-        $data['usdtongn'] = Setting::where('id', 1)->first()->rate;
-        $data['margin'] = Setting::where('id', 1)->first()->margin;
+        $data['smspoolrate'] = Setting::where('id', 1)->first()->rate;
+        $data['smspoolcost'] = Setting::where('id', 1)->first()->margin;
         $data['simrate'] = Setting::where('id', 3)->first()->rate;
         $data['simcost'] = Setting::where('id', 3)->first()->margin;
+        $data['disay_rate'] = Setting::where('id', 4)->first()->rate;
+        $data['disay_cost'] = Setting::where('id', 4)->first()->margin;
         $data['verification'] = Verification::latest()->paginate(10);
 
 
@@ -145,6 +147,25 @@ class AdminController extends Controller
         return view('admin-dashboard', $data);
 
 	}
+
+
+
+    public function update_diasy_rate(request $request)
+    {
+        Setting::where('id', 4)->update(['rate' => $request->rate]);
+
+        return back()->with('message', "Rate Update Successfully");
+
+    }
+
+
+    public function update_daisy_cost(request $request)
+    {
+        Setting::where('id', 4)->update(['margin' => $request->cost]);
+
+        return back()->with('message', "Cost Update Successfully");
+
+    }
 
 
     public function update_smspool_rate(request $request)
@@ -176,7 +197,8 @@ class AdminController extends Controller
 
     public function update_sim_cost(request $request)
     {
-        Setting::where('id', 3)->update(['margin' => $request->cost]);
+
+        $enk = Setting::where('id', 3)->update(['margin' => $request->cost]);
 
         return back()->with('message', "Cost Update Successfully");
 
@@ -386,10 +408,6 @@ class AdminController extends Controller
 
 
     }
-
-
-
-
 
 
 

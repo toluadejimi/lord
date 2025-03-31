@@ -318,8 +318,37 @@
 
                                         <form method="post" action="update-smspool-rate">
                                             @csrf
+                                            <label>Disay RATE</label>
+                                            <input class="form-control2 text-dark" name="rate" value="{{ $disay_rate }}">
+
+                                            <button type="submit" class="btn btn-primary">Update Rate</button>
+
+                                        </form>
+
+                                    </div>
+
+
+                                    <div class="col-12 p-3">
+                                        <form method="post" action="update-sim-cost">
+                                            @csrf
+                                            <label>Diasy COST</label>
+                                            <input class="form-control2 text-dark" name="cost" value="{{ $disay_cost }}">
+
+                                            <button type="submit" class="btn btn-primary">Update Cost</button>
+                                        </form>
+
+                                    </div>
+
+                                    <hr>
+
+
+
+                                    <div class="col-12 p-3">
+
+                                        <form method="post" action="update-smspool-rate">
+                                            @csrf
                                             <label>SMS POOL RATE</label>
-                                            <input class="form-control2 text-dark" name="rate" value="{{ $usdtongn }}">
+                                            <input class="form-control2 text-dark" name="rate" value="{{ $smspoolrate }}">
 
                                             <button type="submit" class="btn btn-primary">Update Rate</button>
 
@@ -332,7 +361,7 @@
                                         <form method="post" action="update-sim-cost">
                                             @csrf
                                             <label>SMS POOL COST</label>
-                                            <input class="form-control2 text-dark" name="cost" value="{{ $margin }}">
+                                            <input class="form-control2 text-dark" name="cost" value="{{ $smspoolcost }}">
 
                                             <button type="submit" class="btn btn-primary">Update Cost</button>
                                         </form>
