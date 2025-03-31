@@ -31,8 +31,6 @@ class SimController extends Controller
         $data['rate'] = $s_rate->rate;
         $data['margin']= $s_rate->margin;
 
-
-
         return view('simworld', $data);
 
     }

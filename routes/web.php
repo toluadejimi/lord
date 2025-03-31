@@ -200,6 +200,11 @@ Route::any('update-smspool-cost',  [AdminController::class,'update_smspool_cost'
 Route::any('update-sim-rate',  [AdminController::class,'update_sim_rate']);
 Route::any('update-sim-cost',  [AdminController::class,'update_sim_cost']);
 
+
+Route::any('update-daisy-rate',  [AdminController::class,'update_diasy_rate']);
+Route::any('update-daisy-cost',  [AdminController::class,'update_daisy_cost']);
+
+
 Route::get('manual-payment',  [AdminController::class,'manual_payment_view']);
 Route::any('verify-payment',  [AdminController::class,'approve_payment']);
 Route::any('update-acct-name',  [AdminController::class,'update_acct_name']);
