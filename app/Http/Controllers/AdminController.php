@@ -186,6 +186,11 @@ class AdminController extends Controller
     }
 
 
+
+
+
+
+
     public function update_sim_rate(request $request)
     {
         Setting::where('id', 3)->update(['rate' => $request->rate]);

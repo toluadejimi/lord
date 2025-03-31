@@ -358,7 +358,7 @@
 
 
                                     <div class="col-12 p-3">
-                                        <form method="post" action="update-sim-cost">
+                                        <form method="post" action="update-smspool-cost">
                                             @csrf
                                             <label>SMS POOL COST</label>
                                             <input class="form-control2 text-dark" name="cost" value="{{ $smspoolcost }}">
