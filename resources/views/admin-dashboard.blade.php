@@ -316,7 +316,7 @@
 
                                     <div class="col-12 p-3">
 
-                                        <form method="post" action="update-smspool-rate">
+                                        <form method="post" action="update-daisy-rate">
                                             @csrf
                                             <label>Disay RATE</label>
                                             <input class="form-control2 text-dark" name="rate" value="{{ $disay_rate }}">
@@ -329,7 +329,7 @@
 
 
                                     <div class="col-12 p-3">
-                                        <form method="post" action="update-sim-cost">
+                                        <form method="post" action="update-daisy-cost">
                                             @csrf
                                             <label>Diasy COST</label>
                                             <input class="form-control2 text-dark" name="cost" value="{{ $disay_cost }}">
