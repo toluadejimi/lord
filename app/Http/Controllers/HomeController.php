@@ -190,7 +190,7 @@ class HomeController extends Controller
                     User::where('id', Auth::id())->increment('wallet', $order->cost);
                     User::where('id', Auth::id())->decrement('hold_wallet', $order->cost);
                     Verification::where('id', $request->id)->delete();
-                    return redirect('home')->with('message', "Order has been cancled, NGN$amount has been refunded");
+                    return redirect('home')->with('message', "Order has been canceled, NGN$amount has been refunded");
 
 
                 }

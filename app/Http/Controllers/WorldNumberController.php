@@ -75,6 +75,8 @@ class WorldNumberController extends Controller
         $var = json_decode($var);
         $hp = $var->high_price ?? null;
 
+
+
         if($hp !== null && $hp > 2){
             $price = $var->price ;
         }else{
