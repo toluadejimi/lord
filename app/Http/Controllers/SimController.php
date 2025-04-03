@@ -96,7 +96,6 @@ class SimController extends Controller
 
             $responseBody = json_decode($response->getBody(), true);
 
-            dd($responseBody);
             $phone = str_replace("+", "", $responseBody['phone']);
 
             User::where('id', Auth::id())->decrement('wallet', $cost);
@@ -114,10 +113,12 @@ class SimController extends Controller
             $ver->type = 3;
             $ver->save();
 
-
             $data['id'] = $responseBody['id'];
             $data['code'] = 200;
             return $data;
+
+
+
         } catch (\Exception $e) {
             // Handle errors
             return response()->json([
