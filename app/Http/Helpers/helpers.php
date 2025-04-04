@@ -777,12 +777,11 @@ function pool_cost($service, $country){
     $var = curl_exec($curl);
     curl_close($curl);
     $var = json_decode($var);
-
     $hp = $var->high_price ?? null;
-    if($hp !== null){
-        $price = $hp;
+    if($hp !== null && $hp > 2){
+        $price = $var->price ;
     }else{
-        $price = $var->price ?? null;
+        $price = $hp ?? null;
     }
 
 
