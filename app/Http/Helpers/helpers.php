@@ -244,7 +244,7 @@ function create_order($service, $price, $cost, $service_name)
         $id = $parts[1];
         $phone = $parts[2];
 
-            Verification::where('phone', $phone)->where('status', 2)->delete() ?? null;
+        Verification::where('phone', $phone)->where('status', 2)->delete() ?? null;
 
         $ver = new Verification();
         $ver->user_id = Auth::id();

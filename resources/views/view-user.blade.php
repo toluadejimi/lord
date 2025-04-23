@@ -540,7 +540,7 @@
                                                             </a>
                                                                 </span>
 
-                                                                @elseif ($data->type == 2 && $data->status == 1)
+                                                                @elseif ($data->type == 1 && $data->status == 1)
                                                                     <span
                                                                         style="background: orange; border:0px; font-size: 10px"
                                                                         class="btn btn-warning btn-sm">Pending</span>
