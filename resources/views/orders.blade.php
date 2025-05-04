@@ -301,7 +301,7 @@
                                                             <td style="font-size: 12px;">
                                                                 ₦{{ number_format($data->cost, 2) }}</td>
                                                             <td>
-                                                                @if($data->type == 3 && $data->status == 1)
+                                                                @if($data->type == 3 && $data->status == 1  )
                                                                     <span
                                                                         style="background: orange; border:0px; font-size: 10px"
                                                                         class="btn btn-warning btn-sm">Pending</span>
@@ -309,7 +309,7 @@
                                                                        style="background: rgb(168, 0, 14); border:0px; font-size: 10px"
                                                                        class="btn btn-warning btn-sm">Delete</span>
 
-                                                                @elseif ($data->type == 2 && $data->status == 1)
+                                                                @elseif  ($data->type == 2 && $data->status == 1)
                                                                     <span
                                                                         style="background: orange; border:0px; font-size: 10px"
                                                                         class="btn btn-warning btn-sm">Pending</span>
@@ -317,9 +317,18 @@
                                                                        style="background: rgb(168, 0, 14); border:0px; font-size: 10px"
                                                                        class="btn btn-warning btn-sm">Delete</span>
 
+                                                                        @elseif($data->type == 1 && $data->status == 1)
+
+                                                                            <span
+                                                                                style="background: orange; border:0px; font-size: 10px"
+                                                                                class="btn btn-warning btn-sm">Pending</span>
+                                                                            <a href="cancle-sms?id={{  $data->id }}&delete=1"
+                                                                               style="background: rgb(168, 0, 14); border:0px; font-size: 10px"
+                                                                               class="btn btn-warning btn-sm">Delete</span>
+
+
                                                                         @else
-                                                                            <span style="font-size: 10px;"
-                                                                                  class="text-white btn btn-success btn-sm">Completed</span>
+                                                                            <span style="font-size: 10px;" class="text-white btn btn-success btn-sm">Completed</span>
                                                                 @endif
 
                                                             </td>
