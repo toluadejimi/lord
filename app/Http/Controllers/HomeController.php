@@ -596,13 +596,6 @@ class HomeController extends Controller
         $trxstatus = Transaction::where('ref_id', $trx_id)->first()->status ?? null;
 
         if ($trxstatus == 2) {
-
-            $message = Auth::user()->email . "| is trying to fund  with | " . number_format($request->amount, 2) . "\n\n IP ====> " . $request->ip();
-            send_notification($message);
-
-            $message = Auth::user()->email . "| on SMSLORD | is trying to fund  with | " . number_format($request->amount, 2) . "\n\n IP ====> " . $request->ip();
-            send_notification2($message);
-
             return redirect('fund-wallet')->with('error', 'Transaction already confirmed or not found');
         }
 
