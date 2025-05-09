@@ -168,6 +168,9 @@ function get_services()
     $var = json_decode($var);
     $services = $var ?? null;
 
+
+    dd($var);
+
     if ($var == null) {
         $services = null;
     }
@@ -683,7 +686,6 @@ function get_s_countries()
     curl_close($ch);
     $inputArray = json_decode($var, true);
 
-    dd($var);
 
     $result = [];
     foreach ($inputArray as $key => $value) {
