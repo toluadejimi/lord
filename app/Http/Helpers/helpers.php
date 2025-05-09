@@ -683,6 +683,8 @@ function get_s_countries()
     curl_close($ch);
     $inputArray = json_decode($var, true);
 
+    dd($var);
+
     $result = [];
     foreach ($inputArray as $key => $value) {
         $result[$key] = $value['text_en'];
