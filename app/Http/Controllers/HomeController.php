@@ -576,93 +576,12 @@ class HomeController extends Controller
     public function verify_payment(request $request)
     {
 
-        $trx_id = $request->trans_id;
-        $ip = $request->ip();
-        $status = $request->status;
-
-
-        if ($status == 'failed') {
-
-
-            $message = Auth::user()->email . "| Cancled |  NGN " . number_format($request->amount) . " | with ref | $trx_id |  on SMSLORD";
-            send_notification2($message);
-
-
-            Transaction::where('ref_id', $trx_id)->where('status', 1)->update(['status' => 3]);
-            return redirect('fund-wallet')->with('error', 'Transaction Declined');
+        if($request->status == "success"){
+            return redirect('fund-wallet')->with('message', "Wallet has been funded with $request->amount");
+        }else{
+            return redirect('fund-wallet')->with('error', 'Transaction has been canceled');
         }
 
-
-        $trxstatus = Transaction::where('ref_id', $trx_id)->first()->status ?? null;
-
-        if ($trxstatus == 2) {
-            return redirect('fund-wallet')->with('error', 'Transaction already confirmed or not found');
-        }
-
-        $curl = curl_init();
-
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://web.sprintpay.online/api/verify',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS => array('trans_id' => "$trx_id"),
-        ));
-
-        $var = curl_exec($curl);
-        curl_close($curl);
-        $var = json_decode($var);
-
-        $status1 = $var->detail ?? null;
-        $amount = $var->price ?? null;
-
-
-        if ($status1 == 'success') {
-
-            $chk_trx = Transaction::where('ref_id', $trx_id)->first() ?? null;
-            if ($chk_trx == null) {
-                return back()->with('error', 'Transaction not processed, Contact Admin');
-            }
-
-            Transaction::where('ref_id', $trx_id)->update(['status' => 2]);
-            User::where('id', Auth::id())->increment('wallet', $amount);
-
-            $message = Auth::user()->email . "| just funded NGN" . number_format($request->amount, 2) . " on Log market";
-            send_notification($message);
-
-
-            $order_id = $trx_id;
-            $databody = array('order_id' => "$order_id");
-
-            curl_setopt_array($curl, array(
-                CURLOPT_URL => 'https://web.sprintpay.online/api/resolve-complete',
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => '',
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 0,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => $databody,
-            ));
-
-            $var = curl_exec($curl);
-            curl_close($curl);
-            $var = json_decode($var);
-
-
-            $message = Auth::user()->email . "| Just funded |  NGN " . number_format($request->amount) . " | with ref | $order_id |  on SMSLORD";
-            send_notification2($message);
-
-
-            return redirect('fund-wallet')->with('message', "Wallet has been funded with $amount");
-        }
-
-        return redirect('fund-wallet')->with('error', 'Transaction already confirmed or not found');
     }
 
 
