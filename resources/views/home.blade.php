@@ -329,8 +329,8 @@
                                                                     style="background: orange; border:0px; font-size: 10px"
                                                                     class="btn btn-warning btn-sm">Pending</span>
                                                                 <a href="cancle-sms?id={{  $data->id }}&delete=1"
-                                                                   style="background: rgb(168, 0, 14); border:0px; font-size: 10px"
-                                                                   class="btn btn-warning btn-sm">Delete</span>
+                                                                   onclick="return confirm('Are you sure you want to delete?')"
+                                                                   style="background: rgb(168, 0, 14); border:0px; font-size: 10px; color: white;" class="btn btn-warning btn-sm" >Delete</span>
 
                                                                     @else
                                                                         <span style="font-size: 10px;"
