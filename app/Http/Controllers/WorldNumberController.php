@@ -204,6 +204,7 @@ class WorldNumberController extends Controller
         $ser_cost = pool_cost($service, $country);
         $get_rate = Setting::where('id', 2)->first()->rate;
         $margin = Setting::where('id', 2)->first()->margin;
+        $ip = $request->ip();
 
         $f_cost = $get_rate * $ser_cost + $margin;
 
@@ -212,7 +213,7 @@ class WorldNumberController extends Controller
             return redirect('home')->with('error', "Insufficient Funds");
         }else{
             $price = $f_cost;
-            $order = create_world_order($country, $service, $price);
+            $order = create_world_order($country, $service, $price, $ip);
         }
 
 
@@ -233,7 +234,6 @@ class WorldNumberController extends Controller
             User::where('id', Auth::id())->increment('wallet', $request->price);
             $message = "SMS LORD | Error";
             send_notification($message);
-            send_notification3($message);
 
             return redirect('world')->with('error', 'Error occurred, Please try again');
         }

@@ -215,7 +215,7 @@ function get_d_price($service){
 }
 
 
-function create_order($service, $price, $cost, $service_name)
+function create_order($service, $price, $cost, $service_name, $ip)
 {
 
 
@@ -258,6 +258,7 @@ function create_order($service, $price, $cost, $service_name)
         $ver->cost = $price;
         $ver->api_cost = $cost;
         $ver->status = 1;
+        $ver->ip = $ip;
         $ver->type = 1;
         $ver->save();
         return 1;
@@ -461,7 +462,7 @@ function get_world_services()
 }
 
 
-function create_world_order($country, $service, $price)
+function create_world_order($country, $service, $price, $ip)
 {
 
     $key = env('WKEY');
@@ -510,6 +511,7 @@ function create_world_order($country, $service, $price)
         $ver->expires_in = $var->expires_in / 10 - 20;
         $ver->cost = $price;
         $ver->api_cost = $var->cost;
+        $ver->ip = $ip;
         $ver->status = 1;
         $ver->type = 2;
 
