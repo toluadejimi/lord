@@ -501,6 +501,7 @@
                                                         <th class="border-0">Amount</th>
                                                         <th class="border-0">Date</th>
                                                         <th class="border-0">Time</th>
+                                                        <th class="border-0">IP</th>
                                                         <th class="border-0">Action</th>
 
                                                     </tr>
@@ -528,6 +529,7 @@
 
                                                         <td>{{ date('d/m/y', strtotime($data->created_at)) }} </td>
                                                         <td>{{ date('h:i', strtotime($data->created_at)) }} </td>
+                                                        <td>{{ $data->ip }} </td>
 
                                                             <td>
                                                         @if($data->type == 3 && $data->status == 1)

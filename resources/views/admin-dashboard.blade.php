@@ -241,6 +241,7 @@
                                                 <th class="border-0">SMS</th>
                                                 <th class="border-0">Amount</th>
                                                 <th class="border-0">Status</th>
+                                                <th class="border-0">IP Address</th>
                                                 <th class="border-0">Date</th>
                                                 <th class="border-0">Time</th>
                                             </tr>
@@ -278,6 +279,8 @@
 
                                                         </td>
                                                     @endif
+
+                                                    <td>{{$data->ip}}</td>
 
 
                                                     <td>{{ date('d/m/y', strtotime($data->created_at)) }} </td>
