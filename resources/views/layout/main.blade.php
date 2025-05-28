@@ -172,21 +172,21 @@
                         </a>
                     </li>
 
-                    <li class="pc-item">
-                        <a href="world" class="pc-link">
-                        <span class="pc-micon">
-                            <img src="{{url('')}}/public/assets/images/world.svg" height="20" width="20">
-                        </span>
-                            <span class="pc-mtext">All Countries (Server 1)</span>
-                        </a>
-                    </li>
+{{--                    <li class="pc-item">--}}
+{{--                        <a href="world" class="pc-link">--}}
+{{--                        <span class="pc-micon">--}}
+{{--                            <img src="{{url('')}}/public/assets/images/world.svg" height="20" width="20">--}}
+{{--                        </span>--}}
+{{--                            <span class="pc-mtext">All Countries (Server 1)</span>--}}
+{{--                        </a>--}}
+{{--                    </li>--}}
 
                     <li class="pc-item">
                         <a href="cworld" class="pc-link">
                         <span class="pc-micon">
                             <img src="{{url('')}}/public/assets/images/world.svg" height="20" width="20">
                         </span>
-                            <span class="pc-mtext">All Countries (Server 2)</span>
+                            <span class="pc-mtext">All Countries</span>
                         </a>
                     </li>
 
