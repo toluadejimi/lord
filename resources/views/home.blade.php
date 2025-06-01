@@ -50,7 +50,7 @@
 
                                     </a>
 
-                                    <a style="font-size: 12px;" href="/world"
+                                    <a style="font-size: 12px;" href="/cworld"
                                        class="btn btn-dark w-200 mt-1">
                                         🌎 ALL COUNTRIES
 

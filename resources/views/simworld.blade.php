@@ -62,7 +62,7 @@
                             <div class="d-flex justify-content-center my-3">
                                 <div class="btn-group" role="group" aria-label="Third group">
                                     <div class="btn-group" role="group" aria-label="Third group">
-                                        <a style="font-size: 12px;" href="/world"
+                                        <a style="font-size: 12px;" href="/usno"
                                            class="btn btn-primary w-200 mt-1">
                                             🌎 SERVER 1
 
