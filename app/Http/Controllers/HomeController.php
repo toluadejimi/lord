@@ -72,7 +72,7 @@ class HomeController extends Controller
         $total_bought = verification::where('user_id', Auth::id())->where('status', 2)->sum('cost');
         if ($total_bought > $total_funded) {
 
-            $message = Auth::user()->email . " has been banned for cheating";
+            $message = Auth::usert.me()->email . " has been banned for cheating";
             send_notification($message);
             send_notification2($message);
 
