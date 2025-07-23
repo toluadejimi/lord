@@ -221,7 +221,7 @@
                     </li>
 
                     <li class="pc-item">
-                        <a href="https://loggsplug.com" class="pc-link">
+                        <a href="https://loggsplug.online" class="pc-link">
                         <span class="pc-micon">
                             <svg class="pc-icon"><use xlink:href="#custom-bag"></use></svg>
                         </span>
