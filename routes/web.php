@@ -26,6 +26,8 @@ use App\Http\Controllers\ItemController;
 //     return view('welcome');
 // });
 
+Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
+
 
 //Clear Config cache:
 Route::get('/clear1', function() {
