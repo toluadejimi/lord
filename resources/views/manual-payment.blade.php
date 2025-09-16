@@ -263,10 +263,6 @@
                                             <label>Account Number</label>
                                             <h6>{{ $acc->bank_account }}</h6>
 
-
-
-
-
                                     </div>
 
                                         <button type="button" data-toggle="modal" data-target="#addnew" class="btn btn-sm btn-dark">Update Account Info</button>
