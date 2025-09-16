@@ -27,7 +27,12 @@ use Rap2hpoutre\LaravelLogViewer\LogViewerController;
 //     return view('welcome');
 // });
 
-Route::get('logs', [LogViewerController::class, 'index']);
+Route::get('\logs', [LogViewerController::class, 'index']);
+
+
+Route::get('/hello-test', function () {
+    return 'Hello from web.php';
+});
 
 
 //Clear Config cache:
@@ -292,7 +297,6 @@ Route::post('edit-new-product',  [ProductController::class,'edit_front_product']
 //Route::get('view-all',  [ProductController::class,'view_all_product']);
 
 
-Route::post('/telegram', 'TelegramBotController@handle');
 
 
 
