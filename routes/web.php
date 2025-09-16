@@ -27,7 +27,7 @@ use Rap2hpoutre\LaravelLogViewer\LogViewerController;
 //     return view('welcome');
 // });
 
-Route::get('\logs', [LogViewerController::class, 'index']);
+Route::get('logs', [LogViewerController::class, 'index']);
 
 
 Route::get('/hello-test', function () {
