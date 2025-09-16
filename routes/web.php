@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ItemController;
+use Rap2hpoutre\LaravelLogViewer\LogViewerController;
 
 
 /*
@@ -26,7 +27,7 @@ use App\Http\Controllers\ItemController;
 //     return view('welcome');
 // });
 
-Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
+Route::get('logs', [LogViewerController::class, 'index']);
 
 
 //Clear Config cache:
