@@ -219,7 +219,7 @@ class WorldNumberController extends Controller
 
         if ($order == 5) {
             User::where('id', Auth::id())->increment('wallet', $request->price);
-            return redirect('world')->with('error', 'Number Currently out of stock, Please check back later');
+            return redirect('cworld')->with('error', 'Number Currently out of stock, Please check back later');
         }
 
         if ($order == 1) {
@@ -227,7 +227,7 @@ class WorldNumberController extends Controller
             $message = "SMS LORD | Low balance";
             send_notification($message);
 
-            return redirect('world')->with('error', 'Error occurred, Please try again');
+            return redirect('cworld')->with('error', 'Error occurred, Please try again');
         }
 
         if ($order == 2) {
@@ -235,7 +235,7 @@ class WorldNumberController extends Controller
             $message = "SMS LORD | Error";
             send_notification($message);
 
-            return redirect('world')->with('error', 'Error occurred, Please try again');
+            return redirect('cworld')->with('error', 'Error occurred, Please try again');
         }
 
         if ($order == 3) {

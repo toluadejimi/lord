@@ -180,7 +180,7 @@ class SimController extends Controller
 
 
         if ($price == null) {
-            return redirect('world')->with('error', 'Verification not available for selected service');
+            return redirect('cworld')->with('error', 'Verification not available for selected service');
         } else {
 
             $get_rate = Setting::where('id', 3)->first()->rate;

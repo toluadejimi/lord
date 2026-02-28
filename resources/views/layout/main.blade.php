@@ -71,7 +71,12 @@
             display: inline-block;
         }
 
-
+        /* Side menu: no underline on links */
+        .pc-sidebar .pc-link,
+        .pc-sidebar .pc-link:hover,
+        .pc-sidebar .pc-link:focus {
+            text-decoration: none !important;
+        }
 
     </style>
 
@@ -133,8 +138,8 @@
                 <ul class="pc-navbar">
                     <li class="pc-item pc-caption"><label>Home</label></li>
                     <li class="pc-item pc-menu">
-                        <a href="home" class="pc-link"><span class="pc-micon">
-                            <svg class="pc-icon">
+                        <a href="cworld" class="pc-link"><span class="pc-micon">
+                                <svg class="pc-icon">
                                 <use xlink:href="#custom-text-align-justify-center">
                                 </use>
                             </svg>
@@ -164,29 +169,11 @@
                         </svg>
                     </li>
                     <li class="pc-item">
-                        <a href="usno" class="pc-link">
-                        <span class="pc-micon">
-                            <img src="{{url('')}}/public/assets/images/usa.svg" height="20" width="20">
-                        </span>
-                            <span class="pc-mtext">Verify USA Numbers</span>
-                        </a>
-                    </li>
-
-{{--                    <li class="pc-item">--}}
-{{--                        <a href="world" class="pc-link">--}}
-{{--                        <span class="pc-micon">--}}
-{{--                            <img src="{{url('')}}/public/assets/images/world.svg" height="20" width="20">--}}
-{{--                        </span>--}}
-{{--                            <span class="pc-mtext">All Countries (Server 1)</span>--}}
-{{--                        </a>--}}
-{{--                    </li>--}}
-
-                    <li class="pc-item">
                         <a href="cworld" class="pc-link">
                         <span class="pc-micon">
                             <img src="{{url('')}}/public/assets/images/world.svg" height="20" width="20">
                         </span>
-                            <span class="pc-mtext">All Countries</span>
+                            <span class="pc-mtext">SMS Verification</span>
                         </a>
                     </li>
 
@@ -210,15 +197,6 @@
                         </svg>
                     </li>
 
-
-                    <li class="pc-item">
-                        <a href="https://socialplugboost.com" class="pc-link">
-                        <span class="pc-micon">
-                            <svg class="pc-icon"><use xlink:href="#custom-status-up"></use></svg>
-                        </span>
-                            <span class="pc-mtext">Boost Social Account</span>
-                        </a>
-                    </li>
 
                     <li class="pc-item">
                         <a href="https://loggsplug.online" class="pc-link">

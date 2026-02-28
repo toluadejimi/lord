@@ -100,10 +100,6 @@ Route::any('get-smscode',  [HomeController::class,'get_smscode']);
 
 
 
-Route::any('delete-user',  [AdminController::class,'delete_user']);
-
-
-
 
 
 
@@ -130,7 +126,7 @@ Route::group(['middleware' => ['auth', 'user']], function () {
 
 
 
-    Route::any('world',  [WorldNumberController::class,'home']);
+    Route::redirect('world', 'cworld', 302);
     Route::any('check-av',  [WorldNumberController::class,'check_av']);
     Route::post('order_now_world',  [WorldNumberController::class,'order_now']);
     Route::any('get-smscodeworld',  [WorldNumberController::class,'get_smscode']);
@@ -196,36 +192,34 @@ Route::get('change-password',  [HomeController::class,'change_password']);
 
 
 
-//admin
+// Admin
 Route::get('admin',  [AdminController::class,'index']);
+Route::post('admin-login',  [AdminController::class,'admin_login']);
 
-Route::get('admin-dashboard',  [AdminController::class,'admin_dashboard']);
-
-
-Route::any('update-smspool-rate',  [AdminController::class,'update_smspool_rate']);
-Route::any('update-smspool-cost',  [AdminController::class,'update_smspool_cost']);
-
-Route::any('update-sim-rate',  [AdminController::class,'update_sim_rate']);
-Route::any('update-sim-cost',  [AdminController::class,'update_sim_cost']);
-
-
-Route::any('update-daisy-rate',  [AdminController::class,'update_diasy_rate']);
-Route::any('update-daisy-cost',  [AdminController::class,'update_daisy_cost']);
-
-
-Route::get('manual-payment',  [AdminController::class,'manual_payment_view']);
-Route::any('verify-payment',  [AdminController::class,'approve_payment']);
-Route::any('update-acct-name',  [AdminController::class,'update_acct_name']);
-Route::any('delete-payment',  [AdminController::class,'delete_payment']);
+Route::prefix('admin')->group(function () {
+    Route::get('dashboard',  [AdminController::class,'admin_dashboard']);
+    Route::get('users',  [AdminController::class,'index_user']);
+    Route::get('view-user',  [AdminController::class,'view_user']);
+    Route::any('update-user',  [AdminController::class,'update_user']);
+    Route::any('remove-user',  [AdminController::class,'remove_user']);
+    Route::any('delete-user',  [AdminController::class,'delete_user']);
+    Route::get('search-user',  [AdminController::class,'search_user']);
+    Route::any('search-username',  [AdminController::class,'search_username']);
+    Route::get('manual-payment',  [AdminController::class,'manual_payment_view']);
+    Route::any('verify-payment',  [AdminController::class,'approve_payment']);
+    Route::any('update-acct-name',  [AdminController::class,'update_acct_name']);
+    Route::any('delete-payment',  [AdminController::class,'delete_payment']);
+    Route::any('update-smspool-rate',  [AdminController::class,'update_smspool_rate']);
+    Route::any('update-smspool-cost',  [AdminController::class,'update_smspool_cost']);
+    Route::any('update-sim-rate',  [AdminController::class,'update_sim_rate']);
+    Route::any('update-sim-cost',  [AdminController::class,'update_sim_cost']);
+});
 
 
 
 Route::any('fund-manual-now',  [HomeController::class,'fund_manual_now']);
 Route::any('confirm-pay',  [HomeController::class,'confirm_pay']);
 
-
-Route::get('search-user',  [AdminController::class,'search_user']);
-Route::any('search-username',  [AdminController::class,'search_username']);
 
 Route::any('about-us',  [HomeController::class,'about_us']);
 Route::any('policy',  [HomeController::class,'policy']);
@@ -243,21 +237,7 @@ Route::any('policy',  [HomeController::class,'policy']);
 
 
 
-Route::get('users',  [AdminController::class,'index_user']);
-Route::get('view-user',  [AdminController::class,'view_user']);
-Route::any('update-user',  [AdminController::class,'update_user']);
-Route::any('remove-user',  [AdminController::class,'remove_user']);
-
-
-
-
 Route::post('edit-front-pr',  [AdminController::class,'edit_front_product']);
-
-
-
-
-
-Route::post('admin-login',  [AdminController::class,'admin_login']);
 
 
 

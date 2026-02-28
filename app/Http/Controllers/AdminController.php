@@ -44,7 +44,7 @@ class AdminController extends Controller
         Verification::where('user_id', $request->id)->delete();
         Transaction::where('user_id', $request->id)->delete();
 
-        return redirect('/users')->with('message', "User Deleted Successfully");
+        return redirect('admin/users')->with('message', "User Deleted Successfully");
 
 
     }
@@ -72,7 +72,7 @@ class AdminController extends Controller
             if($role == 5){
                 $message = "SMS LORD - Admin Just logged in";
                 send_notification($message);
-                return redirect('admin-dashboard');
+                return redirect('admin/dashboard');
 
             }else{
                 Auth::logout();
@@ -138,8 +138,6 @@ class AdminController extends Controller
         $data['smspoolcost'] = Setting::where('id', 1)->first()->margin;
         $data['simrate'] = Setting::where('id', 3)->first()->rate;
         $data['simcost'] = Setting::where('id', 3)->first()->margin;
-        $data['disay_rate'] = Setting::where('id', 4)->first()->rate;
-        $data['disay_cost'] = Setting::where('id', 4)->first()->margin;
         $data['verification'] = Verification::latest()->paginate(10);
 
 
@@ -148,24 +146,6 @@ class AdminController extends Controller
 
 	}
 
-
-
-    public function update_diasy_rate(request $request)
-    {
-        Setting::where('id', 4)->update(['rate' => $request->rate]);
-
-        return back()->with('message', "Rate Update Successfully");
-
-    }
-
-
-    public function update_daisy_cost(request $request)
-    {
-        Setting::where('id', 4)->update(['margin' => $request->cost]);
-
-        return back()->with('message', "Cost Update Successfully");
-
-    }
 
 
     public function update_smspool_rate(request $request)

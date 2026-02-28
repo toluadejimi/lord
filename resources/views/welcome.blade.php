@@ -89,15 +89,10 @@
 
                         <div class="d-flex justify-content-center my-3">
                             <div class="btn-group" role="group" aria-label="Third group">
-                                <a style="font-size: 12px;" href="/world"
-                                   class="btn btn-primary w-200 mt-1">
-                                    🌎 SERVER 1
-
-                                </a>
-
+                            
                                 <a style="font-size: 12px;" href="/cworld"
                                    class="btn btn-dark w-200 mt-1">
-                                    🌎 SERVER 2
+                                    🌎 SMS Verification
 
                                 </a>
 

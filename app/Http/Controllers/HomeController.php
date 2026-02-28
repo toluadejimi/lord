@@ -42,18 +42,7 @@ class HomeController extends Controller
 
     public function home(request $request)
     {
-
-        $data['services'] = get_services();
-        $data['get_rate'] = Setting::where('id', 4)->first()->rate;
-        $data['margin'] = Setting::where('id', 4)->first()->margin;
-
-        $data['verification'] = Verification::latest()->where('user_id', Auth::id())->paginate('10');
-
-
-        $data['order'] = 0;
-
-
-        return view('home', $data);
+        return redirect('cworld');
     }
 
 
@@ -67,83 +56,7 @@ class HomeController extends Controller
 
     public function order_now(Request $request)
     {
-
-
-        $service = $request->service;
-        $price = $request->price;
-        $service_name = $request->name;
-
-        $service = $request->service;
-        $price = $request->price;
-        $service_name = $request->name;
-
-        $data['services'] = get_services();
-        $data['get_rate'] = Setting::where('id', 4)->first()->rate;
-        $data['margin'] = Setting::where('id', 4)->first()->margin;
-        $innerValue =  get_d_price($service);
-        $cost = $data['get_rate'] * $innerValue + $data['margin'];
-        $ip = $request->ip();
-
-        if($cost < $request->price){
-            return redirect('home')->with('error', "Insufficient Funds");
-        }
-
-
-        if (Auth::user()->wallet < $cost) {
-            return back()->with('error', "Insufficient Funds");
-        }
-
-
-        User::where('id', Auth::id())->decrement('wallet', $cost);
-        $hold =  User::where('id', Auth::id())->increment('hold_wallet', $cost);
-
-        if($hold == 1){
-            $order = create_order($service, $price, $cost, $service_name, $ip);
-        }else{
-            return redirect('home')->with('error', "Insufficient Funds");
-        }
-
-
-
-
-
-
-
-
-
-        if ($order == 0) {
-            User::where('id', Auth::id())->increment('wallet', $request->price);
-            return redirect('home')->with('error', 'Number Currently out of stock, Please check back later');
-        }
-
-        if ($order == 0) {
-            User::where('id', Auth::id())->increment('wallet', $request->price);
-            $message = "SMSLORD | Low balance";
-            send_notification($message);
-            return redirect('home')->with('error', 'Error occurred, Please try again');
-        }
-
-        if ($order == 0) {
-            User::where('id', Auth::id())->increment('wallet', $request->price);
-            $message = "SMSLORD | Error";
-            send_notification($message);
-
-
-            return redirect('home')->with('error', 'Error occurred, Please try again');
-        }
-
-        if ($order == 1) {
-
-            $data['services'] = get_services();
-            $data['get_rate'] = Setting::where('id', 1)->first()->rate;
-            $data['margin'] = Setting::where('id', 1)->first()->margin;
-            $data['sms_order'] = Verification::where('user_id', Auth::id())->where('status', 1)->first();
-            $data['order'] = 1;
-
-            $data['verification'] = Verification::where('user_id', Auth::id())->paginate(10);
-
-            return redirect('home');
-        }
+        return redirect('cworld')->with('error', 'This service (Daisy / US numbers) is no longer available. Please use All Countries.');
     }
 
 
@@ -230,7 +143,7 @@ class HomeController extends Controller
                     User::where('id', Auth::id())->increment('wallet', $order->cost);
                     User::where('id', Auth::id())->decrement('hold_wallet', $order->cost);
                     Verification::where('id', $request->id)->delete();
-                    return redirect('world')->with('message', "Order has been canceled, NGN$amount has been refunded");
+                    return redirect('cworld')->with('message', "Order has been canceled, NGN$amount has been refunded");
 
 
                 }
@@ -249,20 +162,20 @@ class HomeController extends Controller
                 User::where('id', Auth::id())->increment('wallet', $order->cost);
                 User::where('id', Auth::id())->decrement('hold_wallet', $order->cost);
                 Verification::where('id', $request->id)->delete();
-                return redirect('world')->with('message', "Order has been canceled, NGN$amount has been refunded");
+                return redirect('cworld')->with('message', "Order has been canceled, NGN$amount has been refunded");
             }
 
 
             if ($can_order == 3) {
                 $order = Verification::where('id', $request->id)->first() ?? null;
                 if ($order->status != 1 || $order == null) {
-                    return redirect('world')->with('error', "Please try again later");
+                    return redirect('cworld')->with('error', "Please try again later");
                 }
                 $amount = number_format($order->cost, 2);
                 User::where('id', Auth::id())->increment('wallet', $order->cost);
                 User::where('id', Auth::id())->decrement('hold_wallet', $order->cost);
                 Verification::where('id', $request->id)->delete();
-                return redirect('world')->with('message', "Order has been canceled, NGN$amount has been refunded");
+                return redirect('cworld')->with('message', "Order has been canceled, NGN$amount has been refunded");
             }
         }
     }
@@ -594,7 +507,7 @@ class HomeController extends Controller
             $user->save();
 
             $user = Auth::id() ?? null;
-            return redirect('usno');
+            return redirect('cworld');
         }
 
         return back()->with('error', "Email or Password Incorrect");
@@ -644,6 +557,7 @@ class HomeController extends Controller
 
         // Create a new user
         $user = User::create([
+            'name' => $validatedData['username'],
             'username' => $validatedData['username'],
             'email' => $validatedData['email'],
             'password' => Hash::make($validatedData['password']),
