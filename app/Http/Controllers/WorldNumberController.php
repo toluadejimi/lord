@@ -42,7 +42,7 @@ class WorldNumberController extends Controller
             ->where('user_id', Auth::id())
             ->take(10)->get();
 
-        $key = env('WKEY');
+        $key = app_config('WKEY');
 
 
         $databody = array(

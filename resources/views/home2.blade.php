@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="icon" href="{{url('')}}/public/assets/storage/images/favicon.png" type="image/png">
+    <link rel="icon" href="{{ asset('assets/storage/images/favicon.png') }}" type="image/png">
     <title>SMS LORD</title>
 
 
@@ -24,12 +24,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
         integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA=="
         crossorigin="anonymous" />
-    <link rel="stylesheet" href="{{url('')}}/public/assets/css/vendor.css">
-    <link rel="stylesheet" href="{{url('')}}/public/assets/css/common.css">
-    <script src="{{url('')}}/public/assets/vendor/Shortcode/Shortcode.js"></script>
+    <link rel="stylesheet" href="{{ asset('assets/css/vendor.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/common.css') }}">
+    <script src="{{ asset('assets/vendor/Shortcode/Shortcode.js') }}"></script>
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <script src="{{url('')}}/public/assets/js/app.js" defer></script>
+    <script src="{{ asset('assets/js/app.js') }}" defer></script>
     <style>
         [wire\:loading],
         [wire\:loading\.delay],
@@ -757,10 +757,10 @@
                 content="bootstrap 5, business, corporate, creative, gulp, marketing, minimal, modern, multipurpose, one page, responsive, saas, sass, seo, startup, html5 template, site template">
             <meta name="author" content="elemis">
             <title>SMS LORD | SMS Verification Website.</title>
-            <link rel="shortcut icon" href="{{url('')}}/public/assets/img/favicon.png">
-            <link rel="stylesheet" href="{{url('')}}/public/assets/css/plugins.css">
-            <link rel="stylesheet" href="{{url('')}}/public/assets/css/style.css">
-            <link rel="preload" href="{{url('')}}/public/assets/css/fonts/space.css" as="style"
+            <link rel="shortcut icon" href="{{ asset('assets/img/favicon.png') }}">
+            <link rel="stylesheet" href="{{ asset('assets/css/plugins.css') }}">
+            <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
+            <link rel="preload" href="{{ asset('assets/css/fonts/space.css') }}" as="style"
                 onload="this.rel='stylesheet'">
         </head>
 
@@ -772,7 +772,7 @@
                         <div class="container flex-lg-row flex-nowrap align-items-center">
                             <div class="navbar-brand w-100">
                                 <a href="/">
-                                    <img src="{{url('')}}/public/assets/img/logo.png" alt="">
+                                    <img src="{{ asset('assets/img/logo.png') }}" alt="">
                                 </a>
                             </div>
                             <div class="navbar-collapse offcanvas offcanvas-nav offcanvas-start">
@@ -1009,7 +1009,7 @@
                     <div class="row gy-6 gy-lg-0">
                         <div class="col-md-4 col-lg-3">
                             <div class="widget">
-                                <img class="mb-4" src="{{url('')}}/public/assets/img/logo.png" alt="">
+                                <img class="mb-4" src="{{ asset('assets/img/logo.png') }}" alt="">
                                 <p class="mb-4">© 2024 SMS LORD. <br class="d-none d-lg-block">All rights reserved.
                                 </p>
                                 <nav class="nav social ">
@@ -1102,8 +1102,8 @@
                 </svg>
             </div>
             <script data-cfasync="false" src="cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
-            <script src="{{url('')}}/public/assets/js/plugins.js"></script>
-            <script src="{{url('')}}/public/assets/js/theme.js"></script>
+            <script src="{{ asset('assets/js/plugins.js') }}"></script>
+            <script src="{{ asset('assets/js/theme.js') }}"></script>
         </body>
 
         </html>

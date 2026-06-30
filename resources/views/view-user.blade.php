@@ -10,11 +10,11 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="{{ url('') }}/public/concept/assets/vendor/bootstrap/css/bootstrap.min.css">
-    <link href="{{ url('') }}/public/concept/assets/vendor/fonts/circular-std/style.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url('') }}/public/concept/assets/libs/css/style.css">
-    <link rel="stylesheet" href="{{ url('') }}/public/concept/assets/vendor/fonts/fontawesome/css/fontawesome-all.css">
-    <link rel="stylesheet" href="{{ url('') }}/public/concept/assets/vendor/fonts/material-design-iconic-font/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="{{ asset('concept/assets/vendor/bootstrap/css/bootstrap.min.css') }}">
+    <link href="{{ asset('concept/assets/vendor/fonts/circular-std/style.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('concept/assets/libs/css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('concept/assets/vendor/fonts/fontawesome/css/fontawesome-all.css') }}">
+    <link rel="stylesheet" href="{{ asset('concept/assets/vendor/fonts/material-design-iconic-font/css/materialdesignicons.min.css') }}">
     <title>{{ $user->username ?? $user->email }} — SMSLORD Admin</title>
     <style>
         :root {
@@ -79,36 +79,7 @@
 </head>
 <body>
 <div class="dashboard-main-wrapper">
-    <div class="nav-left-sidebar sidebar-dark">
-        <div class="menu-list">
-            <div class="sidebar-brand">
-                <a href="{{ url('admin/dashboard') }}">SMS<span>LORD</span></a>
-            </div>
-            <nav class="navbar navbar-expand-lg navbar-light">
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav flex-column">
-                        <li class="nav-divider">Menu</li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url('admin/dashboard') }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link active" href="{{ url('admin/users') }}"><i class="fas fa-users"></i> Users</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url('admin/manual-payment') }}"><i class="fas fa-money-check-alt"></i> Manual Payment</a>
-                        </li>
-                        <li class="nav-divider">Account</li>
-                        <li class="nav-item">
-                            <a class="nav-link nav-link-logout" href="{{ url('log-out') }}"><i class="fas fa-sign-out-alt"></i> Logout</a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-        </div>
-    </div>
+    @include('admin.partials.sidebar')
 
     <div class="dashboard-wrapper">
         <div class="dashboard-ecommerce">
@@ -386,10 +357,10 @@
     </div>
 </div>
 
-<script src="{{ url('') }}/public/concept/assets/vendor/jquery/jquery-3.3.1.min.js"></script>
-<script src="{{ url('') }}/public/concept/assets/vendor/bootstrap/js/bootstrap.bundle.js"></script>
-<script src="{{ url('') }}/public/concept/assets/vendor/slimscroll/jquery.slimscroll.js"></script>
-<script src="{{ url('') }}/public/concept/assets/libs/js/main-js.js"></script>
+<script src="{{ asset('concept/assets/vendor/jquery/jquery-3.3.1.min.js') }}"></script>
+<script src="{{ asset('concept/assets/vendor/bootstrap/js/bootstrap.bundle.js') }}"></script>
+<script src="{{ asset('concept/assets/vendor/slimscroll/jquery.slimscroll.js') }}"></script>
+<script src="{{ asset('concept/assets/libs/js/main-js.js') }}"></script>
 </body>
 </html>
 @endif

@@ -1,13 +1,21 @@
 <?php
 
-use App\Constants\Status;
-use App\Lib\GoogleAuthenticator;
-use App\Models\Extension;
 use App\Models\Setting;
 use App\Models\User;
 use App\Models\Verification;
+use App\Services\AppConfigService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+
+function app_config(string $key, ?string $default = null): ?string
+{
+    return app(AppConfigService::class)->get($key, $default);
+}
+
+function app_config_bool(string $key, bool $default = false): bool
+{
+    return app(AppConfigService::class)->getBool($key, $default);
+}
 
 
 function resolve_complete($order_id)
@@ -45,11 +53,15 @@ function resolve_complete($order_id)
 
 function send_notification($message)
 {
+    $token = app_config('TELEGRAM_BOT_TOKEN');
+    $chatId = app_config('TELEGRAM_ADMIN_CHAT_ID');
+    if (!$token || !$chatId) {
+        return;
+    }
 
     $curl = curl_init();
-
     curl_setopt_array($curl, array(
-        CURLOPT_URL => 'https://api.telegram.org/bot7487870841:AAHI9wFXl1FMgyyV1n3nm5XYnAgb5HO7cCg/sendMessage?chat_id=1316552414',
+        CURLOPT_URL => "https://api.telegram.org/bot{$token}/sendMessage",
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_ENCODING => '',
         CURLOPT_MAXREDIRS => 10,
@@ -58,26 +70,27 @@ function send_notification($message)
         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
         CURLOPT_CUSTOMREQUEST => 'POST',
         CURLOPT_POSTFIELDS => array(
-            'chat_id' => "1316552414",
+            'chat_id' => $chatId,
             'text' => $message,
         ),
         CURLOPT_HTTPHEADER => array(),
     ));
-
-    $var = curl_exec($curl);
+    curl_exec($curl);
     curl_close($curl);
-
-    $var = json_decode($var);
 }
 
 
 function send_notification2($message)
 {
+    $token = app_config('TELEGRAM_BOT_TOKEN_2') ?: app_config('TELEGRAM_BOT_TOKEN');
+    $chatId = app_config('TELEGRAM_CHAT_ID_2') ?: app_config('TELEGRAM_ADMIN_CHAT_ID');
+    if (!$token || !$chatId) {
+        return;
+    }
 
     $curl = curl_init();
-
     curl_setopt_array($curl, array(
-        CURLOPT_URL => 'https://api.telegram.org/bot6919184318:AAGnT7AHgyTGp_tHHpgXW4NorBg66EoWvWQ/sendMessage?chat_id=6467727007',
+        CURLOPT_URL => "https://api.telegram.org/bot{$token}/sendMessage",
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_ENCODING => '',
         CURLOPT_MAXREDIRS => 10,
@@ -86,17 +99,13 @@ function send_notification2($message)
         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
         CURLOPT_CUSTOMREQUEST => 'POST',
         CURLOPT_POSTFIELDS => array(
-            'chat_id' => "6467727007",
+            'chat_id' => $chatId,
             'text' => $message,
-
         ),
         CURLOPT_HTTPHEADER => array(),
     ));
-
-    $var = curl_exec($curl);
+    curl_exec($curl);
     curl_close($curl);
-
-    $var = json_decode($var);
 }
 
 
@@ -146,7 +155,7 @@ function cancel_order($orderID)
 {
 
 
-    $APIKEY = env('KEY');
+    $APIKEY = app_config('KEY');
     $curl = curl_init();
 
     curl_setopt_array($curl, array(
@@ -181,7 +190,7 @@ function check_sms($orderID)
 {
 
 
-    $APIKEY = env('KEY');
+    $APIKEY = app_config('KEY');
     $curl = curl_init();
 
     curl_setopt_array($curl, array(
@@ -250,7 +259,7 @@ function check_sms($orderID)
 
 function get_world_countries()
 {
-    $key = env('WKEY');
+    $key = app_config('WKEY');
     $curl = curl_init();
     curl_setopt_array($curl, array(
         CURLOPT_URL => "https://api.smspool.net/country/retrieve_all?key=$key",
@@ -299,7 +308,7 @@ function get_world_countries()
 function get_world_services()
 {
 
-    $key = env('WKEY');
+    $key = app_config('WKEY');
 
     $curl = curl_init();
     curl_setopt_array($curl, array(
@@ -335,7 +344,7 @@ function get_world_services()
 function create_world_order($country, $service, $price, $ip)
 {
 
-    $key = env('WKEY');
+    $key = app_config('WKEY');
     $curl = curl_init();
 
     $databody = array(
@@ -410,7 +419,7 @@ function create_world_order($country, $service, $price, $ip)
 function cancel_world_order($orderID)
 {
 
-    $key = env('WKEY');
+    $key = app_config('WKEY');
     $curl = curl_init();
 
     $databody = array(
@@ -460,7 +469,7 @@ function cancel_world_order($orderID)
 function check_world_sms($orderID)
 {
 
-    $key = env('KEY');
+    $key = app_config('WKEY');
     $curl = curl_init();
 
     $databody = array(
@@ -516,14 +525,13 @@ function check_world_sms($orderID)
         return 3;
     }
 
-
-    dd($var);
+    return 0;
 }
 
 
  function balance()
 {
-    $token = env('SIMTOKEN');
+    $token = app_config('SIMTOKEN');
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, 'https://5sim.net/v1/user/profile');
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -544,7 +552,7 @@ function check_world_sms($orderID)
 
 function get_s_countries()
 {
-    $token = env('SIMTOKEN');
+    $token = app_config('SIMTOKEN');
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, 'https://5sim.net/v1/guest/countries');
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -558,6 +566,9 @@ function get_s_countries()
     curl_close($ch);
     $inputArray = json_decode($var, true);
 
+    if (!is_array($inputArray)) {
+        return [];
+    }
 
     $result = [];
     foreach ($inputArray as $key => $value) {
@@ -572,7 +583,7 @@ function get_s_countries()
 
 function get_s_product_cost($operator, $country, $product)
 {
-    $token = env('SIMTOKEN');
+    $token = app_config('SIMTOKEN');
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, 'https://5sim.net/v1/guest/products/' . $country . '/' . $operator);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -623,7 +634,7 @@ function get_s_product_cost($operator, $country, $product)
 
 function pool_cost($service, $country){
 
-    $key = env('WKEY');
+    $key = app_config('WKEY');
 
     $databody = array(
         "key" => $key,

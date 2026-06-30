@@ -40,7 +40,7 @@
 
         <div class="text-center">
            
-            <img src="{{url('')}}/public/assets/success.gif" alt="image">
+            <img src="{{ asset('assets/success.gif') }}" alt="image">
 
         </div>
 

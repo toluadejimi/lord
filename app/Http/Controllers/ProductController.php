@@ -281,8 +281,8 @@ class ProductController extends Controller
     {
 
 
-        $ipb = env('IPA');
-        $ipa = env('IPB');
+        $ipb = app_config('IPA');
+        $ipa = app_config('IPB');
         $ip = $request->ip();
 
 

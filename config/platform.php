@@ -1,0 +1,140 @@
+<?php
+
+return [
+    'config_groups' => [
+        'sprintpay' => [
+            'label' => 'SprintPay (Wallet & VTU)',
+            'keys' => [
+                'WEBKEY' => ['label' => 'Merchant Web Key', 'type' => 'password', 'env' => 'WEBKEY'],
+                'SPRINTPAY_WEBHOOK_SECRET' => ['label' => 'Webhook Bearer Secret', 'type' => 'password', 'env' => 'SPRINTPAY_WEBHOOK_SECRET'],
+                'SPRINTPAY_API_BASE' => ['label' => 'API Base URL', 'type' => 'text', 'env' => 'SPRINTPAY_API_BASE', 'default' => 'https://web.sprintpay.online/api'],
+                'PALMPAYKEY' => ['label' => 'PalmPay Key', 'type' => 'password', 'env' => 'PALMPAYKEY'],
+            ],
+        ],
+        'smspool' => [
+            'label' => 'World Server 1 — SMSPool',
+            'keys' => [
+                'provider_smspool_enabled' => ['label' => 'Enabled', 'type' => 'boolean', 'env' => null, 'default' => '1'],
+                'WKEY' => ['label' => 'API Key', 'type' => 'password', 'env' => 'WKEY'],
+            ],
+        ],
+        'usa2' => [
+            'label' => 'USA Server 2 — Unlimited Portal',
+            'keys' => [
+                'provider_usa2_enabled' => ['label' => 'Enabled', 'type' => 'boolean', 'env' => null, 'default' => '0'],
+                'UNLIMITED_API_KEY' => ['label' => 'API Key', 'type' => 'password', 'env' => 'UNLIMITED_API_KEY'],
+                'UNLIMITED_USER' => ['label' => 'Portal Username', 'type' => 'text', 'env' => 'UNLIMITED_USER'],
+                'TRUVER_API_KEY' => ['label' => 'TruVerifi API Key (optional)', 'type' => 'password', 'env' => 'TRUVER_API_KEY'],
+            ],
+        ],
+        'hero' => [
+            'label' => 'World Server 2 — HeroSMS',
+            'keys' => [
+                'provider_hero_enabled' => ['label' => 'Enabled', 'type' => 'boolean', 'env' => null, 'default' => '0'],
+                'SMS_SERVER_HERO_API_KEY' => ['label' => 'API Key', 'type' => 'password', 'env' => 'SMS_SERVER_HERO_API_KEY'],
+                'SMS_SERVER_HERO_BASE_URL' => ['label' => 'Base URL', 'type' => 'text', 'env' => 'SMS_SERVER_HERO_BASE_URL', 'default' => 'https://hero-sms.com'],
+            ],
+        ],
+        'sv3' => [
+            'label' => 'World Server 3 — SMS Bower',
+            'keys' => [
+                'provider_sv3_enabled' => ['label' => 'Enabled', 'type' => 'boolean', 'env' => null, 'default' => '0'],
+                'SMS_SERVER_WORLD_SV3_API_KEY' => ['label' => 'API Key', 'type' => 'password', 'env' => 'SMS_SERVER_WORLD_SV3_API_KEY'],
+                'SMS_SERVER_WORLD_SV3_BASE_URL' => ['label' => 'Base URL', 'type' => 'text', 'env' => 'SMS_SERVER_WORLD_SV3_BASE_URL', 'default' => 'https://smsbower.page'],
+            ],
+        ],
+        'usa1' => [
+            'label' => 'USA Server 1 — Legacy Handler (Retired)',
+            'keys' => [
+                'provider_usa1_enabled' => ['label' => 'Enabled', 'type' => 'boolean', 'env' => null, 'default' => '0'],
+                'KEY' => ['label' => 'Legacy API Key', 'type' => 'password', 'env' => 'KEY'],
+            ],
+        ],
+        'sim' => [
+            'label' => '5SIM (All Countries Panel)',
+            'keys' => [
+                'provider_sim_enabled' => ['label' => 'Enabled', 'type' => 'boolean', 'env' => null, 'default' => '1'],
+                'SIMTOKEN' => ['label' => 'Bearer Token', 'type' => 'password', 'env' => 'SIMTOKEN'],
+            ],
+        ],
+        'security' => [
+            'label' => 'Security & Turnstile',
+            'keys' => [
+                'TURNSTILE_SITE_KEY' => ['label' => 'Turnstile Site Key', 'type' => 'text', 'env' => 'TURNSTILE_SITE_KEY'],
+                'TURNSTILE_SITE_SECRET' => ['label' => 'Turnstile Secret', 'type' => 'password', 'env' => 'TURNSTILE_SITE_SECRET'],
+                'LANDING_TURNSTILE_GATE' => ['label' => 'Landing Gate Enabled', 'type' => 'boolean', 'env' => 'LANDING_TURNSTILE_GATE', 'default' => '0'],
+                'WEBHOOK_INBOUND_SECRET' => ['label' => 'Inbound Webhook Secret', 'type' => 'password', 'env' => 'WEBHOOK_INBOUND_SECRET'],
+                'IPA' => ['label' => 'Allowed IP (e_fund A)', 'type' => 'text', 'env' => 'IPA'],
+                'IPB' => ['label' => 'Allowed IP (e_fund B)', 'type' => 'text', 'env' => 'IPB'],
+            ],
+        ],
+        'telegram' => [
+            'label' => 'Telegram Notifications',
+            'keys' => [
+                'TELEGRAM_BOT_TOKEN' => ['label' => 'Bot Token', 'type' => 'password', 'env' => 'TELEGRAM_BOT_TOKEN'],
+                'TELEGRAM_ADMIN_CHAT_ID' => ['label' => 'Admin Chat ID', 'type' => 'text', 'env' => 'TELEGRAM_ADMIN_CHAT_ID'],
+                'TELEGRAM_BOT_TOKEN_2' => ['label' => 'Secondary Bot Token', 'type' => 'password', 'env' => 'TELEGRAM_BOT_TOKEN_2'],
+                'TELEGRAM_CHAT_ID_2' => ['label' => 'Secondary Chat ID', 'type' => 'text', 'env' => 'TELEGRAM_CHAT_ID_2'],
+            ],
+        ],
+        'vtu' => [
+            'label' => 'VTU Category IDs (SprintPay VAS)',
+            'keys' => [
+                'provider_vtu_enabled' => ['label' => 'VTU Module Enabled', 'type' => 'boolean', 'env' => null, 'default' => '1'],
+                'VTU_CAT_AIRTIME' => ['label' => 'Airtime Category ID', 'type' => 'text', 'env' => 'VTU_CAT_AIRTIME'],
+                'VTU_CAT_DATA' => ['label' => 'Data Category ID', 'type' => 'text', 'env' => 'VTU_CAT_DATA'],
+                'VTU_CAT_CABLE_TV' => ['label' => 'Cable TV Category ID', 'type' => 'text', 'env' => 'VTU_CAT_CABLE_TV'],
+                'VTU_CAT_ELECTRICITY' => ['label' => 'Electricity Category ID', 'type' => 'text', 'env' => 'VTU_CAT_ELECTRICITY'],
+                'vtu_airtime_enabled' => ['label' => 'Airtime Enabled', 'type' => 'boolean', 'env' => null, 'default' => '1'],
+                'vtu_data_enabled' => ['label' => 'Data Enabled', 'type' => 'boolean', 'env' => null, 'default' => '1'],
+                'vtu_cable_enabled' => ['label' => 'Cable Enabled', 'type' => 'boolean', 'env' => null, 'default' => '1'],
+                'vtu_electricity_enabled' => ['label' => 'Electricity Enabled', 'type' => 'boolean', 'env' => null, 'default' => '1'],
+            ],
+        ],
+        'site' => [
+            'label' => 'Sitewide',
+            'keys' => [
+                'site_notification_title' => ['label' => 'Banner Title', 'type' => 'text', 'env' => null],
+                'site_notification_message' => ['label' => 'Banner Message', 'type' => 'textarea', 'env' => null],
+                'site_notification_active' => ['label' => 'Banner Active', 'type' => 'boolean', 'env' => null, 'default' => '0'],
+            ],
+        ],
+    ],
+
+    'setting_rows' => [
+        1 => ['name' => 'usa1_api', 'label' => 'USA1 + API World Pricing'],
+        2 => ['name' => 'smspool', 'label' => 'World SMSPool Web'],
+        3 => ['name' => 'sim', 'label' => '5SIM Panel'],
+        4 => ['name' => 'usa2', 'label' => 'USA Server 2 (Unlimited)'],
+        5 => ['name' => 'hero', 'label' => 'World HeroSMS'],
+        6 => ['name' => 'sv3', 'label' => 'World SMS Bower'],
+    ],
+
+    'verification_types' => [
+        'usa1' => 1,
+        'world_legacy' => 2,
+        'sim' => 3,
+        'usa2' => 4,
+        'smspool' => 8,
+        'hero' => 9,
+        'sv3' => 10,
+    ],
+
+    'admin_settings_groups' => ['sprintpay', 'security', 'telegram', 'site'],
+
+    'admin_service_groups' => [
+        'sim' => ['setting_id' => 3, 'icon' => 'fa-globe', 'description' => '5SIM all-countries verification panel'],
+        'smspool' => ['setting_id' => 2, 'icon' => 'fa-sms', 'description' => 'World Server 1 — SMSPool'],
+        'usa2' => ['setting_id' => 4, 'icon' => 'fa-flag-usa', 'description' => 'USA Server 2 — Unlimited Portal'],
+        'hero' => ['setting_id' => 5, 'icon' => 'fa-server', 'description' => 'World Server 2 — HeroSMS'],
+        'sv3' => ['setting_id' => 6, 'icon' => 'fa-layer-group', 'description' => 'World Server 3 — SMS Bower'],
+        'usa1' => ['setting_id' => 1, 'icon' => 'fa-ban', 'description' => 'USA Server 1 — Retired legacy handler'],
+    ],
+
+    'admin_vtu_services' => [
+        'airtime' => ['label' => 'Airtime', 'category_key' => 'VTU_CAT_AIRTIME', 'enabled_key' => 'vtu_airtime_enabled'],
+        'data' => ['label' => 'Data Bundles', 'category_key' => 'VTU_CAT_DATA', 'enabled_key' => 'vtu_data_enabled'],
+        'cable' => ['label' => 'Cable TV', 'category_key' => 'VTU_CAT_CABLE_TV', 'enabled_key' => 'vtu_cable_enabled'],
+        'electricity' => ['label' => 'Electricity', 'category_key' => 'VTU_CAT_ELECTRICITY', 'enabled_key' => 'vtu_electricity_enabled'],
+    ],
+];

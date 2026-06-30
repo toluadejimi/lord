@@ -22,6 +22,13 @@ class User extends Authenticatable
         'email',
         'password',
         'username',
+        'phone',
+        'api_key',
+        'webhook_url',
+        'api_percentage',
+        'wallet',
+        'role_id',
+        'status',
     ];
 
     /**

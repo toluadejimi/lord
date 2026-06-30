@@ -14,7 +14,6 @@ use App\Models\Verification;
 use Illuminate\Http\Request;
 use App\Models\AccountDetail;
 use App\Models\ManualPayment;
-use Illuminate\Support\Carbon;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
@@ -129,28 +128,53 @@ class AdminController extends Controller
 
         $data['user'] = User::all()->count();
         $data['total_in'] = Transaction::where('type', 2)->where('status', 2)->sum('amount');
-        $data['transaction'] = Transaction::latest()->paginate(10);
-        $data['total_in_d'] = Transaction::where(['type' => 2, 'status' => 2])->whereday('created_at', Carbon::today())->sum('amount');
+        $data['transaction'] = Transaction::with('user')->latest()->paginate(10);
         $data['total_out'] = Verification::where('status', 2)->sum('cost');
         $data['total_verified_message'] = Verification::where('status', 2)->count();
-        $data['user_wallet'] = User::where('role_id', 2)->sum('wallet');
-        $data['smspoolrate'] = Setting::where('id', 1)->first()->rate;
-        $data['smspoolcost'] = Setting::where('id', 1)->first()->margin;
-        $data['simrate'] = Setting::where('id', 3)->first()->rate;
-        $data['simcost'] = Setting::where('id', 3)->first()->margin;
-        $data['verification'] = Verification::latest()->paginate(10);
+        $data['verification'] = Verification::with('user')->latest()->paginate(10);
 
-
-
-        return view('admin-dashboard', $data);
+        return view('admin.dashboard', $data);
 
 	}
+
+    public function transactions(Request $request)
+    {
+        if (!$this->isAdmin()) {
+            return redirect('/admin')->with('error', 'You do not have permission');
+        }
+
+        $transactions = Transaction::with('user')->latest()->paginate(25);
+
+        return view('admin.transactions', compact('transactions'));
+    }
+
+    public function verifications(Request $request)
+    {
+        if (!$this->isAdmin()) {
+            return redirect('/admin')->with('error', 'You do not have permission');
+        }
+
+        $verifications = Verification::with('user')->latest()->paginate(25);
+
+        return view('admin.verifications', compact('verifications'));
+    }
+
+    protected function isAdmin(): bool
+    {
+        $role = User::where('id', Auth::id())->first()->role_id ?? null;
+        if ($role != 5) {
+            Auth::logout();
+            return false;
+        }
+
+        return true;
+    }
 
 
 
     public function update_smspool_rate(request $request)
 	{
-        Setting::where('id', 1)->update(['rate' => $request->rate]);
+        Setting::where('id', 2)->update(['rate' => $request->rate]);
 
         return back()->with('message', "Rate Update Successfully");
 
@@ -159,7 +183,7 @@ class AdminController extends Controller
 
     public function update_smspool_cost(request $request)
 	{
-        Setting::where('id', 1)->update(['margin' => $request->cost]);
+        Setting::where('id', 2)->update(['margin' => $request->cost]);
 
         return back()->with('message', "Cost Update Successfully");
 
@@ -209,7 +233,7 @@ class AdminController extends Controller
         $users = User::orderBy('wallet', 'desc')->paginate(10);
 
 
-        return view('user', compact('user', 'users'));
+        return view('user', compact('user', 'users'))->with('adminActive', 'users');
 
 
     }
@@ -276,7 +300,7 @@ class AdminController extends Controller
         $data['total_bought'] = verification::where('user_id', $request->id)->where('status', 2)->sum('cost');
         $data['total_balance'] = $data['total_funded'] -  $data['total_bought'];
 
-        return view('view-user',$data);
+        return view('view-user',$data)->with('adminActive', 'users');
     }
 
 
@@ -309,7 +333,7 @@ class AdminController extends Controller
         $payment = ManualPayment::latest()->paginate(20);
         $acc = AccountDetail::where('id', 1)->first();
 
-        return view('manual-payment', compact('payment', 'acc'));
+        return view('manual-payment', compact('payment', 'acc'))->with('adminActive', 'manual-payment');
 
 
     }
@@ -412,7 +436,7 @@ class AdminController extends Controller
         $users = User::where('id', $get_id)->paginate(10);
 
 
-        return view('user', compact('user', 'users'));
+        return view('user', compact('user', 'users'))->with('adminActive', 'users');
 
 
 
@@ -432,7 +456,7 @@ class AdminController extends Controller
         $users = User::where('id', $get_id)->paginate(10);
 
 
-        return view('user', compact('user', 'users'));
+        return view('user', compact('user', 'users'))->with('adminActive', 'users');
 
 
 

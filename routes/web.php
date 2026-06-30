@@ -1,14 +1,22 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminServicesController;
+use App\Http\Controllers\Admin\AdminSettingsController;
+use App\Http\Controllers\Admin\AdminVtuController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ApiDocsController;
+use App\Http\Controllers\AssistantController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SimController;
+use App\Http\Controllers\Usa2Controller;
+use App\Http\Controllers\VtuController;
+use App\Http\Controllers\WorldHeroController;
 use App\Http\Controllers\WorldNumberController;
+use App\Http\Controllers\WorldSv3Controller;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ItemController;
 use Rap2hpoutre\LaravelLogViewer\LogViewerController;
 
 
@@ -158,9 +166,26 @@ Route::get('resolve-page',  [HomeController::class,'resloveDeposit']);
 Route::any('resolve-now',  [HomeController::class,'resolveNow']);
 Route::get('change-password',  [HomeController::class,'change_password']);
 
-
-
-
+    Route::get('usa2', [Usa2Controller::class, 'index']);
+    Route::post('order-usa2', [Usa2Controller::class, 'order']);
+    Route::any('get-smscode-usa2', [Usa2Controller::class, 'pollSms']);
+    Route::get('world-sv2', [WorldHeroController::class, 'index']);
+    Route::post('order-world-hero', [WorldHeroController::class, 'order']);
+    Route::any('get-smscode-hero', [WorldHeroController::class, 'pollSms']);
+    Route::get('world-sv3', [WorldSv3Controller::class, 'index']);
+    Route::post('order-world-sv3', [WorldSv3Controller::class, 'order']);
+    Route::any('get-smscode-sv3', [WorldSv3Controller::class, 'pollSms']);
+    Route::get('verification', [HomeController::class, 'orders']);
+    Route::get('api-docs', [ApiDocsController::class, 'index']);
+    Route::post('api-docs/webhook', [ApiDocsController::class, 'updateWebhook']);
+    Route::post('api-docs/regenerate', [ApiDocsController::class, 'regenerateKey']);
+    Route::get('vas/airtime', [VtuController::class, 'airtime']);
+    Route::get('vas/data', [VtuController::class, 'data']);
+    Route::get('vas/cable', [VtuController::class, 'cable']);
+    Route::get('vas/electricity', [VtuController::class, 'electricity']);
+    Route::post('vas/purchase', [VtuController::class, 'purchase']);
+    Route::post('vas/validate-bill', [VtuController::class, 'validateBill']);
+    Route::post('assistant/command', [AssistantController::class, 'command']);
 
 });
 
@@ -196,8 +221,18 @@ Route::get('change-password',  [HomeController::class,'change_password']);
 Route::get('admin',  [AdminController::class,'index']);
 Route::post('admin-login',  [AdminController::class,'admin_login']);
 
-Route::prefix('admin')->group(function () {
+Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('dashboard',  [AdminController::class,'admin_dashboard']);
+    Route::get('transactions', [AdminController::class, 'transactions']);
+    Route::get('verifications', [AdminController::class, 'verifications']);
+    Route::get('services', [AdminServicesController::class, 'index']);
+    Route::post('services', [AdminServicesController::class, 'update']);
+    Route::get('vtu', [AdminVtuController::class, 'index']);
+    Route::post('vtu', [AdminVtuController::class, 'update']);
+    Route::post('vtu/fetch-categories', [AdminVtuController::class, 'fetchCategories']);
+    Route::get('settings', [AdminSettingsController::class, 'index']);
+    Route::post('settings/keys', [AdminSettingsController::class, 'updateKeys']);
+    Route::post('settings/notification', [AdminSettingsController::class, 'updateNotification']);
     Route::get('users',  [AdminController::class,'index_user']);
     Route::get('view-user',  [AdminController::class,'view_user']);
     Route::any('update-user',  [AdminController::class,'update_user']);

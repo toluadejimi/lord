@@ -374,7 +374,7 @@ class HomeController extends Controller
             }
 
 
-            $key = env('WEBKEY');
+            $key = app_config('WEBKEY');
             $ref = "VERF" . random_int(000, 999) . date('ymdhis');
             $email = Auth::user()->email;
 
