@@ -8,7 +8,7 @@
   font-weight: 400;
   src: url(tabler/tabler-icons.eot);
   src:
-    url(tabler/tabler-icons.eot%3F) format('embedded-opentype'),
+    url(tabler/tabler-icons.eot) format('embedded-opentype'),
     url(tabler/tabler-icons.woff2) format('woff2'),
     url(tabler/tabler-icons.woff) format('woff'),
     url(tabler/tabler-icons.ttf) format('truetype'),
