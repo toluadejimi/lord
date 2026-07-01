@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminMaintenanceController;
 use App\Http\Controllers\Admin\AdminServicesController;
 use App\Http\Controllers\Admin\AdminSettingsController;
 use App\Http\Controllers\Admin\AdminVtuController;
@@ -233,6 +234,8 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('settings', [AdminSettingsController::class, 'index']);
     Route::post('settings/keys', [AdminSettingsController::class, 'updateKeys']);
     Route::post('settings/notification', [AdminSettingsController::class, 'updateNotification']);
+    Route::post('maintenance/migrate', [AdminMaintenanceController::class, 'migrate']);
+    Route::post('maintenance/clear-cache', [AdminMaintenanceController::class, 'clearCache']);
     Route::get('users',  [AdminController::class,'index_user']);
     Route::get('view-user',  [AdminController::class,'view_user']);
     Route::any('update-user',  [AdminController::class,'update_user']);

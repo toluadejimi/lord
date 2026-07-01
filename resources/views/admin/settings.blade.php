@@ -55,4 +55,6 @@
         <button class="btn btn-primary btn-sm">Save Notification</button>
     </div>
 </form>
+
+@include('admin.partials.maintenance')
 @endsection
