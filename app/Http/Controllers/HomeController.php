@@ -615,7 +615,7 @@ class HomeController extends Controller
             return redirect('cworld');
         }
 
-        return view('Auth.split-auth', ['tab' => 'register']);
+        return view('Auth.register');
     }
 
 
@@ -625,7 +625,7 @@ class HomeController extends Controller
             return redirect('cworld');
         }
 
-        return view('Auth.split-auth', ['tab' => 'login']);
+        return view('Auth.login');
     }
 
 
