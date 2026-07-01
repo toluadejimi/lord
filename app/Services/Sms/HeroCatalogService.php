@@ -30,7 +30,7 @@ class HeroCatalogService
      */
     protected function fetchSmsBowerCountries(): array
     {
-        $cached = Cache::get('hero_catalog.countries.sv3.v2');
+        $cached = Cache::get('hero_catalog.countries.sv3.v3');
         if (is_array($cached) && $cached !== []) {
             return $cached;
         }
@@ -46,7 +46,7 @@ class HeroCatalogService
         }
 
         if ($countries !== []) {
-            Cache::put('hero_catalog.countries.sv3.v2', $countries, 3600);
+            Cache::put('hero_catalog.countries.sv3.v3', $countries, 3600);
         }
 
         return $countries;
@@ -176,7 +176,7 @@ class HeroCatalogService
         $service = strtolower(trim($service));
 
         $actions = $providerKey === 'sv3'
-            ? ['getPrices', 'getPricesV3', 'getPricesV2']
+            ? ['getPricesV3', 'getPrices', 'getPricesV2']
             : ['getPrices'];
 
         foreach ($actions as $action) {
@@ -201,6 +201,7 @@ class HeroCatalogService
             return [
                 'usd' => $usd,
                 'available' => (int) ($entry['count'] ?? $entry['quantity'] ?? $entry['phones'] ?? 0),
+                'provider_id' => isset($entry['provider_id']) ? (string) $entry['provider_id'] : null,
             ];
         }
 
@@ -365,19 +366,28 @@ class HeroCatalogService
         foreach ($countryKeys as $countryKey) {
             foreach ($serviceKeys as $serviceKey) {
                 $entry = $json[$countryKey][$serviceKey] ?? null;
-                if (is_array($entry) && $this->priceEntryHasCost($entry)) {
-                    return $entry;
+                if (is_array($entry)) {
+                    $resolved = $this->normalizePriceEntry($entry);
+                    if ($resolved !== null) {
+                        return $resolved;
+                    }
                 }
             }
 
-            if (isset($json[$countryKey]) && is_array($json[$countryKey]) && $this->priceEntryHasCost($json[$countryKey])) {
-                return $json[$countryKey];
+            if (isset($json[$countryKey]) && is_array($json[$countryKey])) {
+                $resolved = $this->normalizePriceEntry($json[$countryKey]);
+                if ($resolved !== null) {
+                    return $resolved;
+                }
             }
         }
 
         foreach ($serviceKeys as $serviceKey) {
-            if (isset($json[$serviceKey]) && is_array($json[$serviceKey]) && $this->priceEntryHasCost($json[$serviceKey])) {
-                return $json[$serviceKey];
+            if (isset($json[$serviceKey]) && is_array($json[$serviceKey])) {
+                $resolved = $this->normalizePriceEntry($json[$serviceKey]);
+                if ($resolved !== null) {
+                    return $resolved;
+                }
             }
         }
 
@@ -388,19 +398,79 @@ class HeroCatalogService
 
             foreach ($serviceKeys as $serviceKey) {
                 if (isset($countryBlock[$serviceKey]) && is_array($countryBlock[$serviceKey])) {
-                    $entry = $countryBlock[$serviceKey];
-                    if ($this->priceEntryHasCost($entry)) {
-                        return $entry;
+                    $resolved = $this->normalizePriceEntry($countryBlock[$serviceKey]);
+                    if ($resolved !== null) {
+                        return $resolved;
                     }
                 }
             }
 
-            if (in_array((string) $countryKey, $countryKeys, true) && $this->priceEntryHasCost($countryBlock)) {
-                return $countryBlock;
+            if (in_array((string) $countryKey, $countryKeys, true)) {
+                $resolved = $this->normalizePriceEntry($countryBlock);
+                if ($resolved !== null) {
+                    return $resolved;
+                }
             }
         }
 
         return null;
+    }
+
+    /**
+     * Flat cost/count entry or best offer from getPricesV3 provider map.
+     *
+     * @param  array<string, mixed>  $block
+     * @return array<string, mixed>|null
+     */
+    protected function normalizePriceEntry(array $block): ?array
+    {
+        if ($this->priceEntryHasCost($block)) {
+            return $block;
+        }
+
+        return $this->bestProviderOffer($block);
+    }
+
+    /**
+     * @param  array<string, mixed>  $providers
+     * @return array<string, mixed>|null
+     */
+    protected function bestProviderOffer(array $providers): ?array
+    {
+        $cheapest = null;
+        $totalCount = 0;
+
+        foreach ($providers as $key => $offer) {
+            if (!is_array($offer)) {
+                continue;
+            }
+
+            if (!$this->priceEntryHasCost($offer)) {
+                continue;
+            }
+
+            $price = (float) ($offer['price'] ?? $offer['cost'] ?? $offer['physicalPrice'] ?? $offer['minPrice'] ?? 0);
+            $count = (int) ($offer['count'] ?? $offer['quantity'] ?? $offer['phones'] ?? 0);
+            $totalCount += $count;
+
+            if ($cheapest === null || $price < (float) $cheapest['cost']) {
+                $cheapest = [
+                    'cost' => $price,
+                    'count' => $count,
+                    'provider_id' => (string) ($offer['provider_id'] ?? $key),
+                ];
+            }
+        }
+
+        if ($cheapest === null) {
+            return null;
+        }
+
+        if ($totalCount > (int) $cheapest['count']) {
+            $cheapest['count'] = $totalCount;
+        }
+
+        return $cheapest;
     }
 
     protected function priceEntryHasCost(array $entry): bool

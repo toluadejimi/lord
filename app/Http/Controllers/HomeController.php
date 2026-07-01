@@ -344,8 +344,8 @@ class HomeController extends Controller
         $user = Auth::id() ?? null;
         $pay = PaymentMethod::all();
         $transaction = Transaction::query()
-            ->orderByRaw('updated_at DESC')
             ->where('user_id', Auth::id())
+            ->latest()
             ->paginate(10);
 
         return view('fund-wallet', compact('user', 'pay', 'transaction'));

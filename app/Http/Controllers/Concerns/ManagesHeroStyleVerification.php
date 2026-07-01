@@ -94,7 +94,15 @@ trait ManagesHeroStyleVerification
         $quote = $catalog->quote($this->heroProviderKey(), $request->country, $request->service);
 
         if (!$quote) {
-            return response()->json(['message' => 'Number not available for this country and service.'], 404);
+            $message = 'Number not available for this country and service.';
+            if ($this->heroProviderKey() === 'sv3') {
+                $apiKey = app(\App\Services\AppConfigService::class)->get('SMS_SERVER_WORLD_SV3_API_KEY', '');
+                if ($apiKey === '') {
+                    $message = 'Server 4 is not configured. Admin must set the SMS Bower API key.';
+                }
+            }
+
+            return response()->json(['message' => $message], 404);
         }
 
         $ngn = $pricing->ngnFromUsd(
