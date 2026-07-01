@@ -9,6 +9,21 @@ class Verification extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'user_id',
+        'phone',
+        'order_id',
+        'country',
+        'service',
+        'cost',
+        'api_cost',
+        'status',
+        'type',
+        'ip',
+        'expires_in',
+        'sms',
+        'full_sms',
+    ];
 
     public function user()
     {

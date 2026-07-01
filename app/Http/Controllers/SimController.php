@@ -7,7 +7,6 @@ use App\Models\Setting;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Verification;
-use App\Support\LegacyHelpers;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,7 +17,7 @@ class SimController extends Controller
     public function index(request $request)
     {
 
-        $countries = LegacyHelpers::getSCountries();
+        $countries = get_s_countries();
 
         $verification = Verification::where('user_id', Auth::id())->get();
         $s_rate = Setting::where('id', 3)->first();
@@ -76,7 +75,7 @@ class SimController extends Controller
         $country = $request->input('country');
         $operator = $request->input('operator');
         $product = $request->input('product');
-        $cost = LegacyHelpers::getSProductCost($operator, $country, $product);
+        $cost = get_s_product_cost($operator, $country, $product);
 
         if($cost == 0){
             return 0;
@@ -134,7 +133,7 @@ class SimController extends Controller
     public function get_s_country(request $request)
     {
 
-        $balance = LegacyHelpers::getSCountries();
+        $balance = get_s_countries();
 
         dd($balance);
 
@@ -195,8 +194,8 @@ class SimController extends Controller
             $data['count_id'] = $count_id;
             $data['serv'] = $request->service;
             $data['verification'] = $verification;
-            $countries = LegacyHelpers::getWorldCountries();
-            $services = LegacyHelpers::getWorldServices();
+            $countries = get_world_countries();
+            $services = get_world_services();
             $data['services'] = $services;
             $data['countries'] = $countries;
             $data['rate'] = $rate;

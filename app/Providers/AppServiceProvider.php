@@ -39,14 +39,22 @@ class AppServiceProvider extends ServiceProvider
         if (!function_exists('get_s_countries')) {
             function get_s_countries(): array
             {
-                return \App\Support\LegacyHelpers::getSCountries();
+                if (class_exists(\App\Support\LegacyHelpers::class)) {
+                    return \App\Support\LegacyHelpers::getSCountries();
+                }
+
+                return [];
             }
         }
 
         if (!function_exists('get_s_product_cost')) {
             function get_s_product_cost(string $operator, string $country, string $product): float|int
             {
-                return \App\Support\LegacyHelpers::getSProductCost($operator, $country, $product);
+                if (class_exists(\App\Support\LegacyHelpers::class)) {
+                    return \App\Support\LegacyHelpers::getSProductCost($operator, $country, $product);
+                }
+
+                return 0;
             }
         }
 
@@ -67,14 +75,22 @@ class AppServiceProvider extends ServiceProvider
         if (!function_exists('get_world_countries')) {
             function get_world_countries(): mixed
             {
-                return \App\Support\LegacyHelpers::getWorldCountries();
+                if (class_exists(\App\Support\LegacyHelpers::class)) {
+                    return \App\Support\LegacyHelpers::getWorldCountries();
+                }
+
+                return null;
             }
         }
 
         if (!function_exists('get_world_services')) {
             function get_world_services(): mixed
             {
-                return \App\Support\LegacyHelpers::getWorldServices();
+                if (class_exists(\App\Support\LegacyHelpers::class)) {
+                    return \App\Support\LegacyHelpers::getWorldServices();
+                }
+
+                return null;
             }
         }
     }

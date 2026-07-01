@@ -129,6 +129,12 @@ class LegacyHelpers
 
     public static function sendAdminNotification(string $message): void
     {
+        if (function_exists('send_admin_notification')) {
+            send_admin_notification($message);
+
+            return;
+        }
+
         if (function_exists('send_notification2')) {
             \send_notification2($message);
 
@@ -143,18 +149,21 @@ class LegacyHelpers
             return;
         }
 
-        $curl = curl_init();
-        curl_setopt_array($curl, [
-            CURLOPT_URL => "https://api.telegram.org/bot{$token}/sendMessage",
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_TIMEOUT => 10,
-            CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => [
-                'chat_id' => $chatId,
-                'text' => $message,
-            ],
-        ]);
-        curl_exec($curl);
-        curl_close($curl);
+        try {
+            $curl = curl_init();
+            curl_setopt_array($curl, [
+                CURLOPT_URL => "https://api.telegram.org/bot{$token}/sendMessage",
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_TIMEOUT => 10,
+                CURLOPT_POST => true,
+                CURLOPT_POSTFIELDS => [
+                    'chat_id' => $chatId,
+                    'text' => $message,
+                ],
+            ]);
+            curl_exec($curl);
+            curl_close($curl);
+        } catch (\Throwable) {
+        }
     }
 }

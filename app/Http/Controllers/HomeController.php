@@ -10,7 +10,6 @@ use App\Models\SoldLog;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Verification;
-use App\Support\LegacyHelpers;
 use App\Services\Payment\SprintPayClient;
 use App\Services\WalletFundingService;
 use Illuminate\Http\Request;
@@ -24,7 +23,7 @@ class HomeController extends Controller
 {
     public function index(request $request)
     {
-        $countries = LegacyHelpers::getSCountries();
+        $countries = get_s_countries();
 
         $verification = Verification::where('user_id', Auth::id())->paginate(10);
         $s_rate = Setting::where('id', 3)->first();
@@ -398,7 +397,9 @@ class HomeController extends Controller
 
 
             $message = Auth::user()->email . "| wants to fund |  NGN " . number_format($request->amount) . " | with ref | $ref |  on SMSLORD";
-            LegacyHelpers::sendAdminNotification($message);
+            if (function_exists('send_admin_notification')) {
+                send_admin_notification($message);
+            }
 
 
             return Redirect::to($url);
@@ -431,7 +432,9 @@ class HomeController extends Controller
 
 
             $message = Auth::user()->email . "| wants to fund Manually |  NGN " . number_format($request->amount) . " | with ref | $ref |  on SMSLORD";
-            LegacyHelpers::sendAdminNotification($message);
+            if (function_exists('send_admin_notification')) {
+                send_admin_notification($message);
+            }
 
 
             $data['account_details'] = AccountDetail::where('id', 1)->first();
@@ -467,7 +470,9 @@ class HomeController extends Controller
 
 
         $message = Auth::user()->email . "| submitted payment receipt |  NGN " . number_format($request->amount) . " | on SMSLORD";
-        LegacyHelpers::sendAdminNotification($message);
+        if (function_exists('send_admin_notification')) {
+            send_admin_notification($message);
+        }
 
 
         return view('confirm-pay');

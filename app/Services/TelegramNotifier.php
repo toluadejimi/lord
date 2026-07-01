@@ -2,20 +2,31 @@
 
 namespace App\Services;
 
-use App\Support\LegacyHelpers;
-
 /**
- * @deprecated Use LegacyHelpers::sendAdminNotification() instead.
+ * Thin wrapper around legacy Telegram helpers so controllers never depend on
+ * optional app/Support classes that may be missing on some deployments.
  */
 class TelegramNotifier
 {
-    public static function send(string $message): void
+    public function notify(string $message): void
     {
-        LegacyHelpers::sendAdminNotification($message);
+        $this->send($message);
     }
 
-    public static function sendSecondary(string $message): void
+    public function send(string $message): void
     {
-        LegacyHelpers::sendAdminNotification($message);
+        if (function_exists('send_admin_notification')) {
+            send_admin_notification($message);
+
+            return;
+        }
+
+        if (function_exists('send_notification')) {
+            send_notification($message);
+        }
+
+        if (function_exists('send_notification2')) {
+            send_notification2($message);
+        }
     }
 }

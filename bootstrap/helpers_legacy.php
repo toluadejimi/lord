@@ -77,33 +77,62 @@ function resolve_complete($order_id)
 }
 
 
+if (!function_exists('telegram_notify')) {
+    function telegram_notify(string $message, string $channel = 'primary'): void
+    {
+        if ($message === '') {
+            return;
+        }
+
+        $token = '';
+        $chatId = '';
+
+        if (function_exists('app_config')) {
+            if ($channel === 'secondary') {
+                $token = (string) (app_config('TELEGRAM_BOT_TOKEN_2', '') ?: app_config('TELEGRAM_BOT_TOKEN', ''));
+                $chatId = (string) (app_config('TELEGRAM_CHAT_ID_2', '') ?: app_config('TELEGRAM_ADMIN_CHAT_ID', ''));
+            } else {
+                $token = (string) app_config('TELEGRAM_BOT_TOKEN', '');
+                $chatId = (string) app_config('TELEGRAM_ADMIN_CHAT_ID', '');
+            }
+        }
+
+        if ($token === '' || $chatId === '') {
+            return;
+        }
+
+        try {
+            $curl = curl_init();
+            curl_setopt_array($curl, [
+                CURLOPT_URL => "https://api.telegram.org/bot{$token}/sendMessage",
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_TIMEOUT => 10,
+                CURLOPT_POST => true,
+                CURLOPT_POSTFIELDS => [
+                    'chat_id' => $chatId,
+                    'text' => $message,
+                ],
+            ]);
+            curl_exec($curl);
+            curl_close($curl);
+        } catch (\Throwable) {
+            // Never break user flows when Telegram is down or misconfigured.
+        }
+    }
+}
+
+if (!function_exists('send_admin_notification')) {
+    function send_admin_notification(string $message): void
+    {
+        telegram_notify($message, 'primary');
+        telegram_notify($message, 'secondary');
+    }
+}
+
 if (!function_exists('send_notification')) {
 function send_notification($message)
 {
-    $token = app_config('TELEGRAM_BOT_TOKEN');
-    $chatId = app_config('TELEGRAM_ADMIN_CHAT_ID');
-    if (!$token || !$chatId) {
-        return;
-    }
-
-    $curl = curl_init();
-    curl_setopt_array($curl, array(
-        CURLOPT_URL => "https://api.telegram.org/bot{$token}/sendMessage",
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_ENCODING => '',
-        CURLOPT_MAXREDIRS => 10,
-        CURLOPT_TIMEOUT => 0,
-        CURLOPT_FOLLOWLOCATION => true,
-        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        CURLOPT_CUSTOMREQUEST => 'POST',
-        CURLOPT_POSTFIELDS => array(
-            'chat_id' => $chatId,
-            'text' => $message,
-        ),
-        CURLOPT_HTTPHEADER => array(),
-    ));
-    curl_exec($curl);
-    curl_close($curl);
+    telegram_notify((string) $message, 'primary');
 }
 }
 
@@ -111,30 +140,7 @@ function send_notification($message)
 if (!function_exists('send_notification2')) {
 function send_notification2($message)
 {
-    $token = app_config('TELEGRAM_BOT_TOKEN_2') ?: app_config('TELEGRAM_BOT_TOKEN');
-    $chatId = app_config('TELEGRAM_CHAT_ID_2') ?: app_config('TELEGRAM_ADMIN_CHAT_ID');
-    if (!$token || !$chatId) {
-        return;
-    }
-
-    $curl = curl_init();
-    curl_setopt_array($curl, array(
-        CURLOPT_URL => "https://api.telegram.org/bot{$token}/sendMessage",
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_ENCODING => '',
-        CURLOPT_MAXREDIRS => 10,
-        CURLOPT_TIMEOUT => 0,
-        CURLOPT_FOLLOWLOCATION => true,
-        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        CURLOPT_CUSTOMREQUEST => 'POST',
-        CURLOPT_POSTFIELDS => array(
-            'chat_id' => $chatId,
-            'text' => $message,
-        ),
-        CURLOPT_HTTPHEADER => array(),
-    ));
-    curl_exec($curl);
-    curl_close($curl);
+    telegram_notify((string) $message, 'secondary');
 }
 }
 
@@ -287,6 +293,7 @@ function check_sms($orderID)
 }
 
 
+if (!function_exists('get_world_countries')) {
 function get_world_countries()
 {
     $key = app_config('WKEY');
@@ -332,9 +339,11 @@ function get_world_countries()
 
     return $countries;
 }
+}
 
 
 
+if (!function_exists('get_world_services')) {
 function get_world_services()
 {
 
@@ -368,6 +377,7 @@ function get_world_services()
 
     return $services;
 
+}
 }
 
 
@@ -580,6 +590,7 @@ function check_world_sms($orderID)
 }
 
 
+if (!function_exists('get_s_countries')) {
 function get_s_countries()
 {
     $token = app_config('SIMTOKEN');
@@ -609,8 +620,10 @@ function get_s_countries()
 
 
 }
+}
 
 
+if (!function_exists('get_s_product_cost')) {
 function get_s_product_cost($operator, $country, $product)
 {
     $token = app_config('SIMTOKEN');
@@ -659,6 +672,7 @@ function get_s_product_cost($operator, $country, $product)
     return $fcost;
 
 
+}
 }
 
 
