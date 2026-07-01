@@ -11,14 +11,32 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (!Schema::hasTable('users')) {
+            return;
+        }
+
         Schema::table('users', function (Blueprint $table) {
-            $table->string('username')->unique()->nullable()->after('email');
-            $table->unsignedBigInteger('role_id')->nullable()->after('remember_token');
-            $table->decimal('wallet', 12, 2)->default(0)->after('role_id');
-            $table->decimal('hold_wallet', 12, 2)->default(0)->after('wallet');
-            $table->string('session_id')->nullable()->after('hold_wallet');
-            $table->string('code')->nullable()->after('session_id');
-            $table->tinyInteger('status')->default(1)->after('code');
+            if (!Schema::hasColumn('users', 'username')) {
+                $table->string('username')->unique()->nullable()->after('email');
+            }
+            if (!Schema::hasColumn('users', 'role_id')) {
+                $table->unsignedBigInteger('role_id')->nullable()->after('remember_token');
+            }
+            if (!Schema::hasColumn('users', 'wallet')) {
+                $table->decimal('wallet', 12, 2)->default(0)->after('role_id');
+            }
+            if (!Schema::hasColumn('users', 'hold_wallet')) {
+                $table->decimal('hold_wallet', 12, 2)->default(0)->after('wallet');
+            }
+            if (!Schema::hasColumn('users', 'session_id')) {
+                $table->string('session_id')->nullable()->after('hold_wallet');
+            }
+            if (!Schema::hasColumn('users', 'code')) {
+                $table->string('code')->nullable()->after('session_id');
+            }
+            if (!Schema::hasColumn('users', 'status')) {
+                $table->tinyInteger('status')->default(1)->after('code');
+            }
         });
     }
 

@@ -9,33 +9,39 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('app_configs', function (Blueprint $table) {
-            $table->id();
-            $table->string('config_key')->unique();
-            $table->text('config_value')->nullable();
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('app_configs')) {
+            Schema::create('app_configs', function (Blueprint $table) {
+                $table->id();
+                $table->string('config_key')->unique();
+                $table->text('config_value')->nullable();
+                $table->timestamps();
+            });
+        }
 
-        Schema::table('users', function (Blueprint $table) {
-            if (!Schema::hasColumn('users', 'api_key')) {
-                $table->string('api_key', 64)->nullable()->unique()->after('wallet');
-            }
-            if (!Schema::hasColumn('users', 'webhook_url')) {
-                $table->string('webhook_url')->nullable()->after('api_key');
-            }
-            if (!Schema::hasColumn('users', 'api_percentage')) {
-                $table->decimal('api_percentage', 8, 4)->default(1)->after('webhook_url');
-            }
-            if (!Schema::hasColumn('users', 'phone')) {
-                $table->string('phone')->nullable()->after('name');
-            }
-        });
+        if (Schema::hasTable('users')) {
+            Schema::table('users', function (Blueprint $table) {
+                if (!Schema::hasColumn('users', 'api_key')) {
+                    $table->string('api_key', 64)->nullable()->unique()->after('wallet');
+                }
+                if (!Schema::hasColumn('users', 'webhook_url')) {
+                    $table->string('webhook_url')->nullable()->after('api_key');
+                }
+                if (!Schema::hasColumn('users', 'api_percentage')) {
+                    $table->decimal('api_percentage', 8, 4)->default(1)->after('webhook_url');
+                }
+                if (!Schema::hasColumn('users', 'phone')) {
+                    $table->string('phone')->nullable()->after('name');
+                }
+            });
+        }
 
-        Schema::table('settings', function (Blueprint $table) {
-            if (!Schema::hasColumn('settings', 'is_enabled')) {
-                $table->boolean('is_enabled')->default(true)->after('margin');
-            }
-        });
+        if (Schema::hasTable('settings')) {
+            Schema::table('settings', function (Blueprint $table) {
+                if (!Schema::hasColumn('settings', 'is_enabled')) {
+                    $table->boolean('is_enabled')->default(true)->after('margin');
+                }
+            });
+        }
 
         if (Schema::hasTable('settings') && !DB::table('settings')->where('id', 5)->exists()) {
             DB::table('settings')->insert([
