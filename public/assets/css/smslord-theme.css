@@ -1,5 +1,57 @@
 /* SMSLORD — compact header & modern footer */
 
+/* Fix sidebar text contrast (style-preset.css sets #eeeeee — invisible on white) */
+:root,
+body[data-pc-theme="light"] {
+    --pc-sidebar-color: #475569 !important;
+    --pc-sidebar-caption-color: #64748b !important;
+    --pc-sidebar-active-color: #4f46e5 !important;
+    --pc-sidebar-background: #ffffff;
+    --pc-sidebar-border: 1px solid #e2e8f0;
+}
+
+.pc-sidebar .navbar-wrapper {
+    background: var(--pc-sidebar-background);
+}
+
+.pc-sidebar .pc-link,
+.pc-sidebar .pc-link .pc-mtext,
+.pc-sidebar .pc-link .pc-micon i {
+    color: #475569 !important;
+}
+
+.pc-sidebar .pc-caption label {
+    color: #94a3b8 !important;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+}
+
+.pc-sidebar .pc-item.active > .pc-link,
+.pc-sidebar .pc-link.active,
+.pc-sidebar .pc-link:hover {
+    color: #4f46e5 !important;
+}
+
+[data-pc-theme="dark"] {
+    --pc-sidebar-color: rgba(255, 255, 255, 0.78) !important;
+    --pc-sidebar-caption-color: rgba(255, 255, 255, 0.55) !important;
+    --pc-sidebar-active-color: #a78bfa !important;
+    --pc-sidebar-background: #1b232d;
+    --pc-sidebar-border: 1px solid #263240;
+}
+
+[data-pc-theme="dark"] .pc-sidebar .pc-link,
+[data-pc-theme="dark"] .pc-sidebar .pc-link .pc-mtext,
+[data-pc-theme="dark"] .pc-sidebar .pc-link .pc-micon i {
+    color: rgba(255, 255, 255, 0.78) !important;
+}
+
+[data-pc-theme="dark"] .pc-sidebar .pc-item.active > .pc-link,
+[data-pc-theme="dark"] .pc-sidebar .pc-link.active,
+[data-pc-theme="dark"] .pc-sidebar .pc-link:hover {
+    color: #c4b5fd !important;
+}
+
 /* Override color-header layout (legacy localStorage) */
 [data-pc-layout="color-header"] {
     background: var(--bs-body-bg, #f8f9fa) !important;

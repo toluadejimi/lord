@@ -503,7 +503,40 @@
 <script src="{{ static_asset('assets/js/fonts/custom-font.js') }}"></script>
 <script src="{{ static_asset('assets/js/pcoded.js') }}"></script>
 <script src="{{ static_asset('assets/js/plugins/feather.min.js') }}"></script>
-<script>layout_change('light');</script>
+<script>
+(function () {
+    var savedTheme = localStorage.getItem('smslord_theme');
+
+    if (typeof layout_change === 'function') {
+        if (savedTheme === 'dark') {
+            layout_change('dark');
+        } else if (savedTheme === 'default' && typeof layout_change_default === 'function') {
+            layout_change_default();
+        } else {
+            layout_change('light');
+            if (!savedTheme) {
+                localStorage.setItem('smslord_theme', 'light');
+            }
+        }
+
+        var originalLayoutChange = layout_change;
+        window.layout_change = function (theme) {
+            if (theme === 'dark' || theme === 'light') {
+                localStorage.setItem('smslord_theme', theme);
+            }
+            return originalLayoutChange(theme);
+        };
+    }
+
+    if (typeof layout_change_default === 'function') {
+        var originalLayoutChangeDefault = layout_change_default;
+        window.layout_change_default = function () {
+            localStorage.setItem('smslord_theme', 'default');
+            return originalLayoutChangeDefault();
+        };
+    }
+})();
+</script>
 <script>layout_theme_contrast_change('false');</script>
 <script>change_box_container('false');</script>
 <script>layout_caption_change('true');</script>
