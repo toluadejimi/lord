@@ -231,3 +231,68 @@ if (!function_exists('get_world_services')) {
         return json_decode($var);
     }
 }
+
+if (!function_exists('telegram_notify')) {
+    function telegram_notify(string $message, string $channel = 'primary'): void
+    {
+        if ($message === '') {
+            return;
+        }
+
+        $token = '';
+        $chatId = '';
+
+        if (function_exists('app_config')) {
+            if ($channel === 'secondary') {
+                $token = (string) (app_config('TELEGRAM_BOT_TOKEN_2', '') ?: app_config('TELEGRAM_BOT_TOKEN', ''));
+                $chatId = (string) (app_config('TELEGRAM_CHAT_ID_2', '') ?: app_config('TELEGRAM_ADMIN_CHAT_ID', ''));
+            } else {
+                $token = (string) app_config('TELEGRAM_BOT_TOKEN', '');
+                $chatId = (string) app_config('TELEGRAM_ADMIN_CHAT_ID', '');
+            }
+        }
+
+        if ($token === '' || $chatId === '') {
+            return;
+        }
+
+        try {
+            $curl = curl_init();
+            curl_setopt_array($curl, [
+                CURLOPT_URL => "https://api.telegram.org/bot{$token}/sendMessage",
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_TIMEOUT => 10,
+                CURLOPT_POST => true,
+                CURLOPT_POSTFIELDS => [
+                    'chat_id' => $chatId,
+                    'text' => $message,
+                ],
+            ]);
+            curl_exec($curl);
+            curl_close($curl);
+        } catch (\Throwable) {
+        }
+    }
+}
+
+if (!function_exists('send_admin_notification')) {
+    function send_admin_notification(string $message): void
+    {
+        telegram_notify($message, 'primary');
+        telegram_notify($message, 'secondary');
+    }
+}
+
+if (!function_exists('send_notification')) {
+    function send_notification($message): void
+    {
+        telegram_notify((string) $message, 'primary');
+    }
+}
+
+if (!function_exists('send_notification2')) {
+    function send_notification2($message): void
+    {
+        telegram_notify((string) $message, 'secondary');
+    }
+}

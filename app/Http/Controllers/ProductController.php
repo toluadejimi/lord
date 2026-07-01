@@ -11,6 +11,7 @@ use App\Models\SoldLog;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Verification;
+use App\Services\WalletFundingService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -277,78 +278,60 @@ class ProductController extends Controller
 
     }
 
-    public function e_fund(request $request)
+    public function e_fund(Request $request)
     {
-
-
         $ipb = app_config('IPA');
         $ipa = app_config('IPB');
         $ip = $request->ip();
 
+        if ($ip != $ipb && $ip != $ipa) {
+            if (function_exists('send_admin_notification')) {
+                send_admin_notification("SMSLORD - just trying to fund | $request->email | $request->amount | $ip | ".$request->url().' | on SMSLORD');
+            }
 
+            return response()->json([
+                'status' => true,
+                'message' => 'Something went wrong',
+            ]);
+        }
 
-     if($ip == $ipb || $ip == $ipa) {
+        $get_user = User::where('email', $request->email)->first();
+        if ($get_user === null) {
+            return response()->json([
+                'status' => false,
+                'message' => 'No one user found, please check email and try again',
+            ]);
+        }
 
-         $get_user = User::where('email', $request->email)->first() ?? null;
+        $refId = (string) ($request->order_id ?? $request->ref ?? '');
+        $amount = (float) $request->amount;
 
-         if ($get_user == null) {
+        if ($amount <= 0 || $refId === '') {
+            return response()->json([
+                'status' => false,
+                'message' => 'Invalid funding request.',
+            ]);
+        }
 
-             return response()->json([
-                 'status' => false,
-                 'message' => 'No one user found, please check email and try again',
-             ]);
-         }
+        try {
+            app(WalletFundingService::class)->completePendingFunding($get_user, $refId, $amount);
+        } catch (\Throwable) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Could not credit wallet.',
+            ]);
+        }
 
-         $ip = $request->ip();
-         $url = $request->url();
-         $message = "SMSLORD - just funded his wallet | $request->email | $request->amount | $ip | $url | on SMSLORD";
-         send_notification($message);
-         send_notification2($message);
+        if (function_exists('send_admin_notification')) {
+            send_admin_notification("SMSLORD - just funded his wallet | $request->email | $request->amount | $ip | ".$request->url().' | on SMSLORD');
+        }
 
+        $amountFormatted = number_format($amount, 2);
 
-
-         User::where('email', $request->email)->increment('wallet', $request->amount) ?? null;
-
-         $amount = number_format($request->amount, 2);
-
-
-         $get_depo = Transaction::where('ref_id', $request->order_id)->first() ?? null;
-         if ($get_depo == null){
-             $trx = new Transaction();
-             $trx->ref_id = $request->order_id;
-             $trx->user_id = $get_user->id;
-             $trx->status = 2;
-             $trx->amount = $request->amount;
-             $trx->type = 2;
-             $trx->save();
-         }else{
-             Transaction::where('ref_id', $request->order_id)->update(['status'=> 2]);
-         }
-
-
-
-         return response()->json([
-             'status' => true,
-             'message' => "NGN $amount has been successfully added to your wallet",
-         ]);
-
-     }else{
-         $ip = $request->ip();
-         $url = $request->url();
-         $message = "SMSLORD - just trying to fund | $request->email | $request->amount | $ip | $url | on SMSLORD";
-         send_notification($message);
-         send_notification2($message);
-
-
-         return response()->json([
-             'status' => true,
-             'message' => "Something went wrong",
-         ]);
-
-     }
-
-
-
+        return response()->json([
+            'status' => true,
+            'message' => "NGN $amountFormatted has been successfully added to your wallet",
+        ]);
     }
 
 
