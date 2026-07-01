@@ -2,7 +2,7 @@
 
 @section('title', 'SMS Services')
 @section('page-title', 'SMS Services')
-@section('page-subtitle', 'Enable providers, API keys, and pricing per verification service.')
+@section('page-subtitle', 'Server 1–4 match the user menu. Each card shows the menu name and upstream provider.')
 
 @section('content')
 <div class="row">
@@ -14,10 +14,23 @@
     <div class="col-lg-6 mb-4">
         <div class="card service-card {{ $isOn ? '' : 'disabled' }}">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <span><i class="fas {{ $service['icon'] ?? 'fa-satellite-dish' }} mr-2"></i>{{ $service['label'] }}</span>
+                <span>
+                    <i class="fas {{ $service['icon'] ?? 'fa-satellite-dish' }} mr-2"></i>{{ $service['label'] }}
+                </span>
                 <span class="badge {{ $isOn ? 'badge-on' : 'badge-off' }}">{{ $isOn ? 'ON' : 'OFF' }}</span>
             </div>
             <div class="card-body">
+                <div class="mb-3">
+                    @if(!empty($service['provider']))
+                    <div class="small"><span class="text-muted">Provider:</span> <strong>{{ $service['provider'] }}</strong></div>
+                    @endif
+                    @if(!empty($service['config_label']) && ($service['config_label'] ?? '') !== ($service['label'] ?? ''))
+                    <div class="small text-muted">{{ $service['config_label'] }}</div>
+                    @endif
+                    @if(!empty($service['user_route']))
+                    <div class="small text-muted">User page: <code>{{ $service['user_route'] }}</code></div>
+                    @endif
+                </div>
                 <p class="text-muted small mb-3">{{ $service['description'] ?? '' }}</p>
 
                 <form method="post" action="{{ url('admin/services') }}">

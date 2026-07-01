@@ -35,7 +35,8 @@ class AdminServicesController extends Controller
             }
             $settingId = $meta['setting_id'];
             $services[$groupKey] = array_merge($meta, [
-                'label' => $group['label'],
+                'label' => $meta['menu_label'] ?? $group['label'],
+                'config_label' => $group['label'],
                 'keys' => $keys,
                 'setting' => $settings->get($settingId),
                 'setting_id' => $settingId,

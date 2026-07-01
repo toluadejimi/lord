@@ -12,14 +12,14 @@ return [
             ],
         ],
         'smspool' => [
-            'label' => 'World Server 1 — SMSPool',
+            'label' => 'SMSPool — World API',
             'keys' => [
                 'provider_smspool_enabled' => ['label' => 'Enabled', 'type' => 'boolean', 'env' => null, 'default' => '1'],
                 'WKEY' => ['label' => 'API Key', 'type' => 'password', 'env' => 'WKEY'],
             ],
         ],
         'usa2' => [
-            'label' => 'USA Server 2 — Unlimited Portal',
+            'label' => 'Server 2 — Unlimited Portal',
             'keys' => [
                 'provider_usa2_enabled' => ['label' => 'Enabled', 'type' => 'boolean', 'env' => null, 'default' => '0'],
                 'UNLIMITED_API_KEY' => ['label' => 'API Key', 'type' => 'password', 'env' => 'UNLIMITED_API_KEY'],
@@ -28,7 +28,7 @@ return [
             ],
         ],
         'hero' => [
-            'label' => 'World Server 2 — HeroSMS',
+            'label' => 'Server 3 — HeroSMS',
             'keys' => [
                 'provider_hero_enabled' => ['label' => 'Enabled', 'type' => 'boolean', 'env' => null, 'default' => '0'],
                 'SMS_SERVER_HERO_API_KEY' => ['label' => 'API Key', 'type' => 'password', 'env' => 'SMS_SERVER_HERO_API_KEY'],
@@ -36,7 +36,7 @@ return [
             ],
         ],
         'sv3' => [
-            'label' => 'World Server 3 — SMS Bower',
+            'label' => 'Server 4 — SMS Bower',
             'keys' => [
                 'provider_sv3_enabled' => ['label' => 'Enabled', 'type' => 'boolean', 'env' => null, 'default' => '0'],
                 'SMS_SERVER_WORLD_SV3_API_KEY' => ['label' => 'API Key', 'type' => 'password', 'env' => 'SMS_SERVER_WORLD_SV3_API_KEY'],
@@ -51,7 +51,7 @@ return [
             ],
         ],
         'sim' => [
-            'label' => '5SIM (All Countries Panel)',
+            'label' => 'Server 1 — 5SIM',
             'keys' => [
                 'provider_sim_enabled' => ['label' => 'Enabled', 'type' => 'boolean', 'env' => null, 'default' => '1'],
                 'SIMTOKEN' => ['label' => 'Bearer Token', 'type' => 'password', 'env' => 'SIMTOKEN'],
@@ -103,11 +103,11 @@ return [
 
     'setting_rows' => [
         1 => ['name' => 'usa1_api', 'label' => 'USA1 + API World Pricing'],
-        2 => ['name' => 'smspool', 'label' => 'World SMSPool Web'],
-        3 => ['name' => 'sim', 'label' => '5SIM Panel'],
-        4 => ['name' => 'usa2', 'label' => 'USA Server 2 (Unlimited)'],
-        5 => ['name' => 'hero', 'label' => 'World HeroSMS'],
-        6 => ['name' => 'sv3', 'label' => 'World SMS Bower'],
+        2 => ['name' => 'smspool', 'label' => 'SMSPool World API'],
+        3 => ['name' => 'sim', 'label' => 'Server 1 — 5SIM'],
+        4 => ['name' => 'usa2', 'label' => 'Server 2 — Unlimited Portal'],
+        5 => ['name' => 'hero', 'label' => 'Server 3 — HeroSMS'],
+        6 => ['name' => 'sv3', 'label' => 'Server 4 — SMS Bower'],
     ],
 
     'verification_types' => [
@@ -123,12 +123,54 @@ return [
     'admin_settings_groups' => ['sprintpay', 'security', 'telegram', 'site'],
 
     'admin_service_groups' => [
-        'sim' => ['setting_id' => 3, 'icon' => 'fa-globe', 'description' => '5SIM all-countries verification panel'],
-        'smspool' => ['setting_id' => 2, 'icon' => 'fa-sms', 'description' => 'World Server 1 — SMSPool'],
-        'usa2' => ['setting_id' => 4, 'icon' => 'fa-flag-usa', 'description' => 'USA Server 2 — Unlimited Portal'],
-        'hero' => ['setting_id' => 5, 'icon' => 'fa-server', 'description' => 'World Server 2 — HeroSMS'],
-        'sv3' => ['setting_id' => 6, 'icon' => 'fa-layer-group', 'description' => 'World Server 3 — SMS Bower'],
-        'usa1' => ['setting_id' => 1, 'icon' => 'fa-ban', 'description' => 'USA Server 1 — Retired legacy handler'],
+        'sim' => [
+            'setting_id' => 3,
+            'icon' => 'fa-globe',
+            'menu_label' => 'Server 1',
+            'provider' => '5SIM',
+            'user_route' => '/cworld',
+            'description' => 'All-countries SMS verification panel (user menu: Server 1).',
+        ],
+        'usa2' => [
+            'setting_id' => 4,
+            'icon' => 'fa-flag-usa',
+            'menu_label' => 'Server 2',
+            'provider' => 'Unlimited Portal',
+            'user_route' => '/usa2',
+            'description' => 'US number rentals via Unlimited Portal (user menu: Server 2).',
+        ],
+        'hero' => [
+            'setting_id' => 5,
+            'icon' => 'fa-server',
+            'menu_label' => 'Server 3',
+            'provider' => 'HeroSMS',
+            'user_route' => '/world-sv2',
+            'description' => 'International verification via HeroSMS (user menu: Server 3).',
+        ],
+        'sv3' => [
+            'setting_id' => 6,
+            'icon' => 'fa-layer-group',
+            'menu_label' => 'Server 4',
+            'provider' => 'SMS Bower',
+            'user_route' => '/world-sv3',
+            'description' => 'International verification via SMS Bower (user menu: Server 4).',
+        ],
+        'smspool' => [
+            'setting_id' => 2,
+            'icon' => 'fa-sms',
+            'menu_label' => 'SMSPool API',
+            'provider' => 'SMSPool',
+            'user_route' => null,
+            'description' => 'Backend world API integration (SMSPool). Not shown as a separate user menu item.',
+        ],
+        'usa1' => [
+            'setting_id' => 1,
+            'icon' => 'fa-ban',
+            'menu_label' => 'Legacy USA',
+            'provider' => 'DaisySMS / Handler',
+            'user_route' => null,
+            'description' => 'Retired USA Server 1 legacy handler.',
+        ],
     ],
 
     'admin_vtu_services' => [
