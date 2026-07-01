@@ -27,17 +27,22 @@ if (!function_exists('static_asset')) {
     }
 }
 
-function app_config(string $key, ?string $default = null): ?string
-{
-    return app(AppConfigService::class)->get($key, $default);
+if (!function_exists('app_config')) {
+    function app_config(string $key, ?string $default = null): ?string
+    {
+        return app(AppConfigService::class)->get($key, $default);
+    }
 }
 
-function app_config_bool(string $key, bool $default = false): bool
-{
-    return app(AppConfigService::class)->getBool($key, $default);
+if (!function_exists('app_config_bool')) {
+    function app_config_bool(string $key, bool $default = false): bool
+    {
+        return app(AppConfigService::class)->getBool($key, $default);
+    }
 }
 
 
+if (!function_exists('resolve_complete')) {
 function resolve_complete($order_id)
 {
 
@@ -69,8 +74,10 @@ function resolve_complete($order_id)
         return 500;
     }
 }
+}
 
 
+if (!function_exists('send_notification')) {
 function send_notification($message)
 {
     $token = app_config('TELEGRAM_BOT_TOKEN');
@@ -98,8 +105,10 @@ function send_notification($message)
     curl_exec($curl);
     curl_close($curl);
 }
+}
 
 
+if (!function_exists('send_notification2')) {
 function send_notification2($message)
 {
     $token = app_config('TELEGRAM_BOT_TOKEN_2') ?: app_config('TELEGRAM_BOT_TOKEN');
@@ -126,6 +135,7 @@ function send_notification2($message)
     ));
     curl_exec($curl);
     curl_close($curl);
+}
 }
 
 
