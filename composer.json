@@ -25,10 +25,6 @@
     },
     "autoload": {
 
-        "files": [
-            "bootstrap/helpers_early.php"
-        ],
-
         "psr-4": {
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
