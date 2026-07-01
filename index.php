@@ -35,6 +35,12 @@ if (file_exists($maintenance = __DIR__.'/storage/framework/maintenance.php')) {
 |
 */
 
+// Load application helpers before Composer (shared-hosting safe).
+$appHelpers = __DIR__.'/app/helpers.php';
+if (is_file($appHelpers)) {
+    require_once $appHelpers;
+}
+
 // Shared hosting: load layout + notification helpers before Composer autoload.
 $bootstrapHelpers = __DIR__.'/bootstrap/helpers_bootstrap.php';
 if (is_file($bootstrapHelpers)) {

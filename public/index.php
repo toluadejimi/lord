@@ -31,6 +31,11 @@ if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php'))
 |
 */
 
+$appHelpers = __DIR__.'/../app/helpers.php';
+if (is_file($appHelpers)) {
+    require_once $appHelpers;
+}
+
 $bootstrapHelpers = __DIR__.'/../bootstrap/helpers_bootstrap.php';
 if (is_file($bootstrapHelpers)) {
     require_once $bootstrapHelpers;
