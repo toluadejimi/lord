@@ -38,7 +38,6 @@ class ComposerStaticInit02eadf9e001e144bb4d861e72a0df219
         'a1cfe24d14977df6878b9bf804af2d1c' => __DIR__ . '/..' . '/nunomaduro/collision/src/Adapters/Phpunit/Autoload.php',
         'ec07570ca5a812141189b1fa81503674' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Assert/Functions.php',
         '320163ac6b93aebe3dc25b60a0533d56' => __DIR__ . '/..' . '/spatie/laravel-ignition/src/helpers.php',
-        'b7b3890268491cb001cabb4a1c69f651' => __DIR__ . '/..' . '/composer/smslord_boot.php',
     );
 
     public static $prefixLengthsPsr4 = array (
