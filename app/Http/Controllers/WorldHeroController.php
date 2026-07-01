@@ -2,80 +2,88 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Setting;
-use App\Models\Verification;
+use App\Http\Controllers\Concerns\ManagesHeroStyleVerification;
 use App\Services\AppConfigService;
 use App\Services\PricingService;
-use App\Services\Sms\HeroHandlerProvider;
+use App\Services\Sms\HeroCatalogService;
 use App\Services\VerificationOrderService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class WorldHeroController extends Controller
 {
-    public function __construct(
-        protected HeroHandlerProvider $hero,
-        protected VerificationOrderService $orders,
-        protected PricingService $pricing,
-        protected AppConfigService $config,
-    ) {}
+    use ManagesHeroStyleVerification;
 
-    public function index()
+    public function index(AppConfigService $config)
     {
-        if (!$this->config->getBool('provider_hero_enabled')) {
-            return redirect('cworld')->with('error', 'Service is not enabled.');
-        }
-
-        $verifications = Verification::where('user_id', Auth::id())->where('type', 9)->latest()->take(20)->get();
-
-        return view('world-sv2', compact('verifications'));
+        return $this->heroIndex($config);
     }
 
-    public function order(Request $request)
-    {
-        $request->validate([
-            'service' => 'required|string',
-            'country' => 'nullable|string',
-            'api_cost' => 'nullable|numeric',
-            'max_price' => 'nullable',
-        ]);
-
-        $apiCost = (float) ($request->api_cost ?? 1);
-        $ngn = $this->pricing->ngnFromUsd($apiCost, 5, Auth::user());
-
-        $result = $this->orders->orderHeroStyle(
-            Auth::user(),
-            'hero',
-            $request->service,
-            $request->country,
-            $ngn,
-            $apiCost,
-            $request->max_price
-        );
-
-        if (!$result['success']) {
-            return back()->with('error', $result['message']);
-        }
-
-        return back()->with('message', 'Number rented: '.$result['verification']->phone);
+    public function order(
+        Request $request,
+        VerificationOrderService $orders,
+        HeroCatalogService $catalog,
+        PricingService $pricing,
+    ) {
+        return $this->heroOrder($request, $orders, $catalog, $pricing);
     }
 
-    public function pollSms(Request $request)
+    public function pollSms(Request $request, VerificationOrderService $orders)
     {
-        $verification = Verification::where('user_id', Auth::id())
-            ->where('phone', $request->num)
-            ->where('type', 9)
-            ->first();
+        return $this->heroPollSms($request, $orders);
+    }
 
-        if (!$verification) {
-            return response()->json(['message' => 'waiting for sms']);
-        }
+    public function catalogCountries(HeroCatalogService $catalog)
+    {
+        return $this->heroCatalogCountries($catalog);
+    }
 
-        if ((int) $verification->status === 1) {
-            $this->orders->pollVerification($verification);
-            $verification->refresh();
-        }
+    public function catalogServices(HeroCatalogService $catalog)
+    {
+        return $this->heroCatalogServices($catalog);
+    }
 
-        return response()->json(['message' => $verification->sms ?? 'waiting for sms']);
+    public function catalogPrice(Request $request, HeroCatalogService $catalog, PricingService $pricing)
+    {
+        return $this->heroCatalogPrice($request, $catalog, $pricing);
+    }
+
+    protected function heroProviderKey(): string
+    {
+        return 'hero';
+    }
+
+    protected function heroEnabledConfigKey(): string
+    {
+        return 'provider_hero_enabled';
+    }
+
+    protected function heroPricingSettingId(): int
+    {
+        return 5;
+    }
+
+    protected function heroVerificationType(): int
+    {
+        return 9;
+    }
+
+    protected function heroServerLabel(): string
+    {
+        return 'Server 3';
+    }
+
+    protected function heroCatalogRoutePrefix(): string
+    {
+        return 'world-sv2';
+    }
+
+    protected function heroOrderUrl(): string
+    {
+        return url('order-world-hero');
+    }
+
+    protected function heroPollUrl(): string
+    {
+        return 'get-smscode-hero';
     }
 }

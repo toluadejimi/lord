@@ -2,7 +2,7 @@
 @section('content')
 <div class="pc-container"><div class="pc-content p-4">
     @if(session('message'))<div class="alert alert-success">{{ session('message') }}</div>@endif
-    <h2>USA Server 2 — Unlimited Portal</h2>
+    <h2>Server 2</h2>
     <p class="text-muted">Rent US numbers for SMS verification.</p>
 
     <div class="card mb-4"><div class="card-body">
