@@ -30,6 +30,29 @@ Route::any('verify', [ProductController::class, 'verify_username']);
 // Reseller API v1
 Route::prefix('v1')->middleware('throttle:120,1')->group(function () {
     Route::match(['get', 'post'], 'balance', [ResellerApiController::class, 'balance']);
+    Route::match(['get', 'post'], 'get-sms', [ResellerApiController::class, 'getOrderSms']);
+    Route::match(['get', 'post'], 'cancel-sms', [ResellerApiController::class, 'cancelOrderSms']);
+
+    Route::match(['get', 'post'], 'server-1/countries', [ResellerApiController::class, 'server1Countries']);
+    Route::match(['get', 'post'], 'server-1/prices', [ResellerApiController::class, 'server1Prices']);
+    Route::match(['get', 'post'], 'server-1/price', [ResellerApiController::class, 'server1Price']);
+    Route::match(['get', 'post'], 'server-1/rent', [ResellerApiController::class, 'server1Rent']);
+
+    Route::match(['get', 'post'], 'server-2/services', [ResellerApiController::class, 'server2Services']);
+    Route::match(['get', 'post'], 'server-2/price', [ResellerApiController::class, 'server2Price']);
+    Route::match(['get', 'post'], 'server-2/rent', [ResellerApiController::class, 'server2Rent']);
+
+    Route::match(['get', 'post'], 'server-3/countries', [ResellerApiController::class, 'server3Countries']);
+    Route::match(['get', 'post'], 'server-3/services', [ResellerApiController::class, 'server3Services']);
+    Route::match(['get', 'post'], 'server-3/price', [ResellerApiController::class, 'server3Price']);
+    Route::match(['get', 'post'], 'server-3/rent', [ResellerApiController::class, 'server3Rent']);
+
+    Route::match(['get', 'post'], 'server-4/countries', [ResellerApiController::class, 'server4Countries']);
+    Route::match(['get', 'post'], 'server-4/services', [ResellerApiController::class, 'server4Services']);
+    Route::match(['get', 'post'], 'server-4/price', [ResellerApiController::class, 'server4Price']);
+    Route::match(['get', 'post'], 'server-4/rent', [ResellerApiController::class, 'server4Rent']);
+
+    // Legacy aliases
     Route::match(['get', 'post'], 'get-world-countries', [ResellerApiController::class, 'getWorldCountries']);
     Route::match(['get', 'post'], 'get-world-services', [ResellerApiController::class, 'getWorldServices']);
     Route::match(['get', 'post'], 'check-world-number-availability', [ResellerApiController::class, 'checkWorldAvailability']);

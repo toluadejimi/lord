@@ -10,6 +10,7 @@ use App\Services\Sms\SmsPoolProvider;
 use App\Services\Sms\UnlimitedPortalProvider;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
 class VerificationOrderService
@@ -156,6 +157,71 @@ class VerificationOrderService
         ]);
 
         return ['success' => true, 'verification' => $verification];
+    }
+
+    public function order5sim(
+        User $user,
+        string $country,
+        string $operator,
+        string $product,
+        float $ngnPrice,
+        float $apiCostUsd,
+    ): array {
+        if (!$this->config->getBool('provider_sim_enabled', true)) {
+            return ['success' => false, 'message' => 'Server 1 is not enabled.'];
+        }
+
+        if ((float) $user->wallet < $ngnPrice) {
+            return ['success' => false, 'message' => 'Insufficient wallet balance.'];
+        }
+
+        $token = $this->config->get('SIMTOKEN');
+        if (!$token) {
+            return ['success' => false, 'message' => 'Server 1 is not configured.'];
+        }
+
+        try {
+            $response = Http::withToken($token)
+                ->get("https://5sim.net/v1/user/buy/activation/{$country}/{$operator}/{$product}");
+
+            if (!$response->successful()) {
+                return ['success' => false, 'message' => 'Could not rent number from Server 1.'];
+            }
+
+            $body = $response->json();
+            $phone = str_replace('+', '', (string) ($body['phone'] ?? ''));
+            $providerOrderId = $body['id'] ?? null;
+
+            if (!$phone || !$providerOrderId) {
+                return ['success' => false, 'message' => 'Invalid provider response.'];
+            }
+
+            $ref = 'SMS-'.Str::upper(Str::random(10));
+            if (!$this->wallet->debit($user, $ngnPrice, $ref)) {
+                Http::withToken($token)->get('https://5sim.net/v1/user/cancel/'.$providerOrderId);
+
+                return ['success' => false, 'message' => 'Wallet debit failed.'];
+            }
+
+            Verification::where('phone', $phone)->where('status', 2)->delete();
+
+            $verification = Verification::create([
+                'user_id' => $user->id,
+                'phone' => $phone,
+                'order_id' => $providerOrderId,
+                'country' => $body['country'] ?? $country,
+                'service' => $body['product'] ?? $product,
+                'cost' => $ngnPrice,
+                'api_cost' => $apiCostUsd,
+                'status' => 1,
+                'type' => 3,
+                'ip' => request()->ip(),
+            ]);
+
+            return ['success' => true, 'verification' => $verification];
+        } catch (\Throwable $e) {
+            return ['success' => false, 'message' => 'Server 1 request failed.'];
+        }
     }
 
     public function orderUsa2(User $user, string $service, float $ngnPrice, float $apiCost, array $extra = []): array

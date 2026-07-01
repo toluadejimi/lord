@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Http\Controllers\Api\V1\Concerns\HandlesResellerServers;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Verification;
@@ -10,11 +11,14 @@ use App\Services\PricingService;
 use App\Services\Sms\HeroHandlerProvider;
 use App\Services\Sms\SmsPoolProvider;
 use App\Services\VerificationOrderService;
+use App\Support\VerificationLabels;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 
 class ResellerApiController extends Controller
 {
+    use HandlesResellerServers;
+
     public function __construct(
         protected AppConfigService $config,
         protected SmsPoolProvider $smsPool,
@@ -178,9 +182,11 @@ class ResellerApiController extends Controller
 
         return response()->json([
             'success' => true,
+            'server' => VerificationLabels::customerServerLabel((int) $verification->type),
             'status' => (int) $verification->status,
             'code' => $verification->sms,
             'full_sms' => $verification->full_sms,
+            'order_id' => $verification->id,
         ]);
     }
 
@@ -205,12 +211,20 @@ class ResellerApiController extends Controller
 
     public function usaServicesRetired()
     {
-        return response()->json(['success' => false, 'message' => 'USA Server 1 is retired.'], 410);
+        return response()->json([
+            'success' => false,
+            'message' => 'Deprecated. Use server-2/services instead.',
+            'redirect' => 'server-2/services',
+        ], 410);
     }
 
     public function rentUsaRetired()
     {
-        return response()->json(['success' => false, 'message' => 'USA Server 1 is retired.'], 410);
+        return response()->json([
+            'success' => false,
+            'message' => 'Deprecated. Use server-2/rent instead.',
+            'redirect' => 'server-2/rent',
+        ], 410);
     }
 
     public function getUsaSms(Request $request)

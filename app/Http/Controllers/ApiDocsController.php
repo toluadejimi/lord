@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
+use App\Support\ResellerApiDocumentation;
 use Illuminate\Support\Str;
 
 class ApiDocsController extends Controller
@@ -23,10 +24,13 @@ class ApiDocsController extends Controller
 
         $user = $user->fresh();
 
+        $baseUrl = rtrim(url('/api/v1'), '/');
+
         return view('api-docs', [
             'user' => $user,
             'maskedKey' => self::maskKey($user->api_key),
-            'baseUrl' => rtrim(url('/api/v1'), '/'),
+            'baseUrl' => $baseUrl,
+            'apiSections' => ResellerApiDocumentation::sections($baseUrl),
             'showFullKey' => $justGenerated || session('show_new_key'),
             'fullKey' => ($justGenerated || session('show_new_key')) ? $user->api_key : null,
         ]);

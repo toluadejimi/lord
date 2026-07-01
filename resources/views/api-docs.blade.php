@@ -136,10 +136,13 @@
             </div>
 
             <div class="col-lg-8">
-                <ul class="nav nav-tabs api-nav border-0 mb-3" role="tablist">
+                <ul class="nav nav-tabs api-nav border-0 mb-3 flex-wrap" role="tablist">
                     <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-auth">Authentication</button></li>
-                    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-world">World SMS</button></li>
-                    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-usa">USA (Server 2)</button></li>
+                    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-shared">Shared</button></li>
+                    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-server1">Server 1</button></li>
+                    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-server2">Server 2</button></li>
+                    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-server3">Server 3</button></li>
+                    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-server4">Server 4</button></li>
                     <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-webhooks">Webhooks</button></li>
                     <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-errors">Errors</button></li>
                 </ul>
@@ -149,129 +152,46 @@
                         <div class="card api-card">
                             <div class="card-body p-4">
                                 <h5 class="fw-bold mb-2">Authentication</h5>
-                                <p class="text-muted small">Every endpoint requires your API key. <strong>Recommended:</strong> send it in a header so it is not logged in access logs.</p>
+                                <p class="text-muted small">Every endpoint requires your API key. Send it in the <strong>Authorization</strong> header on all POST requests.</p>
 
-                                <p class="small fw-semibold mb-1">Preferred — Authorization header</p>
-                                <pre class="api-code mb-3">Authorization: Bearer {{ $exampleKey }}</pre>
+                                <p class="small fw-semibold mb-1">Headers (all requests)</p>
+                                <pre class="api-code mb-3">Authorization: Bearer {{ $exampleKey }}
+Content-Type: application/json
+Accept: application/json</pre>
 
-                                <p class="small fw-semibold mb-1">Alternative headers</p>
-                                <pre class="api-code mb-3">X-API-Key: {{ $exampleKey }}
-X-SMSLORD-Key: {{ $exampleKey }}</pre>
-
-                                <p class="small fw-semibold mb-1 text-warning">Avoid — query string (insecure)</p>
-                                <pre class="api-code mb-3">{{ $baseUrl }}/balance?api_key={{ $exampleKey }}</pre>
-
-                                <p class="small fw-semibold mb-1">Example request (cURL)</p>
-                                <pre class="api-code">curl -X POST "{{ $baseUrl }}/balance" \
+                                <p class="small fw-semibold mb-1">Example — wallet balance</p>
+                                <pre class="api-code mb-3">curl -X POST "{{ $baseUrl }}/balance" \
   -H "Authorization: Bearer {{ $exampleKey }}" \
+  -H "Content-Type: application/json" \
   -H "Accept: application/json"</pre>
+
+                                <p class="small fw-semibold mb-1">Servers overview</p>
+                                <table class="table table-sm small mb-3">
+                                    <thead><tr><th>Tab</th><th>Region</th><th>Buy endpoint</th></tr></thead>
+                                    <tbody>
+                                        <tr><td>Server 1</td><td>International</td><td><code>POST server-1/rent</code></td></tr>
+                                        <tr><td>Server 2</td><td>USA</td><td><code>POST server-2/rent</code></td></tr>
+                                        <tr><td>Server 3</td><td>Global</td><td><code>POST server-3/rent</code></td></tr>
+                                        <tr><td>Server 4</td><td>Global</td><td><code>POST server-4/rent</code></td></tr>
+                                    </tbody>
+                                </table>
+
+                                <p class="small fw-semibold mb-1">Typical flow</p>
+                                <ol class="small text-muted mb-0">
+                                    <li>Call <code>server-N/countries</code> and <code>services</code> / <code>prices</code> to browse catalog.</li>
+                                    <li>Call <code>server-N/price</code> to confirm NGN cost.</li>
+                                    <li>Call <code>server-N/rent</code> — save the returned <code>order_id</code>.</li>
+                                    <li>Poll <code>get-sms</code> with <code>order_id</code> until <code>status</code> is <code>2</code>, or wait for your webhook.</li>
+                                    <li>Call <code>cancel-sms</code> to release a pending number and refund your wallet.</li>
+                                </ol>
                             </div>
                         </div>
                     </div>
 
-                    <div class="tab-pane fade" id="tab-world">
-                        <div class="card api-card">
-                            <div class="card-body p-4">
-                                <h5 class="fw-bold mb-3">World SMS (SMSPool)</h5>
-
-                                <details class="api-endpoint" open>
-                                    <summary><span class="api-pill api-pill-get">GET/POST</span> balance</summary>
-                                    <div class="api-endpoint-body">
-                                        <p class="small text-muted mb-2">Returns your wallet balance in NGN.</p>
-                                        <pre class="api-code">{"success": true, "balance": 15000.00}</pre>
-                                    </div>
-                                </details>
-
-                                <details class="api-endpoint">
-                                    <summary><span class="api-pill api-pill-get">GET/POST</span> get-world-countries</summary>
-                                    <div class="api-endpoint-body">
-                                        <p class="small text-muted mb-2">List available countries for world verification.</p>
-                                        <pre class="api-code">{"success": true, "data": { ... }}</pre>
-                                    </div>
-                                </details>
-
-                                <details class="api-endpoint">
-                                    <summary><span class="api-pill api-pill-get">GET/POST</span> get-world-services</summary>
-                                    <div class="api-endpoint-body">
-                                        <p class="small text-muted mb-2">List services (WhatsApp, Telegram, etc.).</p>
-                                    </div>
-                                </details>
-
-                                <details class="api-endpoint">
-                                    <summary><span class="api-pill api-pill-post">POST</span> check-world-number-availability</summary>
-                                    <div class="api-endpoint-body">
-                                        <p class="small mb-2"><strong>Parameters:</strong> <code>country</code>, <code>service</code></p>
-                                        <pre class="api-code">{"success": true, "usd": 1.20, "price": 1850.00, "stock": 42}</pre>
-                                        <p class="small text-muted mb-0">Always check price before renting. Charged amount matches <code>price</code> (NGN).</p>
-                                    </div>
-                                </details>
-
-                                <details class="api-endpoint">
-                                    <summary><span class="api-pill api-pill-post">POST</span> rent-world-number</summary>
-                                    <div class="api-endpoint-body">
-                                        <p class="small mb-2"><strong>Parameters:</strong> <code>country</code>, <code>service</code></p>
-                                        <pre class="api-code">{
-  "success": true,
-  "order_id": 12345,
-  "phone": "447911123456",
-  "provider_order_id": "abc-provider-id"
-}</pre>
-                                        <p class="small text-muted mb-0"><code>order_id</code> is your SMSLORD order ID — use it for polling and cancel.</p>
-                                    </div>
-                                </details>
-
-                                <details class="api-endpoint">
-                                    <summary><span class="api-pill api-pill-post">POST</span> get-world-sms</summary>
-                                    <div class="api-endpoint-body">
-                                        <p class="small mb-2"><strong>Parameters:</strong> <code>order_id</code></p>
-                                        <pre class="api-code">{
-  "success": true,
-  "status": 2,
-  "code": "123456",
-  "full_sms": "Your code is 123456"
-}</pre>
-                                        <p class="small text-muted mb-0">Status: <code>1</code> pending · <code>2</code> completed · <code>99</code> cancelled. Poll every 10–15s max.</p>
-                                    </div>
-                                </details>
-
-                                <details class="api-endpoint">
-                                    <summary><span class="api-pill api-pill-post">POST</span> cancel-world-sms</summary>
-                                    <div class="api-endpoint-body">
-                                        <p class="small mb-2"><strong>Parameters:</strong> <code>order_id</code></p>
-                                        <pre class="api-code">{"success": true, "message": "Order cancelled and wallet refunded."}</pre>
-                                    </div>
-                                </details>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="tab-pane fade" id="tab-usa">
-                        <div class="card api-card">
-                            <div class="card-body p-4">
-                                <h5 class="fw-bold mb-3">USA Server 2</h5>
-
-                                <details class="api-endpoint" open>
-                                    <summary><span class="api-pill api-pill-post">POST</span> get-usa-sms</summary>
-                                    <div class="api-endpoint-body">
-                                        <p class="small mb-2"><strong>Parameters:</strong> <code>order_id</code> (USA2 / type 4 orders only)</p>
-                                        <pre class="api-code">{"success": true, "status": 2, "code": "654321"}</pre>
-                                    </div>
-                                </details>
-
-                                <details class="api-endpoint">
-                                    <summary><span class="api-pill api-pill-post">POST</span> cancel-usa-sms</summary>
-                                    <div class="api-endpoint-body">
-                                        <p class="small mb-2"><strong>Parameters:</strong> <code>order_id</code></p>
-                                        <p class="small text-muted mb-0">USA2 orders cannot be cancelled within 120 seconds of creation.</p>
-                                    </div>
-                                </details>
-
-                                <div class="alert alert-secondary border-0 small mb-0 mt-3">
-                                    <strong>Retired:</strong> <code>usa-services</code> and <code>rent-usa-number</code> return HTTP 410. Use the dashboard for new USA rentals or contact support for API expansion.
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    @include('partials.api-doc-endpoints', [
+                        'sections' => $apiSections,
+                        'baseUrl' => $baseUrl,
+                    ])
 
                     <div class="tab-pane fade" id="tab-webhooks">
                         <div class="card api-card">
