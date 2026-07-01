@@ -11,6 +11,8 @@ use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Verification;
 use App\Support\LegacyHelpers;
+use App\Services\Payment\SprintPayClient;
+use App\Services\WalletFundingService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -383,7 +385,7 @@ class HomeController extends Controller
             $ref = "VERF" . random_int(000, 999) . date('ymdhis');
             $email = Auth::user()->email;
 
-            $url = "https://web.sprintpay.online/pay?amount=$request->amount&key=$key&ref=$ref&email=$email";
+            $url = app(SprintPayClient::class)->payUrl((float) $request->amount, $ref, $email);
 
 
             $data = new Transaction();
@@ -479,15 +481,87 @@ class HomeController extends Controller
     }
 
 
-    public function verify_payment(request $request)
+    public function verify_payment(Request $request, WalletFundingService $funding)
     {
-
-        if($request->status == "success"){
-            return redirect('fund-wallet')->with('message', "Wallet has been funded with $request->amount");
-        }else{
-            return redirect('fund-wallet')->with('error', 'Transaction has been canceled');
+        if (!Auth::check()) {
+            return redirect('login');
         }
 
+        return $this->handlePaymentReturn($request, $funding);
+    }
+
+    public function verifypay_payment(Request $request, WalletFundingService $funding)
+    {
+        if (!Auth::check()) {
+            return redirect('login');
+        }
+
+        return $this->handlePaymentReturn($request, $funding);
+    }
+
+    protected function handlePaymentReturn(Request $request, WalletFundingService $funding)
+    {
+        $user = Auth::user();
+        $ref = $funding->extractRefFromRequest($request->all());
+        $sessionId = $funding->extractSessionIdFromRequest($request->all());
+        $txn = $ref
+            ? Transaction::where('ref_id', $ref)->where('user_id', $user->id)->first()
+            : null;
+
+        if ($txn && (int) $txn->status === 2) {
+            return redirect('fund-wallet')->with(
+                'message',
+                'Wallet funded successfully with ₦'.number_format((float) $txn->amount, 2)
+            );
+        }
+
+        if ($request->filled('status') && $funding->isFailureStatus($request->status)) {
+            return redirect('fund-wallet')->with('error', 'Payment was canceled or failed.');
+        }
+
+        if ($funding->isSuccessStatus($request->input('status'))) {
+            $amount = (float) ($request->input('amount') ?? 0);
+            if ($amount <= 0 && $txn) {
+                $amount = (float) $txn->amount;
+            }
+
+            if ($ref && $amount > 0) {
+                $completed = $funding->completePendingFunding($user, $ref, $amount);
+
+                return redirect('fund-wallet')->with(
+                    'message',
+                    'Wallet funded successfully with ₦'.number_format((float) $completed->amount, 2)
+                );
+            }
+        }
+
+        if ($ref) {
+            $resolved = $funding->resolveWithProvider($ref, $sessionId);
+            if ($resolved['success']) {
+                $completed = $funding->completePendingFunding($user, $ref, $resolved['amount']);
+
+                return redirect('fund-wallet')->with(
+                    'message',
+                    'Wallet funded successfully with ₦'.number_format((float) $completed->amount, 2)
+                );
+            }
+
+            if ($txn && (int) $txn->status === 1) {
+                return redirect('fund-wallet')->with(
+                    'message',
+                    'Payment received — your wallet will update shortly. If it stays pending, tap Resolve next to the transaction.'
+                );
+            }
+        }
+
+        if ($request->filled('status')) {
+            return redirect('fund-wallet')->with(
+                'message',
+                'Payment is being confirmed. Please refresh your balance in a moment.'
+            );
+        }
+
+        return redirect('fund-wallet')->with('error', 'Payment could not be verified. If you were charged, use Resolve on the pending transaction or contact support.');
     }
 
 

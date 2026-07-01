@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Verification;
 use App\Services\AppConfigService;
 use App\Services\VerificationOrderService;
+use App\Services\WalletFundingService;
 use App\Services\WalletService;
 use App\Services\WebhookDispatchService;
 use Illuminate\Http\Request;
@@ -19,6 +20,7 @@ class WebhookController extends Controller
         protected VerificationOrderService $orders,
         protected WebhookDispatchService $webhooks,
         protected WalletService $wallet,
+        protected WalletFundingService $funding,
     ) {}
 
     protected function verifyInbound(Request $request): bool
@@ -118,7 +120,7 @@ class WebhookController extends Controller
             return response()->json(['success' => false, 'message' => 'User not found'], 404);
         }
 
-        $this->wallet->credit($user, $amount, $refId, 2);
+        $this->funding->completePendingFunding($user, $refId, $amount);
 
         return response()->json(['success' => true]);
     }

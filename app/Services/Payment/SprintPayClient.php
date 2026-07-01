@@ -23,6 +23,8 @@ class SprintPayClient
             'key' => $key,
             'ref' => $ref,
             'email' => $email,
+            'redirect_url' => url('/verify'),
+            'callback_url' => url('/verify'),
         ]);
     }
 
