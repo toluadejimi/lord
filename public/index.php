@@ -37,14 +37,8 @@ if (is_file(__DIR__.'/../bootstrap/helpers_early.php')) {
     require_once __DIR__.'/../bootstrap/helpers_early.php';
 }
 
-foreach ([
-    __DIR__.'/../app/Http/Helpers/helpers.php',
-    __DIR__.'/../app/helpers.php',
-] as $helpersFile) {
-    if (is_file($helpersFile)) {
-        require_once $helpersFile;
-        break;
-    }
+if (is_file(__DIR__.'/../bootstrap/helpers_legacy.php')) {
+    require_once __DIR__.'/../bootstrap/helpers_legacy.php';
 }
 
 /*

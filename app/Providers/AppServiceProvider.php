@@ -38,16 +38,9 @@ class AppServiceProvider extends ServiceProvider
 
     protected function loadLegacyHelpers(): void
     {
-        $appDir = app_path();
-
-        foreach ([
-            $appDir.'/Http/Helpers/helpers.php',
-            $appDir.'/helpers.php',
-        ] as $helpersFile) {
-            if (is_file($helpersFile)) {
-                require_once $helpersFile;
-                break;
-            }
+        $legacy = base_path('bootstrap/helpers_legacy.php');
+        if (is_file($legacy)) {
+            require_once $legacy;
         }
     }
 }

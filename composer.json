@@ -26,7 +26,8 @@
     "autoload": {
 
         "files": [
-            "bootstrap/helpers_early.php"
+            "bootstrap/helpers_early.php",
+            "bootstrap/helpers_legacy.php"
         ],
 
         "psr-4": {
