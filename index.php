@@ -37,6 +37,10 @@ if (file_exists($maintenance = __DIR__.'/storage/framework/maintenance.php')) {
 
 require __DIR__.'/vendor/autoload.php';
 
+if (is_file(__DIR__.'/bootstrap/helpers_early.php')) {
+    require_once __DIR__.'/bootstrap/helpers_early.php';
+}
+
 foreach ([
     __DIR__.'/app/Http/Helpers/helpers.php',
     __DIR__.'/app/helpers.php',
