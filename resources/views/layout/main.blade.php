@@ -180,7 +180,28 @@
                     <li class="pc-item"><a href="world-sv2" class="pc-link"><span class="pc-micon"><i class="ti ti-world"></i></span><span class="pc-mtext">Server 3</span></a></li>
                     <li class="pc-item"><a href="world-sv3" class="pc-link"><span class="pc-micon"><i class="ti ti-world"></i></span><span class="pc-mtext">Server 4</span></a></li>
                     <li class="pc-item pc-caption"><label>VTU & API</label></li>
-                    <li class="pc-item"><a href="vas/airtime" class="pc-link"><span class="pc-micon"><i class="ti ti-device-mobile"></i></span><span class="pc-mtext">Airtime / Data</span></a></li>
+                    @php
+                        $vtuCfg = app(\App\Services\AppConfigService::class);
+                        $vtuMasterOn = $vtuCfg->getBool('provider_vtu_enabled', true);
+                    @endphp
+                    @if($vtuMasterOn)
+                    <li class="pc-item">
+                        <a href="{{ url('vas') }}" class="pc-link {{ request()->is('vas', 'vas/*') ? 'active' : '' }}">
+                            <span class="pc-micon"><i class="ti ti-receipt"></i></span>
+                            <span class="pc-mtext">Bills &amp; VTU</span>
+                        </a>
+                    </li>
+                    @foreach(config('platform.admin_vtu_services', []) as $vtuSlug => $vtuSvc)
+                        @if($vtuCfg->getBool($vtuSvc['enabled_key'], true))
+                        <li class="pc-item">
+                            <a href="{{ url('vas/'.$vtuSlug) }}" class="pc-link ps-4 {{ request()->is('vas/'.$vtuSlug) ? 'active' : '' }}">
+                                <span class="pc-micon"><i class="ti {{ $vtuSvc['icon'] ?? 'ti-point-filled' }}"></i></span>
+                                <span class="pc-mtext">{{ $vtuSvc['label'] }}</span>
+                            </a>
+                        </li>
+                        @endif
+                    @endforeach
+                    @endif
                     <li class="pc-item"><a href="api-docs" class="pc-link"><span class="pc-micon"><i class="ti ti-code"></i></span><span class="pc-mtext">API Docs</span></a></li>
 
 

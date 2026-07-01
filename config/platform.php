@@ -174,9 +174,33 @@ return [
     ],
 
     'admin_vtu_services' => [
-        'airtime' => ['label' => 'Airtime', 'category_key' => 'VTU_CAT_AIRTIME', 'enabled_key' => 'vtu_airtime_enabled'],
-        'data' => ['label' => 'Data Bundles', 'category_key' => 'VTU_CAT_DATA', 'enabled_key' => 'vtu_data_enabled'],
-        'cable' => ['label' => 'Cable TV', 'category_key' => 'VTU_CAT_CABLE_TV', 'enabled_key' => 'vtu_cable_enabled'],
-        'electricity' => ['label' => 'Electricity', 'category_key' => 'VTU_CAT_ELECTRICITY', 'enabled_key' => 'vtu_electricity_enabled'],
+        'airtime' => [
+            'label' => 'Airtime',
+            'description' => 'Instant mobile top-up for all Nigerian networks.',
+            'icon' => 'ti-phone',
+            'category_key' => 'VTU_CAT_AIRTIME',
+            'enabled_key' => 'vtu_airtime_enabled',
+        ],
+        'data' => [
+            'label' => 'Data Bundles',
+            'description' => 'Buy SME, daily, weekly, and monthly data plans.',
+            'icon' => 'ti-wifi',
+            'category_key' => 'VTU_CAT_DATA',
+            'enabled_key' => 'vtu_data_enabled',
+        ],
+        'cable' => [
+            'label' => 'Cable TV',
+            'description' => 'Renew DSTV, GOTV, Startimes, and other TV subscriptions.',
+            'icon' => 'ti-device-tv',
+            'category_key' => 'VTU_CAT_CABLE_TV',
+            'enabled_key' => 'vtu_cable_enabled',
+        ],
+        'electricity' => [
+            'label' => 'Electricity',
+            'description' => 'Pay prepaid and postpaid electricity bills.',
+            'icon' => 'ti-bolt',
+            'category_key' => 'VTU_CAT_ELECTRICITY',
+            'enabled_key' => 'vtu_electricity_enabled',
+        ],
     ],
 ];
