@@ -1,3 +1,4 @@
+DirectoryIndex index.php index.html
 Options -MultiViews -Indexes
 RewriteEngine On
 # Handle Authorization Header
