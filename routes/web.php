@@ -12,6 +12,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SimController;
 use App\Http\Controllers\Usa2Controller;
 use App\Http\Controllers\VtuController;
+use App\Http\Controllers\WalletTransactionController;
 use App\Http\Controllers\WorldHeroController;
 use App\Http\Controllers\WorldNumberController;
 use App\Http\Controllers\WorldSv3Controller;
@@ -158,6 +159,7 @@ Route::get('welcome',  [HomeController::class,'welcome_index']);
 
 
 Route::get('fund-wallet',  [HomeController::class,'fund_wallet']);
+Route::get('wallet-transactions', [WalletTransactionController::class, 'index'])->name('wallet.transactions');
 Route::get('profile',  [HomeController::class,'profile']);
 Route::post('fund-now',  [HomeController::class,'fund_now']);
 Route::get('verify',  [HomeController::class,'verify_payment']);

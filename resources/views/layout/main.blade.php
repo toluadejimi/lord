@@ -164,6 +164,13 @@
 
                     </li>
 
+                    <li class="pc-item">
+                        <a href="{{ url('wallet-transactions') }}" class="pc-link {{ request()->is('wallet-transactions') ? 'active' : '' }}">
+                            <span class="pc-micon"><i class="ti ti-list-details"></i></span>
+                            <span class="pc-mtext">Transactions</span>
+                        </a>
+                    </li>
+
 
                     <li class="pc-item pc-caption"><label>Verification</label>
                         <svg class="pc-icon">
@@ -469,6 +476,7 @@
             <nav class="footer-nav" aria-label="Footer navigation">
                 <a href="{{ url('cworld') }}">Dashboard</a>
                 <a href="{{ url('fund-wallet') }}">Fund Wallet</a>
+                <a href="{{ url('wallet-transactions') }}">Transactions</a>
                 <a href="{{ url('vas') }}">Bills &amp; VTU</a>
                 <a href="{{ url('orders') }}">My Verifications</a>
                 <a href="{{ url('api-docs') }}">API Docs</a>
