@@ -21,24 +21,13 @@ use Illuminate\Support\Facades\Redirect;
 
 class HomeController extends Controller
 {
-    public function index(request $request)
+    public function index(Request $request)
     {
-        $countries = get_s_countries();
+        if (Auth::check()) {
+            return redirect('cworld');
+        }
 
-        $verification = Verification::where('user_id', Auth::id())->paginate(10);
-        $s_rate = Setting::where('id', 3)->first();
-
-        //$data['services'] = $services;
-        $data['countries'] = $countries;
-        $data['verification'] = $verification;
-
-        $data['product'] = null;
-
-        $data['rate'] = $s_rate->rate;
-        $data['margin']= $s_rate->margin;
-
-
-        return view('welcome', $data);
+        return view('landing');
     }
 
 
@@ -622,13 +611,21 @@ class HomeController extends Controller
 
     public function register_index(Request $request)
     {
-        return view('Auth.register');
+        if (Auth::check()) {
+            return redirect('cworld');
+        }
+
+        return view('Auth.split-auth', ['tab' => 'register']);
     }
 
 
     public function login_index(Request $request)
     {
-        return view('Auth.login');
+        if (Auth::check()) {
+            return redirect('cworld');
+        }
+
+        return view('Auth.split-auth', ['tab' => 'login']);
     }
 
 
@@ -656,7 +653,8 @@ class HomeController extends Controller
         ]);
 
         auth()->login($user);
-        return redirect('home')->with('message', 'Welcome your account has been successfully created');
+
+        return redirect('cworld')->with('message', 'Welcome! Your account has been created successfully.');
     }
 
 
