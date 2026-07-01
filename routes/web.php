@@ -123,6 +123,7 @@ Route::group(['middleware' => ['auth', 'user']], function () {
 
 
     Route::get('cworld',  [SimController::class,'index']);
+    Route::get('cworld/countries',  [SimController::class,'countriesJson']);
     Route::post('buy-csms',  [SimController::class,'order_csms']);
     Route::get('c-sms',  [SimController::class,'delete_sms']);
     Route::get('admin-c-sms',  [SimController::class,'admin_delete_sms']);

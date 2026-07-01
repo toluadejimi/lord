@@ -18,6 +18,31 @@ class VerificationLabels
         };
     }
 
+    /** Customer-facing label — no provider names. */
+    public static function customerServerLabel(int $type): string
+    {
+        return match ($type) {
+            1, 3 => 'Server 1',
+            4 => 'Server 2',
+            9 => 'Server 3',
+            10 => 'Server 4',
+            2, 8 => 'World SMS',
+            default => 'Verification',
+        };
+    }
+
+    public static function customerServerBadgeClass(int $type): string
+    {
+        return match ($type) {
+            1, 3 => 'info',
+            4 => 'warning',
+            9 => 'dark',
+            10 => 'success',
+            2, 8 => 'primary',
+            default => 'secondary',
+        };
+    }
+
     public static function providerBadgeClass(int $type): string
     {
         return match ($type) {

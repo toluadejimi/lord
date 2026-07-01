@@ -14,7 +14,7 @@ class VerificationOrderController extends Controller
         $verification = Verification::where('user_id', Auth::id())->findOrFail($id);
 
         if ((int) $verification->status === 1) {
-            $orders->pollVerificationIfDue($verification, 8);
+            $orders->pollVerificationIfDue($verification, 5);
             $verification->refresh();
         }
 

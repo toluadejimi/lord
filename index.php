@@ -104,13 +104,6 @@ if (!function_exists('send_admin_notification')) {
     }
 }
 
-if (!function_exists('get_s_countries')) {
-    function get_s_countries(): array
-    {
-        return [];
-    }
-}
-
 require __DIR__.'/vendor/autoload.php';
 
 $app = require_once __DIR__.'/bootstrap/app.php';

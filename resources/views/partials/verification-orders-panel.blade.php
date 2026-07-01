@@ -44,8 +44,8 @@
                             <tr data-vo-row="{{ $v->id }}" data-vo-status="{{ $status }}">
                                 @if($showServer)
                                     <td>
-                                        <span class="badge bg-{{ \App\Support\VerificationLabels::providerBadgeClass((int) $v->type) }} vo-server-badge">
-                                            {{ \App\Support\VerificationLabels::providerName((int) $v->type) }}
+                                        <span class="badge bg-{{ \App\Support\VerificationLabels::customerServerBadgeClass((int) $v->type) }} vo-server-badge">
+                                            {{ \App\Support\VerificationLabels::customerServerLabel((int) $v->type) }}
                                         </span>
                                     </td>
                                 @endif

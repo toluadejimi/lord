@@ -16,23 +16,45 @@ class SimController extends Controller
 
     public function index(request $request)
     {
-
         $countries = get_s_countries();
 
-        $verification = Verification::where('user_id', Auth::id())->get();
+        $verification = Verification::where('user_id', Auth::id())
+            ->where('type', 3)
+            ->latest()
+            ->get();
+
         $s_rate = Setting::where('id', 3)->first();
 
-        //$data['services'] = $services;
         $data['countries'] = $countries;
         $data['verification'] = $verification;
-
         $data['product'] = null;
-
-        $data['rate'] = $s_rate->rate;
-        $data['margin']= $s_rate->margin;
+        $data['rate'] = (float) ($s_rate->rate ?? 0);
+        $data['margin'] = (float) ($s_rate->margin ?? 0);
+        $data['countries_error'] = $countries === [] ? 'Could not load countries. Check that SIMTOKEN is set in admin settings.' : null;
 
         return view('simworld', $data);
+    }
 
+    public function countriesJson()
+    {
+        $countries = get_s_countries();
+
+        return response()->json([
+            'countries' => $countries,
+            'count' => count($countries),
+        ]);
+    }
+
+    protected function simToken(): ?string
+    {
+        if (function_exists('app_config')) {
+            $token = app_config('SIMTOKEN');
+            if ($token) {
+                return $token;
+            }
+        }
+
+        return env('SIMTOKEN') ?: null;
     }
     public function order_csms(request $request)
     {
@@ -54,19 +76,22 @@ class SimController extends Controller
 
 
 
-        $token = env('SIMTOKEN');
+        $token = $this->simToken();
+        if (!$token) {
+            return response()->json(['code' => 0, 'message' => 'Server 1 is not configured (missing SIM token).'], 503);
+        }
+
         $request->validate([
             'country' => 'required|string',
             'operator' => 'required|string',
             'product' => 'required|string',
             'count' => 'required|string',
-
         ]);
 
 
 
-        if($request->input('count') == "0"){
-           return 2;
+        if ($request->input('count') == '0') {
+            return response()->json(['code' => 2, 'message' => 'Not available']);
         }
 
 
@@ -83,12 +108,12 @@ class SimController extends Controller
             $cost = get_s_product_cost($operator, $country, $product);
         }
 
-        if($cost == 0){
-            return 0;
+        if ($cost == 0) {
+            return response()->json(['code' => 0, 'message' => 'Price unavailable']);
         }
 
-        if(Auth::user()->wallet < $cost){
-            return 9;
+        if (Auth::user()->wallet < $cost) {
+            return response()->json(['code' => 9, 'message' => 'Insufficient balance']);
         }
 
         $client = new Client();
@@ -119,9 +144,11 @@ class SimController extends Controller
             $ver->type = 3;
             $ver->save();
 
-            $data['id'] = $responseBody['id'];
-            $data['code'] = 200;
-            return $data;
+            return response()->json([
+                'id' => $responseBody['id'],
+                'code' => 200,
+                'phone' => $phone,
+            ]);
 
 
 
@@ -281,7 +308,10 @@ class SimController extends Controller
 
     public function get_c_sms(request $request){
 
-        $token = env('SIMTOKEN');
+        $token = $this->simToken();
+        if (!$token) {
+            return response()->json(['message' => 'waiting for sms']);
+        }
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, 'https://5sim.net/v1/user/check/' . $request->id);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);

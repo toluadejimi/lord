@@ -86,6 +86,9 @@
         @if (session('error'))
             <div class="alert alert-danger border-0 shadow-sm">{{ session('error') }}</div>
         @endif
+        @if (!empty($countries_error))
+            <div class="alert alert-warning border-0 shadow-sm">{{ $countries_error }}</div>
+        @endif
 
         <div class="row g-4">
             <div class="col-lg-7">
@@ -136,27 +139,52 @@ var countries = @json($countries);
 var currentData = {};
 var rate = {{ $rate }};
 var margin = {{ $margin }};
+var countriesUrl = @json(url('cworld/countries'));
+
+function renderCountryList(searchValue) {
+    searchValue = (searchValue || '').toLowerCase();
+    var matchedCountries = '';
+    var count = 0;
+
+    for (var key in countries) {
+        if (!searchValue || countries[key].toLowerCase().includes(searchValue) || key.toLowerCase().includes(searchValue)) {
+            matchedCountries += '<li class="list-group-item" data-country="' + key + '">' + countries[key] + '</li>';
+            count++;
+            if (!searchValue && count >= 30) break;
+        }
+    }
+
+    if (count === 0) {
+        $('#countryList').html('<li class="list-group-item text-muted small">No countries found</li>').show();
+    } else {
+        $('#countryList').html(matchedCountries).show();
+    }
+}
+
+function loadCountriesFallback() {
+    return $.getJSON(countriesUrl).then(function (res) {
+        if (res.countries && Object.keys(res.countries).length) {
+            countries = res.countries;
+        }
+    });
+}
 
 $(document).ready(function () {
     $('#filterSearch').hide();
 
-    $('#countrySearch').on('input', function () {
-        var searchValue = $(this).val().toLowerCase();
-        var matchedCountries = '';
-
-        if (searchValue) {
-            for (var key in countries) {
-                if (countries[key].toLowerCase().includes(searchValue)) {
-                    matchedCountries += '<li class="list-group-item" data-country="' + key + '">' + countries[key] + '</li>';
-                }
+    if (!countries || Object.keys(countries).length === 0) {
+        loadCountriesFallback().always(function () {
+            if (!countries || Object.keys(countries).length === 0) {
+                $('#countrySearch').attr('placeholder', 'Countries unavailable — contact support');
             }
-            $('#countryList').html(matchedCountries).toggle(matchedCountries !== '');
-        } else {
-            $('#countryList').hide();
-        }
+        });
+    }
+
+    $('#countrySearch').on('focus input', function () {
+        renderCountryList($(this).val());
     });
 
-    $('#countryList').on('click', 'li', function () {
+    $('#countryList').on('click', 'li[data-country]', function () {
         var country = $(this).data('country');
         $('#countrySearch').val($(this).text());
         $('#countryList').hide();
@@ -224,6 +252,7 @@ $(document).ready(function () {
         $.ajax({
             url: '/buy-csms',
             type: 'POST',
+            dataType: 'json',
             data: {
                 country: $card.data('country'),
                 operator: $card.data('operator'),
@@ -233,17 +262,18 @@ $(document).ready(function () {
                 _token: '{{ csrf_token() }}'
             },
             success: function (response) {
-                if (response === "2" || response === "0") {
-                    alert('Verification not available.');
+                var code = response && (response.code || response);
+                if (code === 2 || code === '2' || code === 0 || code === '0') {
+                    alert(response.message || 'Verification not available.');
                     $card.data('loading', false).css('opacity', '1');
-                } else if (response === "4") {
+                } else if (code === 4 || code === '4') {
                     window.location.href = '/orders';
-                } else if (response === "9") {
+                } else if (code === 9 || code === '9') {
                     window.location.href = '/fund-wallet';
-                } else if (response && response.code === 200) {
-                    window.location.href = '/orders?id=' + response.id;
+                } else if (response && Number(response.code) === 200) {
+                    window.location.reload();
                 } else {
-                    alert('Could not complete purchase.');
+                    alert(response.message || 'Could not complete purchase.');
                     $card.data('loading', false).css('opacity', '1');
                 }
             },

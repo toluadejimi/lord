@@ -10,6 +10,7 @@ use App\Models\SoldLog;
 use App\Models\Category;
 use App\Models\MainItem;
 use App\Models\Transaction;
+use App\Support\TransactionLabels;
 use App\Models\Verification;
 use Illuminate\Http\Request;
 use App\Models\AccountDetail;
@@ -145,9 +146,30 @@ class AdminController extends Controller
             return redirect('/admin')->with('error', 'You do not have permission');
         }
 
-        $transactions = Transaction::with('user')->latest()->paginate(25);
+        $filter = $request->query('filter', TransactionLabels::FILTER_ALL);
+        $allowed = array_keys(TransactionLabels::adminFilters());
+        if (!in_array($filter, $allowed, true)) {
+            $filter = TransactionLabels::FILTER_ALL;
+        }
 
-        return view('admin.transactions', compact('transactions'));
+        $query = Transaction::with('user')->latest();
+        TransactionLabels::applyAdminFilter($query, $filter);
+
+        $transactions = $query->paginate(25)->withQueryString();
+
+        $counts = [];
+        foreach ($allowed as $key) {
+            $countQuery = Transaction::query();
+            TransactionLabels::applyAdminFilter($countQuery, $key);
+            $counts[$key] = $countQuery->count();
+        }
+
+        return view('admin.transactions', [
+            'transactions' => $transactions,
+            'filter' => $filter,
+            'filters' => TransactionLabels::adminFilters(),
+            'counts' => $counts,
+        ]);
     }
 
     public function verifications(Request $request)

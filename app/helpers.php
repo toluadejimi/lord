@@ -129,3 +129,102 @@ if (!function_exists('send_notification2')) {
         telegram_notify((string) $message, 'secondary');
     }
 }
+
+if (!function_exists('get_s_countries')) {
+    function get_s_countries(): array
+    {
+        if (!function_exists('app_config')) {
+            return [];
+        }
+
+        $token = app_config('SIMTOKEN');
+        if (!$token) {
+            return [];
+        }
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, 'https://5sim.net/v1/guest/countries');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Authorization: Bearer '.$token,
+            'Accept: application/json',
+        ]);
+
+        $var = curl_exec($ch);
+        curl_close($ch);
+        $inputArray = json_decode($var, true);
+
+        if (!is_array($inputArray)) {
+            return [];
+        }
+
+        $result = [];
+        foreach ($inputArray as $key => $value) {
+            $result[$key] = $value['text_en'] ?? $key;
+        }
+
+        return $result;
+    }
+}
+
+if (!function_exists('get_s_product_cost')) {
+    function get_s_product_cost(string $operator, string $country, string $product): float|int
+    {
+        if (!function_exists('app_config')) {
+            return 0;
+        }
+
+        $token = app_config('SIMTOKEN');
+        if (!$token) {
+            return 0;
+        }
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, 'https://5sim.net/v1/guest/products/'.$country.'/'.$operator);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Authorization: Bearer '.$token,
+            'Accept: application/json',
+        ]);
+
+        $var = curl_exec($ch);
+        curl_close($ch);
+        $data = json_decode($var, true);
+
+        if (!is_array($data)) {
+            return 0;
+        }
+
+        $filteredData = array_filter($data, function ($key) use ($product) {
+            return stripos($key, $product) !== false;
+        }, ARRAY_FILTER_USE_KEY);
+
+        if ($filteredData === []) {
+            return 0;
+        }
+
+        $prices = [];
+        foreach ($filteredData as $item) {
+            if (isset($item['Price'])) {
+                $prices[] = $item['Price'];
+            }
+        }
+
+        if ($prices === []) {
+            return 0;
+        }
+
+        if (!class_exists(\App\Models\Setting::class)) {
+            return 0;
+        }
+
+        $sRate = \App\Models\Setting::find(3);
+        if (!$sRate) {
+            return 0;
+        }
+
+        return ($sRate->rate * $prices[0]) + $sRate->margin;
+    }
+}

@@ -272,7 +272,7 @@ class VerificationOrderService
 
     protected function poll5sim(Verification $verification): ?array
     {
-        $token = $this->config->get('SIMTOKEN');
+        $token = $this->config->get('SIMTOKEN') ?: (function_exists('app_config') ? app_config('SIMTOKEN') : env('SIMTOKEN'));
         if (!$token) {
             return null;
         }
@@ -290,15 +290,32 @@ class VerificationOrderService
         curl_close($ch);
 
         $payload = json_decode($result);
-        $status = $payload->status ?? null;
-        $smsRow = $payload->sms[0] ?? null;
+        if (!$payload) {
+            return null;
+        }
 
-        if (!in_array($status, ['RECEIVED', 'FINISHED'], true) || !$smsRow) {
+        $status = $payload->status ?? null;
+        $smsList = $payload->sms ?? null;
+        $smsRow = null;
+
+        if (is_array($smsList) && isset($smsList[0])) {
+            $smsRow = $smsList[0];
+        }
+
+        if (!in_array($status, ['RECEIVED', 'FINISHED', 'PENDING'], true) || !$smsRow) {
             return null;
         }
 
         $code = $smsRow->code ?? null;
         $text = $smsRow->text ?? null;
+
+        if (!$code && $text) {
+            if (preg_match('/\b(\d{4,8})\b/', (string) $text, $matches)) {
+                $code = $matches[1];
+            } else {
+                $code = $text;
+            }
+        }
 
         if (!$code) {
             return null;
