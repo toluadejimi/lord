@@ -32,9 +32,9 @@ class WorldSv3Controller extends Controller
         return $this->heroPollSms($request, $orders);
     }
 
-    public function catalogCountries(HeroCatalogService $catalog)
+    public function catalogCountries(Request $request, HeroCatalogService $catalog)
     {
-        return $this->heroCatalogCountries($catalog);
+        return $this->heroCatalogCountries($request, $catalog);
     }
 
     public function catalogServices(HeroCatalogService $catalog)
@@ -85,5 +85,10 @@ class WorldSv3Controller extends Controller
     protected function heroPollUrl(): string
     {
         return 'get-smscode-sv3';
+    }
+
+    protected function heroPickerFlow(): string
+    {
+        return 'service-first';
     }
 }

@@ -144,6 +144,61 @@ class HeroHandlerProvider
 
     public function getServicesList(string $provider): string
     {
-        return $this->request($provider, 'getServicesList');
+        if ($this->apiKey($provider) === '') {
+            return 'BAD_KEY';
+        }
+
+        $body = $this->request($provider, 'getServicesList');
+
+        if ($this->looksLikeServicesJson($body)) {
+            return $body;
+        }
+
+        if ($provider === 'sv3') {
+            $fallback = $this->request($provider, 'getServices');
+            if ($this->looksLikeServicesJson($fallback)) {
+                return $fallback;
+            }
+        }
+
+        return $body;
+    }
+
+    protected function looksLikeServicesJson(string $body): bool
+    {
+        $body = trim($body);
+
+        if ($body === '' || $this->isProviderErrorText($body)) {
+            return false;
+        }
+
+        if (!str_starts_with($body, '{') && !str_starts_with($body, '[')) {
+            return false;
+        }
+
+        $json = json_decode($body, true);
+
+        if (!is_array($json)) {
+            return false;
+        }
+
+        if (isset($json['services']) && is_array($json['services']) && $json['services'] !== []) {
+            return true;
+        }
+
+        return array_is_list($json) && $json !== [];
+    }
+
+    protected function isProviderErrorText(string $raw): bool
+    {
+        $errors = ['BAD_KEY', 'BAD_ACTION', 'ERROR_SQL', 'BAD_RESPONSE:', 'NO_BALANCE'];
+
+        foreach ($errors as $error) {
+            if (str_contains($raw, $error)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

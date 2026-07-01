@@ -33,6 +33,11 @@ trait ManagesHeroStyleVerification
         return 'cworld';
     }
 
+    protected function heroPickerFlow(): string
+    {
+        return 'country-first';
+    }
+
     public function heroIndex(
         AppConfigService $config,
     ) {
@@ -49,6 +54,7 @@ trait ManagesHeroStyleVerification
         return view('verification.hero-server', [
             'serverLabel' => $this->heroServerLabel(),
             'catalogPrefix' => $this->heroCatalogRoutePrefix(),
+            'pickerFlow' => $this->heroPickerFlow(),
             'countriesUrl' => url($this->heroCatalogRoutePrefix().'/catalog/countries'),
             'servicesUrl' => url($this->heroCatalogRoutePrefix().'/catalog/services'),
             'priceUrl' => url($this->heroCatalogRoutePrefix().'/catalog/price'),
@@ -59,8 +65,17 @@ trait ManagesHeroStyleVerification
         ]);
     }
 
-    public function heroCatalogCountries(HeroCatalogService $catalog)
+    public function heroCatalogCountries(Request $request, HeroCatalogService $catalog)
     {
+        if ($this->heroPickerFlow() === 'service-first' && $request->filled('service')) {
+            return response()->json([
+                'countries' => $catalog->countriesForService(
+                    $this->heroProviderKey(),
+                    (string) $request->query('service')
+                ),
+            ]);
+        }
+
         return response()->json([
             'countries' => $catalog->countries($this->heroProviderKey()),
         ]);
@@ -68,9 +83,14 @@ trait ManagesHeroStyleVerification
 
     public function heroCatalogServices(HeroCatalogService $catalog)
     {
-        return response()->json([
-            'services' => $catalog->services($this->heroProviderKey()),
-        ]);
+        $services = $catalog->services($this->heroProviderKey());
+        $payload = ['services' => $services];
+
+        if ($services === [] && $this->heroProviderKey() === 'sv3') {
+            $payload['error'] = 'Could not load services. Check Server 4 API key in Admin → SMS Services.';
+        }
+
+        return response()->json($payload);
     }
 
     public function heroCatalogPrice(Request $request, HeroCatalogService $catalog, PricingService $pricing)

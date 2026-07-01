@@ -1,5 +1,8 @@
 @extends('layout.main')
 @section('content')
+@php
+    $serviceFirst = ($pickerFlow ?? 'country-first') === 'service-first';
+@endphp
 <div class="pc-container">
     <div class="pc-content p-4">
         @if(session('message'))<div class="alert alert-success">{{ session('message') }}</div>@endif
@@ -8,7 +11,13 @@
         <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
             <div>
                 <h2 class="mb-1">{{ $serverLabel }}</h2>
-                <p class="text-muted mb-0 small">Search a country, pick a service, confirm price, then rent a number.</p>
+                <p class="text-muted mb-0 small">
+                    @if($serviceFirst)
+                        Pick a service, choose a country with stock, confirm price, then rent a number.
+                    @else
+                        Search a country, pick a service, confirm price, then rent a number.
+                    @endif
+                </p>
             </div>
             <div class="text-end">
                 <div class="text-muted small">Wallet</div>
@@ -20,7 +29,24 @@
             <div class="col-lg-7">
                 <div class="card border-0 shadow-sm">
                     <div class="card-body p-4">
-                        <div class="step-block mb-4">
+                        @if($serviceFirst)
+                        <div class="step-block mb-4" id="service-step">
+                            <div class="step-label">Step 1 — Service</div>
+                            <input type="text" class="form-control" id="service-search" placeholder="Search services…" autocomplete="off">
+                            <div id="service-results" class="list-group mt-2 hero-picker-list"></div>
+                            <div id="service-selected" class="selected-pill mt-2 d-none"></div>
+                            <div id="service-error" class="text-danger small mt-2 d-none"></div>
+                        </div>
+
+                        <div class="step-block mb-4" id="country-step" style="display:none;">
+                            <div class="step-label">Step 2 — Country</div>
+                            <input type="text" class="form-control" id="country-search" placeholder="Search countries…" autocomplete="off">
+                            <div id="country-results" class="list-group mt-2 hero-picker-list"></div>
+                            <div id="country-selected" class="selected-pill mt-2 d-none"></div>
+                            <div id="country-loading" class="text-muted small mt-2 d-none">Loading countries for this service…</div>
+                        </div>
+                        @else
+                        <div class="step-block mb-4" id="country-step">
                             <div class="step-label">Step 1 — Country</div>
                             <input type="text" class="form-control" id="country-search" placeholder="Search countries…" autocomplete="off">
                             <div id="country-results" class="list-group mt-2 hero-picker-list"></div>
@@ -32,7 +58,9 @@
                             <input type="text" class="form-control" id="service-search" placeholder="Search services…" autocomplete="off">
                             <div id="service-results" class="list-group mt-2 hero-picker-list"></div>
                             <div id="service-selected" class="selected-pill mt-2 d-none"></div>
+                            <div id="service-error" class="text-danger small mt-2 d-none"></div>
                         </div>
+                        @endif
 
                         <div class="step-block mb-4" id="price-step" style="display:none;">
                             <div class="step-label">Step 3 — Price</div>
@@ -72,6 +100,8 @@
 
 <script>
 (function () {
+    const pickerFlow = @json($pickerFlow ?? 'country-first');
+    const serviceFirst = pickerFlow === 'service-first';
     const countriesUrl = @json($countriesUrl);
     const servicesUrl = @json($servicesUrl);
     const priceUrl = @json($priceUrl);
@@ -83,10 +113,13 @@
     const countrySearch = document.getElementById('country-search');
     const countryResults = document.getElementById('country-results');
     const countrySelected = document.getElementById('country-selected');
+    const countryStep = document.getElementById('country-step');
+    const countryLoading = document.getElementById('country-loading');
     const serviceStep = document.getElementById('service-step');
     const serviceSearch = document.getElementById('service-search');
     const serviceResults = document.getElementById('service-results');
     const serviceSelected = document.getElementById('service-selected');
+    const serviceError = document.getElementById('service-error');
     const priceStep = document.getElementById('price-step');
     const priceBox = document.getElementById('price-box');
     const orderForm = document.getElementById('order-form');
@@ -94,17 +127,18 @@
     const inputCountry = document.getElementById('input-country');
     const inputService = document.getElementById('input-service');
 
-    function renderList(container, items, onPick) {
+    function renderList(container, items, onPick, emptyMessage) {
         container.innerHTML = '';
         if (!items.length) {
-            container.innerHTML = '<div class="list-group-item text-muted small">No matches</div>';
+            container.innerHTML = '<div class="list-group-item text-muted small">' + (emptyMessage || 'No matches') + '</div>';
             return;
         }
         items.slice(0, 80).forEach(function (item) {
             const el = document.createElement('button');
             el.type = 'button';
             el.className = 'list-group-item list-group-item-action';
-            el.textContent = item.name;
+            const suffix = item.available ? ' (' + item.available + ')' : '';
+            el.textContent = item.name + suffix;
             el.addEventListener('click', function () { onPick(item); });
             container.appendChild(el);
         });
@@ -114,24 +148,15 @@
         const q = query.trim().toLowerCase();
         if (!q) return list;
         return list.filter(function (item) {
-            return item.name.toLowerCase().includes(q) || String(item.id || item.code || '').toLowerCase().includes(q);
+            return item.name.toLowerCase().includes(q)
+                || String(item.id || item.code || '').toLowerCase().includes(q);
         });
     }
 
-    function selectCountry(item) {
-        selectedCountry = item;
-        selectedService = null;
-        countrySelected.classList.remove('d-none');
-        countrySelected.textContent = 'Selected: ' + item.name;
-        countryResults.innerHTML = '';
-        countrySearch.value = item.name;
-        serviceStep.style.display = '';
+    function resetPriceStep() {
         priceStep.style.display = 'none';
         orderForm.style.display = 'none';
         buyBtn.disabled = true;
-        serviceSelected.classList.add('d-none');
-        serviceSearch.value = '';
-        renderList(serviceResults, services, selectService);
     }
 
     function selectService(item) {
@@ -140,7 +165,69 @@
         serviceSelected.textContent = 'Selected: ' + item.name;
         serviceResults.innerHTML = '';
         serviceSearch.value = item.name;
-        loadPrice();
+        inputService.value = item.code;
+
+        if (serviceFirst) {
+            selectedCountry = null;
+            countrySelected.classList.add('d-none');
+            countrySearch.value = '';
+            countryStep.style.display = '';
+            resetPriceStep();
+            loadCountriesForService(item.code);
+        } else {
+            loadPrice();
+        }
+    }
+
+    function selectCountry(item) {
+        selectedCountry = item;
+        countrySelected.classList.remove('d-none');
+        countrySelected.textContent = 'Selected: ' + item.name;
+        countryResults.innerHTML = '';
+        countrySearch.value = item.name;
+        inputCountry.value = item.id;
+
+        if (serviceFirst) {
+            loadPrice();
+            return;
+        }
+
+        selectedService = null;
+        serviceStep.style.display = '';
+        resetPriceStep();
+        serviceSelected.classList.add('d-none');
+        serviceSearch.value = '';
+        renderList(serviceResults, services, selectService, 'No services loaded');
+    }
+
+    function loadCountriesForService(serviceCode) {
+        if (countryLoading) {
+            countryLoading.classList.remove('d-none');
+        }
+        countryResults.innerHTML = '<div class="list-group-item text-muted small">Loading…</div>';
+
+        const url = new URL(countriesUrl);
+        url.searchParams.set('service', serviceCode);
+
+        fetch(url)
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+                countries = data.countries || [];
+                if (countryLoading) {
+                    countryLoading.classList.add('d-none');
+                }
+                if (!countries.length) {
+                    countryResults.innerHTML = '<div class="list-group-item text-muted small">No countries available for this service right now.</div>';
+                    return;
+                }
+                renderList(countryResults, countries, selectCountry, 'No matches');
+            })
+            .catch(function () {
+                if (countryLoading) {
+                    countryLoading.classList.add('d-none');
+                }
+                countryResults.innerHTML = '<div class="list-group-item text-danger small">Could not load countries.</div>';
+            });
     }
 
     function loadPrice() {
@@ -176,24 +263,64 @@
             });
     }
 
-    countrySearch.addEventListener('input', function () {
-        renderList(countryResults, filterItems(countries, countrySearch.value), selectCountry);
-    });
+    function loadServices() {
+        serviceResults.innerHTML = '<div class="list-group-item text-muted small">Loading services…</div>';
 
-    serviceSearch.addEventListener('input', function () {
-        renderList(serviceResults, filterItems(services, serviceSearch.value), selectService);
-    });
+        fetch(servicesUrl)
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+                services = data.services || [];
+                if (data.error && serviceError) {
+                    serviceError.textContent = data.error;
+                    serviceError.classList.toggle('d-none', services.length > 0);
+                }
+                if (!services.length) {
+                    serviceResults.innerHTML = '<div class="list-group-item text-danger small">Services could not be loaded.</div>';
+                    return;
+                }
+                renderList(serviceResults, services, selectService, 'No matches');
+            })
+            .catch(function () {
+                serviceResults.innerHTML = '<div class="list-group-item text-danger small">Could not load services.</div>';
+            });
+    }
 
-    Promise.all([
-        fetch(countriesUrl).then(function (r) { return r.json(); }),
-        fetch(servicesUrl).then(function (r) { return r.json(); }),
-    ]).then(function (results) {
-        countries = results[0].countries || [];
-        services = results[1].services || [];
-        renderList(countryResults, countries, selectCountry);
-    }).catch(function () {
-        countryResults.innerHTML = '<div class="list-group-item text-danger small">Could not load countries.</div>';
-    });
+    function loadCountries() {
+        countryResults.innerHTML = '<div class="list-group-item text-muted small">Loading countries…</div>';
+
+        fetch(countriesUrl)
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+                countries = data.countries || [];
+                if (!countries.length) {
+                    countryResults.innerHTML = '<div class="list-group-item text-muted small">No countries available.</div>';
+                    return;
+                }
+                renderList(countryResults, countries, selectCountry, 'No matches');
+            })
+            .catch(function () {
+                countryResults.innerHTML = '<div class="list-group-item text-danger small">Could not load countries.</div>';
+            });
+    }
+
+    if (countrySearch) {
+        countrySearch.addEventListener('input', function () {
+            renderList(countryResults, filterItems(countries, countrySearch.value), selectCountry, 'No matches');
+        });
+    }
+
+    if (serviceSearch) {
+        serviceSearch.addEventListener('input', function () {
+            renderList(serviceResults, filterItems(services, serviceSearch.value), selectService, 'No matches');
+        });
+    }
+
+    if (serviceFirst) {
+        loadServices();
+    } else {
+        loadCountries();
+        loadServices();
+    }
 })();
 </script>
 @endsection

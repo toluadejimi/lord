@@ -2,9 +2,13 @@
 
 @section('title', 'VTU / Bills')
 @section('page-title', 'VTU & Bill Payments')
-@section('page-subtitle', 'Category IDs come from SprintPay — save your API key, fetch the list, then paste each ID into Airtime / Data / Cable / Electricity.')
+@section('page-subtitle', 'Set WEBKEY and SprintPay Bearer secret for wallet VTU. Category IDs are optional (legacy dashboard links).')
 
 @section('content')
+@if(!$vtuConfigured)
+<div class="alert alert-warning">VTU purchases need both <strong>WEBKEY</strong> and <strong>SPRINTPAY_WEBHOOK_SECRET</strong> saved below.</div>
+@endif
+
 <form method="post" action="{{ url('admin/vtu/fetch-categories') }}" class="mb-3">
     @csrf
     <button type="submit" class="btn btn-outline-secondary btn-sm">Fetch categories from provider</button>
@@ -24,17 +28,22 @@
             </div>
 
             <div class="row">
-                <div class="col-md-4 mb-3">
+                <div class="col-md-3 mb-3">
                     <label class="form-label small fw-semibold">SprintPay API Key (WEBKEY)</label>
                     <input class="form-control form-control-sm" type="password" name="WEBKEY"
                         placeholder="{{ $sprintpayKeys['WEBKEY'] ? '•••••••• (saved)' : 'Enter API key' }}">
                 </div>
-                <div class="col-md-4 mb-3">
+                <div class="col-md-3 mb-3">
+                    <label class="form-label small fw-semibold">Bearer Secret (SPRINTPAY_WEBHOOK_SECRET)</label>
+                    <input class="form-control form-control-sm" type="password" name="SPRINTPAY_WEBHOOK_SECRET"
+                        placeholder="{{ $sprintpayKeys['SPRINTPAY_WEBHOOK_SECRET'] ? '•••••••• (saved)' : 'Required for VAS purchases' }}">
+                </div>
+                <div class="col-md-3 mb-3">
                     <label class="form-label small fw-semibold">API Base URL</label>
                     <input class="form-control form-control-sm" type="text" name="SPRINTPAY_API_BASE"
                         value="{{ $sprintpayKeys['SPRINTPAY_API_BASE'] }}">
                 </div>
-                <div class="col-md-4 mb-3">
+                <div class="col-md-3 mb-3">
                     <label class="form-label small fw-semibold">PalmPay Key</label>
                     <input class="form-control form-control-sm" type="password" name="PALMPAYKEY"
                         placeholder="{{ $sprintpayKeys['PALMPAYKEY'] ? '•••••••• (saved)' : 'Optional' }}">

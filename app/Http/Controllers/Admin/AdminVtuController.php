@@ -26,12 +26,14 @@ class AdminVtuController extends Controller
 
         $sprintpayKeys = [
             'WEBKEY' => $this->maskOrEmpty($this->config->get('WEBKEY')),
+            'SPRINTPAY_WEBHOOK_SECRET' => $this->maskOrEmpty($this->config->get('SPRINTPAY_WEBHOOK_SECRET')),
             'SPRINTPAY_API_BASE' => $this->config->get('SPRINTPAY_API_BASE', 'https://web.sprintpay.online/api'),
             'PALMPAYKEY' => $this->maskOrEmpty($this->config->get('PALMPAYKEY')),
         ];
 
         return view('admin.vtu', [
             'vtuEnabled' => $this->config->getBool('provider_vtu_enabled', true),
+            'vtuConfigured' => $this->vas->configured(),
             'vtuServices' => $vtuServices,
             'sprintpayKeys' => $sprintpayKeys,
             'remoteCategories' => null,
@@ -51,6 +53,9 @@ class AdminVtuController extends Controller
 
         if ($request->filled('WEBKEY')) {
             $this->config->set('WEBKEY', $request->input('WEBKEY'));
+        }
+        if ($request->filled('SPRINTPAY_WEBHOOK_SECRET')) {
+            $this->config->set('SPRINTPAY_WEBHOOK_SECRET', $request->input('SPRINTPAY_WEBHOOK_SECRET'));
         }
         if ($request->filled('SPRINTPAY_API_BASE')) {
             $this->config->set('SPRINTPAY_API_BASE', $request->input('SPRINTPAY_API_BASE'));
