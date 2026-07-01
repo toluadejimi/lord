@@ -17,25 +17,25 @@ return new class extends Migration
 
         Schema::table('users', function (Blueprint $table) {
             if (!Schema::hasColumn('users', 'username')) {
-                $table->string('username')->unique()->nullable()->after('email');
+                $table->string('username')->unique()->nullable();
             }
             if (!Schema::hasColumn('users', 'role_id')) {
-                $table->unsignedBigInteger('role_id')->nullable()->after('remember_token');
+                $table->unsignedBigInteger('role_id')->nullable();
             }
             if (!Schema::hasColumn('users', 'wallet')) {
-                $table->decimal('wallet', 12, 2)->default(0)->after('role_id');
+                $table->decimal('wallet', 12, 2)->default(0);
             }
             if (!Schema::hasColumn('users', 'hold_wallet')) {
-                $table->decimal('hold_wallet', 12, 2)->default(0)->after('wallet');
+                $table->decimal('hold_wallet', 12, 2)->default(0);
             }
             if (!Schema::hasColumn('users', 'session_id')) {
-                $table->string('session_id')->nullable()->after('hold_wallet');
+                $table->string('session_id')->nullable();
             }
             if (!Schema::hasColumn('users', 'code')) {
-                $table->string('code')->nullable()->after('session_id');
+                $table->string('code')->nullable();
             }
             if (!Schema::hasColumn('users', 'status')) {
-                $table->tinyInteger('status')->default(1)->after('code');
+                $table->tinyInteger('status')->default(1);
             }
         });
     }

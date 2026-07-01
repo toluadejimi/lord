@@ -19,28 +19,26 @@ return new class extends Migration
         }
 
         if (Schema::hasTable('users')) {
-            Schema::table('users', function (Blueprint $table) {
-                if (!Schema::hasColumn('users', 'api_key')) {
-                    $table->string('api_key', 64)->nullable()->unique()->after('wallet');
-                }
-                if (!Schema::hasColumn('users', 'webhook_url')) {
-                    $table->string('webhook_url')->nullable()->after('api_key');
-                }
-                if (!Schema::hasColumn('users', 'api_percentage')) {
-                    $table->decimal('api_percentage', 8, 4)->default(1)->after('webhook_url');
-                }
-                if (!Schema::hasColumn('users', 'phone')) {
-                    $table->string('phone')->nullable()->after('name');
-                }
+            $this->addUserColumn('phone', function (Blueprint $table) {
+                $table->string('phone')->nullable();
+            });
+            $this->addUserColumn('api_key', function (Blueprint $table) {
+                $table->string('api_key', 64)->nullable()->unique();
+            });
+            $this->addUserColumn('webhook_url', function (Blueprint $table) {
+                $table->string('webhook_url')->nullable();
+            });
+            $this->addUserColumn('api_percentage', function (Blueprint $table) {
+                $table->decimal('api_percentage', 8, 4)->default(1);
             });
         }
 
         if (Schema::hasTable('settings')) {
-            Schema::table('settings', function (Blueprint $table) {
-                if (!Schema::hasColumn('settings', 'is_enabled')) {
-                    $table->boolean('is_enabled')->default(true)->after('margin');
-                }
-            });
+            if (!Schema::hasColumn('settings', 'is_enabled')) {
+                Schema::table('settings', function (Blueprint $table) {
+                    $table->boolean('is_enabled')->default(true);
+                });
+            }
         }
 
         if (Schema::hasTable('settings') && !DB::table('settings')->where('id', 5)->exists()) {
@@ -169,6 +167,15 @@ return new class extends Migration
                 $table->decimal('wallet_amount', 14, 2)->default(0);
                 $table->decimal('total_bought', 14, 2)->default(0);
                 $table->timestamps();
+            });
+        }
+    }
+
+    protected function addUserColumn(string $column, callable $definition): void
+    {
+        if (!Schema::hasColumn('users', $column)) {
+            Schema::table('users', function (Blueprint $table) use ($definition) {
+                $definition($table);
             });
         }
     }

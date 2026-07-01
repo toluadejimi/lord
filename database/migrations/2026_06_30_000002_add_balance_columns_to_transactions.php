@@ -8,14 +8,21 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('transactions', function (Blueprint $table) {
-            if (!Schema::hasColumn('transactions', 'balance')) {
-                $table->decimal('balance', 14, 2)->nullable()->after('status');
-            }
-            if (!Schema::hasColumn('transactions', 'old_balance')) {
-                $table->decimal('old_balance', 14, 2)->nullable()->after('status');
-            }
-        });
+        if (!Schema::hasTable('transactions')) {
+            return;
+        }
+
+        if (!Schema::hasColumn('transactions', 'balance')) {
+            Schema::table('transactions', function (Blueprint $table) {
+                $table->decimal('balance', 14, 2)->nullable();
+            });
+        }
+
+        if (!Schema::hasColumn('transactions', 'old_balance')) {
+            Schema::table('transactions', function (Blueprint $table) {
+                $table->decimal('old_balance', 14, 2)->nullable();
+            });
+        }
     }
 
     public function down(): void
