@@ -30,7 +30,7 @@ class HeroCatalogService
      */
     protected function fetchSmsBowerCountries(): array
     {
-        $cached = Cache::get('hero_catalog.countries.sv3');
+        $cached = Cache::get('hero_catalog.countries.sv3.v2');
         if (is_array($cached) && $cached !== []) {
             return $cached;
         }
@@ -41,10 +41,12 @@ class HeroCatalogService
 
         if ($countries === []) {
             $countries = SmsBowerCountries::catalog();
+        } else {
+            $countries = $this->alignCountryIds($countries, config('smsbower_countries', []));
         }
 
         if ($countries !== []) {
-            Cache::put('hero_catalog.countries.sv3', $countries, 3600);
+            Cache::put('hero_catalog.countries.sv3.v2', $countries, 3600);
         }
 
         return $countries;
@@ -57,28 +59,95 @@ class HeroCatalogService
      */
     protected function parseCountryMap(array $json, array $nameFallback = []): array
     {
+        if (isset($json['data']) && is_array($json['data'])) {
+            $json = $json['data'];
+        }
+
         $countries = [];
 
-        foreach ($json as $id => $item) {
-            $idStr = (string) $id;
+        if (array_is_list($json)) {
+            foreach ($json as $item) {
+                if (!is_array($item)) {
+                    continue;
+                }
 
-            if (is_array($item)) {
+                $idStr = (string) ($item['id'] ?? $item['country'] ?? $item['country_id'] ?? '');
+                if ($idStr === '') {
+                    continue;
+                }
+
                 $name = $item['eng'] ?? $item['name'] ?? $item['rus'] ?? $nameFallback[$idStr] ?? $idStr;
-            } else {
-                $name = (string) $item;
-            }
 
-            if (isset($nameFallback[$idStr]) && ($name === $idStr || strlen((string) $name) < 3)) {
-                $name = $nameFallback[$idStr];
+                $countries[] = [
+                    'id' => $idStr,
+                    'name' => (string) $name,
+                ];
             }
+        } else {
+            foreach ($json as $id => $item) {
+                if (in_array((string) $id, ['status', 'message', 'success'], true)) {
+                    continue;
+                }
 
-            $countries[] = [
-                'id' => $idStr,
-                'name' => (string) $name,
-            ];
+                $idStr = is_numeric($id) ? (string) (int) $id : (string) $id;
+
+                if (is_array($item)) {
+                    $idStr = (string) ($item['id'] ?? $item['country'] ?? $item['country_id'] ?? $idStr);
+                    $name = $item['eng'] ?? $item['name'] ?? $item['rus'] ?? $nameFallback[$idStr] ?? $idStr;
+                } else {
+                    $name = (string) $item;
+                }
+
+                if (isset($nameFallback[$idStr]) && ($name === $idStr || strlen((string) $name) < 3)) {
+                    $name = $nameFallback[$idStr];
+                }
+
+                $countries[] = [
+                    'id' => $idStr,
+                    'name' => (string) $name,
+                ];
+            }
         }
 
         usort($countries, fn ($a, $b) => strcasecmp($a['name'], $b['name']));
+
+        return $countries;
+    }
+
+    /**
+     * @param  list<array{id: string, name: string}>  $countries
+     * @param  array<string, string>  $canonical
+     * @return list<array{id: string, name: string}>
+     */
+    protected function alignCountryIds(array $countries, array $canonical): array
+    {
+        $byName = [];
+        foreach ($canonical as $id => $name) {
+            $byName[strtolower($name)] = (string) $id;
+        }
+
+        $aliases = [
+            'usa' => '187',
+            'u.s.a' => '187',
+            'united states of america' => '187',
+            'uk' => '16',
+            'great britain' => '16',
+            'russia' => '0',
+            'vietnam' => '10',
+            'viet nam' => '10',
+            'uae' => '95',
+            'united arab emirates' => '95',
+        ];
+
+        foreach ($countries as $index => $country) {
+            $lookup = strtolower(trim($country['name']));
+
+            if (isset($byName[$lookup])) {
+                $countries[$index]['id'] = $byName[$lookup];
+            } elseif (isset($aliases[$lookup])) {
+                $countries[$index]['id'] = $aliases[$lookup];
+            }
+        }
 
         return $countries;
     }
@@ -103,28 +172,39 @@ class HeroCatalogService
 
     public function quote(string $providerKey, string $country, string $service): ?array
     {
-        $raw = $this->provider->getPrices($providerKey, $service, $country);
-        $json = $this->decodeApiJson($raw);
+        $country = (string) (int) $country;
+        $service = strtolower(trim($service));
 
-        if (!is_array($json)) {
-            return null;
+        $actions = $providerKey === 'sv3'
+            ? ['getPrices', 'getPricesV3', 'getPricesV2']
+            : ['getPrices'];
+
+        foreach ($actions as $action) {
+            $raw = $this->provider->getPrices($providerKey, $service, $country, $action);
+            $json = $this->decodeApiJson($raw);
+
+            if (!is_array($json)) {
+                continue;
+            }
+
+            $entry = $this->extractPriceEntry($json, $country, $service);
+
+            if (!is_array($entry)) {
+                continue;
+            }
+
+            $usd = (float) ($entry['cost'] ?? $entry['price'] ?? $entry['retail_price'] ?? $entry['physicalPrice'] ?? $entry['minPrice'] ?? 0);
+            if ($usd <= 0) {
+                continue;
+            }
+
+            return [
+                'usd' => $usd,
+                'available' => (int) ($entry['count'] ?? $entry['quantity'] ?? $entry['phones'] ?? 0),
+            ];
         }
 
-        $entry = $this->extractPriceEntry($json, $country, $service);
-
-        if (!is_array($entry)) {
-            return null;
-        }
-
-        $usd = (float) ($entry['cost'] ?? $entry['price'] ?? $entry['retail_price'] ?? 0);
-        if ($usd <= 0) {
-            return null;
-        }
-
-        return [
-            'usd' => $usd,
-            'available' => (int) ($entry['count'] ?? $entry['quantity'] ?? $entry['phones'] ?? 0),
-        ];
+        return null;
     }
 
     /**
@@ -267,14 +347,38 @@ class HeroCatalogService
      */
     protected function extractPriceEntry(array $json, string $country, string $service): ?array
     {
-        $entry = $json[$country][$service] ?? null;
-
-        if (is_array($entry)) {
-            return $entry;
+        if (isset($json['data']) && is_array($json['data'])) {
+            $json = $json['data'];
         }
 
-        if (isset($json[$country]) && is_array($json[$country]) && isset($json[$country]['cost'])) {
-            return $json[$country];
+        $countryKeys = array_values(array_unique([
+            $country,
+            (string) (int) $country,
+            ltrim($country, '0') !== '' ? ltrim($country, '0') : $country,
+        ]));
+
+        $serviceKeys = array_values(array_unique([
+            $service,
+            strtolower($service),
+        ]));
+
+        foreach ($countryKeys as $countryKey) {
+            foreach ($serviceKeys as $serviceKey) {
+                $entry = $json[$countryKey][$serviceKey] ?? null;
+                if (is_array($entry) && $this->priceEntryHasCost($entry)) {
+                    return $entry;
+                }
+            }
+
+            if (isset($json[$countryKey]) && is_array($json[$countryKey]) && $this->priceEntryHasCost($json[$countryKey])) {
+                return $json[$countryKey];
+            }
+        }
+
+        foreach ($serviceKeys as $serviceKey) {
+            if (isset($json[$serviceKey]) && is_array($json[$serviceKey]) && $this->priceEntryHasCost($json[$serviceKey])) {
+                return $json[$serviceKey];
+            }
         }
 
         foreach ($json as $countryKey => $countryBlock) {
@@ -282,15 +386,31 @@ class HeroCatalogService
                 continue;
             }
 
-            if (isset($countryBlock[$service]) && is_array($countryBlock[$service])) {
-                return $countryBlock[$service];
+            foreach ($serviceKeys as $serviceKey) {
+                if (isset($countryBlock[$serviceKey]) && is_array($countryBlock[$serviceKey])) {
+                    $entry = $countryBlock[$serviceKey];
+                    if ($this->priceEntryHasCost($entry)) {
+                        return $entry;
+                    }
+                }
             }
 
-            if ((string) $countryKey === $country && isset($countryBlock['cost'])) {
+            if (in_array((string) $countryKey, $countryKeys, true) && $this->priceEntryHasCost($countryBlock)) {
                 return $countryBlock;
             }
         }
 
         return null;
+    }
+
+    protected function priceEntryHasCost(array $entry): bool
+    {
+        foreach (['cost', 'price', 'retail_price', 'physicalPrice', 'minPrice'] as $field) {
+            if (isset($entry[$field]) && (float) $entry[$field] > 0) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

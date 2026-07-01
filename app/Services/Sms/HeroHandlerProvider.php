@@ -126,7 +126,7 @@ class HeroHandlerProvider
         return str_contains($body, 'ACCESS_CANCEL');
     }
 
-    public function getPrices(string $provider, ?string $service = null, ?string $country = null): string
+    public function getPrices(string $provider, ?string $service = null, ?string $country = null, string $action = 'getPrices'): string
     {
         $params = [];
 
@@ -137,8 +137,6 @@ class HeroHandlerProvider
         if ($country !== null && $country !== '') {
             $params['country'] = $country;
         }
-
-        $action = 'getPrices';
 
         return $this->request($provider, $action, $params);
     }
