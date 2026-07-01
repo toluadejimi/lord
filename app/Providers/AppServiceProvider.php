@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Services\AppConfigService;
 use App\Support\StaticAsset;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
@@ -46,6 +47,20 @@ class AppServiceProvider extends ServiceProvider
             function get_s_product_cost(string $operator, string $country, string $product): float|int
             {
                 return \App\Support\LegacyHelpers::getSProductCost($operator, $country, $product);
+            }
+        }
+
+        if (!function_exists('app_config')) {
+            function app_config(string $key, ?string $default = null): ?string
+            {
+                return app(AppConfigService::class)->get($key, $default);
+            }
+        }
+
+        if (!function_exists('app_config_bool')) {
+            function app_config_bool(string $key, bool $default = false): bool
+            {
+                return app(AppConfigService::class)->getBool($key, $default);
             }
         }
     }
