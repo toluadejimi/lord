@@ -509,9 +509,17 @@ class HomeController extends Controller
         $user = Auth::user();
         $ref = $funding->extractRefFromRequest($request->all());
         $sessionId = $funding->extractSessionIdFromRequest($request->all());
+
         $txn = $ref
             ? Transaction::where('ref_id', $ref)->where('user_id', $user->id)->first()
             : null;
+
+        if (!$txn) {
+            $txn = $funding->findLatestPendingFunding($user);
+            if ($txn && !$ref) {
+                $ref = $txn->ref_id;
+            }
+        }
 
         if ($txn && (int) $txn->status === 2) {
             return redirect('fund-wallet')->with(
@@ -550,13 +558,13 @@ class HomeController extends Controller
                     'Wallet funded successfully with ₦'.number_format((float) $completed->amount, 2)
                 );
             }
+        }
 
-            if ($txn && (int) $txn->status === 1) {
-                return redirect('fund-wallet')->with(
-                    'message',
-                    'Payment received — your wallet will update shortly. If it stays pending, tap Resolve next to the transaction.'
-                );
-            }
+        if ($txn && (int) $txn->status === 1) {
+            return redirect('fund-wallet')->with(
+                'message',
+                'Payment received — your wallet will update shortly. If it stays pending, tap Resolve next to the transaction.'
+            );
         }
 
         if ($request->filled('status')) {

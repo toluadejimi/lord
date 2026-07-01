@@ -18,31 +18,34 @@ class SprintPayClient
     {
         $key = $this->config->get('WEBKEY', '');
 
-        return 'https://web.sprintpay.online/pay?'.http_build_query([
+        return 'https://web.sprintpay.online/pay?'.http_build_query(array_filter([
             'amount' => $amount,
             'key' => $key,
             'ref' => $ref,
             'email' => $email,
             'redirect_url' => url('/verify'),
             'callback_url' => url('/verify'),
-        ]);
+            'return_url' => url('/verify'),
+        ]));
     }
 
     public function resolve(string $sessionId, string $ref): array
     {
-        $response = Http::asForm()->post($this->base().'/resolve', [
+        $response = Http::asForm()->post($this->base().'/resolve', array_filter([
             'session_id' => $sessionId,
             'ref' => $ref,
-        ]);
+            'key' => $this->config->get('WEBKEY', ''),
+        ]));
 
         return $response->json() ?? [];
     }
 
     public function resolveComplete(string $orderId): bool
     {
-        $response = Http::asForm()->post($this->base().'/resolve-complete', [
+        $response = Http::asForm()->post($this->base().'/resolve-complete', array_filter([
             'order_id' => $orderId,
-        ]);
+            'key' => $this->config->get('WEBKEY', ''),
+        ]));
         $data = $response->json();
 
         return ($data['status'] ?? false) === true;

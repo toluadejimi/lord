@@ -60,13 +60,26 @@ class WalletFundingService
         ], true);
     }
 
+    public function findLatestPendingFunding(User $user): ?Transaction
+    {
+        return Transaction::where('user_id', $user->id)
+            ->where('status', 1)
+            ->where('type', 2)
+            ->where('ref_id', 'like', 'VERF%')
+            ->orderByDesc('id')
+            ->first();
+    }
+
     /**
      * @return array{success: bool, amount: float, message: ?string}
      */
     public function resolveWithProvider(string $ref, ?string $sessionId = null): array
     {
+        $pending = Transaction::where('ref_id', $ref)->where('status', 1)->first();
+        $fallbackAmount = (float) ($pending?->amount ?? 0);
+
         if ($sessionId) {
-            $result = $this->parseResolveResponse($this->sprintPay->resolve($sessionId, $ref));
+            $result = $this->parseResolveResponse($this->sprintPay->resolve($sessionId, $ref), $fallbackAmount);
             if ($result['success']) {
                 return $result;
             }
@@ -75,10 +88,11 @@ class WalletFundingService
         try {
             $response = Http::timeout(30)
                 ->asForm()
-                ->post(rtrim($this->config->get('SPRINTPAY_API_BASE', 'https://web.sprintpay.online/api'), '/').'/resolve', [
+                ->post(rtrim($this->config->get('SPRINTPAY_API_BASE', 'https://web.sprintpay.online/api'), '/').'/resolve', array_filter([
                     'ref' => $ref,
-                ]);
-            $result = $this->parseResolveResponse($response->json() ?? []);
+                    'key' => $this->config->get('WEBKEY', ''),
+                ]));
+            $result = $this->parseResolveResponse($response->json() ?? [], $fallbackAmount);
             if ($result['success']) {
                 return $result;
             }
@@ -87,8 +101,7 @@ class WalletFundingService
         }
 
         if ($this->sprintPay->resolveComplete($ref)) {
-            $pending = Transaction::where('ref_id', $ref)->where('status', 1)->first();
-            $amount = (float) ($pending?->amount ?? 0);
+            $amount = $fallbackAmount;
             if ($amount > 0) {
                 return ['success' => true, 'amount' => $amount, 'message' => null];
             }
@@ -101,16 +114,20 @@ class WalletFundingService
      * @param  array<string, mixed>|null  $json
      * @return array{success: bool, amount: float, message: ?string}
      */
-    protected function parseResolveResponse(?array $json): array
+    protected function parseResolveResponse(?array $json, float $fallbackAmount = 0): array
     {
         if (!is_array($json)) {
             return ['success' => false, 'amount' => 0.0, 'message' => 'Invalid response from payment provider.'];
         }
 
         $status = $json['status'] ?? null;
-        $amount = (float) ($json['amount'] ?? $json['trx'] ?? 0);
+        $amount = (float) ($json['amount'] ?? $json['trx'] ?? $json['data']['amount'] ?? 0);
         $message = isset($json['message']) ? (string) $json['message'] : null;
         $success = $this->isSuccessStatus($status) || $status === true;
+
+        if ($success && $amount <= 0 && $fallbackAmount > 0) {
+            $amount = $fallbackAmount;
+        }
 
         return [
             'success' => $success && $amount > 0,
