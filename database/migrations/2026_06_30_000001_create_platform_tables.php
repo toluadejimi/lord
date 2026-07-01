@@ -76,10 +76,14 @@ return new class extends Migration
         if (!Schema::hasTable('verification_sms')) {
             Schema::create('verification_sms', function (Blueprint $table) {
                 $table->id();
-                $table->foreignId('verification_id')->constrained('verifications')->cascadeOnDelete();
+                $this->addMatchingReferenceColumn($table, 'verification_id', 'verifications', 'id', ['index']);
                 $table->text('sms')->nullable();
                 $table->timestamps();
             });
+
+            $this->addForeignKeyIfCompatible('verification_sms', 'verification_id', 'verifications');
+        } else {
+            $this->addForeignKeyIfCompatible('verification_sms', 'verification_id', 'verifications');
         }
 
         if (!Schema::hasTable('countries')) {
@@ -139,8 +143,8 @@ return new class extends Migration
         if (!Schema::hasTable('sold_logs')) {
             Schema::create('sold_logs', function (Blueprint $table) {
                 $table->id();
-                $table->foreignId('user_id')->nullable();
-                $table->foreignId('item_id')->nullable();
+                $this->addMatchingReferenceColumn($table, 'user_id', 'users', 'id', ['nullable', 'index']);
+                $this->addMatchingReferenceColumn($table, 'item_id', 'items', 'id', ['nullable', 'index']);
                 $table->string('file_path')->nullable();
                 $table->decimal('amount', 12, 2)->default(0);
                 $table->timestamps();
@@ -150,7 +154,7 @@ return new class extends Migration
         if (!Schema::hasTable('payment_points')) {
             Schema::create('payment_points', function (Blueprint $table) {
                 $table->id();
-                $table->foreignId('user_id')->nullable()->index();
+                $this->addMatchingReferenceColumn($table, 'user_id', 'users', 'id', ['nullable', 'index']);
                 $table->string('email')->nullable();
                 $table->string('account_no')->nullable();
                 $table->string('bank_name')->nullable();
@@ -162,7 +166,7 @@ return new class extends Migration
         if (!Schema::hasTable('wallet_checks')) {
             Schema::create('wallet_checks', function (Blueprint $table) {
                 $table->id();
-                $table->foreignId('user_id')->unique();
+                $this->addMatchingReferenceColumn($table, 'user_id', 'users', 'id', ['unique']);
                 $table->decimal('total_funded', 14, 2)->default(0);
                 $table->decimal('wallet_amount', 14, 2)->default(0);
                 $table->decimal('total_bought', 14, 2)->default(0);
@@ -178,6 +182,90 @@ return new class extends Migration
                 $definition($table);
             });
         }
+    }
+
+    protected function columnType(string $table, string $column): ?string
+    {
+        if (!Schema::hasTable($table) || !Schema::hasColumn($table, $column)) {
+            return null;
+        }
+
+        $row = DB::selectOne(
+            'SELECT COLUMN_TYPE FROM information_schema.COLUMNS
+             WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND COLUMN_NAME = ?',
+            [$table, $column]
+        );
+
+        return $row?->COLUMN_TYPE;
+    }
+
+    protected function addMatchingReferenceColumn(
+        Blueprint $table,
+        string $column,
+        string $referencedTable,
+        string $referencedColumn = 'id',
+        array $modifiers = []
+    ): void {
+        $type = strtolower($this->columnType($referencedTable, $referencedColumn) ?? 'bigint unsigned');
+
+        if (str_contains($type, 'bigint')) {
+            $definition = str_contains($type, 'unsigned')
+                ? $table->unsignedBigInteger($column)
+                : $table->bigInteger($column);
+        } else {
+            $definition = str_contains($type, 'unsigned')
+                ? $table->unsignedInteger($column)
+                : $table->integer($column);
+        }
+
+        if (in_array('nullable', $modifiers, true)) {
+            $definition->nullable();
+        }
+
+        if (in_array('index', $modifiers, true)) {
+            $definition->index();
+        }
+
+        if (in_array('unique', $modifiers, true)) {
+            $definition->unique();
+        }
+    }
+
+    protected function addForeignKeyIfCompatible(
+        string $table,
+        string $column,
+        string $referencedTable,
+        string $referencedColumn = 'id',
+        bool $cascade = true
+    ): void {
+        if (!Schema::hasTable($table) || !Schema::hasTable($referencedTable)) {
+            return;
+        }
+
+        $local = strtolower($this->columnType($table, $column) ?? '');
+        $remote = strtolower($this->columnType($referencedTable, $referencedColumn) ?? '');
+
+        if ($local === '' || $remote === '' || $local !== $remote) {
+            return;
+        }
+
+        $existing = DB::selectOne(
+            'SELECT CONSTRAINT_NAME FROM information_schema.KEY_COLUMN_USAGE
+             WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ?
+             AND COLUMN_NAME = ? AND REFERENCED_TABLE_NAME = ? LIMIT 1',
+            [$table, $column, $referencedTable]
+        );
+
+        if ($existing) {
+            return;
+        }
+
+        Schema::table($table, function (Blueprint $table) use ($column, $referencedTable, $referencedColumn, $cascade) {
+            $foreign = $table->foreign($column)->references($referencedColumn)->on($referencedTable);
+            if ($cascade) {
+                $foreign->cascadeOnDelete();
+            }
+        });
     }
 
     public function down(): void
