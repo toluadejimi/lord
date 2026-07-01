@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en"><!-- [Head] start -->
 <head><title>SMS LORD</title><!-- [Meta] -->
+    <base href="{{ rtrim(url('/'), '/') }}/">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0,minimal-ui">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -92,7 +93,7 @@
 <nav class="pc-sidebar">
     <div class="navbar-wrapper">
         <div class="m-header">
-            <a href="/" class="b-brand text-primary">
+            <a href="{{ url('/') }}" class="b-brand text-primary">
                 <img src="{{ static_asset('assets/images/logo.svg') }}">
             </a>
         </div>
@@ -125,7 +126,7 @@
                                 </a>
 
 
-                                <a href="log-out">
+                                <a href="{{ url('log-out') }}">
                                     <i class="ti ti-power">
 
                                     </i>
@@ -138,7 +139,7 @@
                 <ul class="pc-navbar">
                     <li class="pc-item pc-caption"><label>Home</label></li>
                     <li class="pc-item pc-menu">
-                        <a href="cworld" class="pc-link"><span class="pc-micon">
+                        <a href="{{ url('cworld') }}" class="pc-link"><span class="pc-micon">
                                 <svg class="pc-icon">
                                 <use xlink:href="#custom-text-align-justify-center">
                                 </use>
@@ -151,7 +152,7 @@
                     </li>
 
 
-                    <li class="pc-item pc-menu"><a href="fund-wallet" class="pc-link"><span
+                    <li class="pc-item pc-menu"><a href="{{ url('fund-wallet') }}" class="pc-link"><span
                                 class="pc-micon">
                             <svg class="pc-icon"><use xlink:href="#custom-dollar-square"></use>
                             </svg> </span>
@@ -169,16 +170,16 @@
                         </svg>
                     </li>
                     <li class="pc-item">
-                        <a href="cworld" class="pc-link">
+                        <a href="{{ url('cworld') }}" class="pc-link">
                         <span class="pc-micon">
                             <img src="{{ static_asset('assets/images/world.svg') }}" height="20" width="20">
                         </span>
                             <span class="pc-mtext">Server 1</span>
                         </a>
                     </li>
-                    <li class="pc-item"><a href="usa2" class="pc-link"><span class="pc-micon"><i class="ti ti-phone"></i></span><span class="pc-mtext">Server 2</span></a></li>
-                    <li class="pc-item"><a href="world-sv2" class="pc-link"><span class="pc-micon"><i class="ti ti-world"></i></span><span class="pc-mtext">Server 3</span></a></li>
-                    <li class="pc-item"><a href="world-sv3" class="pc-link"><span class="pc-micon"><i class="ti ti-world"></i></span><span class="pc-mtext">Server 4</span></a></li>
+                    <li class="pc-item"><a href="{{ url('usa2') }}" class="pc-link"><span class="pc-micon"><i class="ti ti-phone"></i></span><span class="pc-mtext">Server 2</span></a></li>
+                    <li class="pc-item"><a href="{{ url('world-sv2') }}" class="pc-link"><span class="pc-micon"><i class="ti ti-world"></i></span><span class="pc-mtext">Server 3</span></a></li>
+                    <li class="pc-item"><a href="{{ url('world-sv3') }}" class="pc-link"><span class="pc-micon"><i class="ti ti-world"></i></span><span class="pc-mtext">Server 4</span></a></li>
                     <li class="pc-item pc-caption"><label>VTU & API</label></li>
                     @php
                         $vtuCfg = app(\App\Services\AppConfigService::class);
@@ -202,11 +203,11 @@
                         @endif
                     @endforeach
                     @endif
-                    <li class="pc-item"><a href="api-docs" class="pc-link"><span class="pc-micon"><i class="ti ti-code"></i></span><span class="pc-mtext">API Docs</span></a></li>
+                    <li class="pc-item"><a href="{{ url('api-docs') }}" class="pc-link"><span class="pc-micon"><i class="ti ti-code"></i></span><span class="pc-mtext">API Docs</span></a></li>
 
 
                     <li class="pc-item">
-                        <a href="orders" class="pc-link">
+                        <a href="{{ url('orders') }}" class="pc-link">
                         <span class="pc-micon">
                             <svg class="pc-icon"><use xlink:href="#custom-message-2">
 
@@ -252,7 +253,7 @@
 
                     <li class="pc-item">
 
-                        <a href="log-out" class="btn btn-dark w-100  btn-block">
+                        <a href="{{ url('log-out') }}" class="btn btn-dark w-100  btn-block">
                             Logout
                         </a>
                     </li>
@@ -268,11 +269,11 @@
                     <div class="card-body">
 
 
-                        <a href="register" class="btn btn-dark w-100 my-3  btn-block">
+                        <a href="{{ url('register') }}" class="btn btn-dark w-100 my-3  btn-block">
                             Register
                         </a>
 
-                        <a href="login" class="btn btn-primary w-100  btn-block">
+                        <a href="{{ url('login') }}" class="btn btn-primary w-100  btn-block">
                             Login
                         </a>
 
@@ -381,7 +382,7 @@
                                     <a href="#" class="dropdown-item">
                                     <span><svg
                                             class="pc-icon text-muted me-2"><use xlink:href="#custom-share-bold"></use></svg> <span>Share</span> </span></a>
-                                    <a href="/logout" class="dropdown-item"><span>
+                                    <a href="{{ url('logout') }}" class="dropdown-item"><span>
                                         <svg
                                             class="pc-icon text-muted me-2"><use
                                                 xlink:href="#custom-lock-outline"></use></svg> <span>Change Password</span></span></a>
@@ -408,11 +409,11 @@
 
                                     <hr class="border-secondary border-opacity-50">
                                     <div class="d-grid mb-3">
-                                        <a href="/login" class="btn btn-primary my-2">
+                                        <a href="{{ url('login') }}" class="btn btn-primary my-2">
                                             Login
                                         </a>
 
-                                        <a href="register" class="btn btn-dark">
+                                        <a href="{{ url('register') }}" class="btn btn-dark">
                                             Register
                                         </a>
 
