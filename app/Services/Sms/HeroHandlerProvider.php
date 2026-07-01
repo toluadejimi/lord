@@ -36,7 +36,13 @@ class HeroHandlerProvider
             'action' => $action,
         ], $params);
 
-        $response = Http::timeout(30)->get($this->baseUrl($provider).'/stubs/handler_api.php', $query);
+        $response = Http::timeout(45)
+            ->retry(2, 500, throw: false)
+            ->get($this->baseUrl($provider).'/stubs/handler_api.php', $query);
+
+        if (!$response->successful()) {
+            return 'BAD_RESPONSE:'.$response->status();
+        }
 
         return (string) $response->body();
     }
@@ -51,7 +57,7 @@ class HeroHandlerProvider
             $params['maxPrice'] = $maxPrice;
         }
 
-        $body = $this->request($provider, 'getNumber', $params);
+        $body = trim($this->request($provider, 'getNumber', $params));
 
         if (str_starts_with($body, 'ACCESS_NUMBER:')) {
             $parts = explode(':', $body);
@@ -63,7 +69,27 @@ class HeroHandlerProvider
             ];
         }
 
-        return ['success' => false, 'error' => trim($body), 'raw' => $body];
+        return ['success' => false, 'error' => $this->humanizeError($body), 'raw' => $body];
+    }
+
+    protected function humanizeError(string $body): string
+    {
+        $map = [
+            'NO_NUMBERS' => 'No numbers available for this country and service.',
+            'NO_BALANCE' => 'Provider balance is low. Try again later.',
+            'BAD_SERVICE' => 'Unknown service code.',
+            'BAD_COUNTRY' => 'Unknown country.',
+            'BAD_KEY' => 'Provider API key is invalid.',
+            'ERROR_SQL' => 'Provider is temporarily unavailable.',
+        ];
+
+        foreach ($map as $code => $message) {
+            if (str_contains($body, $code)) {
+                return $message;
+            }
+        }
+
+        return $body !== '' ? $body : 'Could not rent number.';
     }
 
     public function getStatus(string $provider, string $orderId): array
@@ -94,14 +120,21 @@ class HeroHandlerProvider
         return str_contains($body, 'ACCESS_CANCEL');
     }
 
-    public function getPrices(string $provider, ?string $service = null): string
+    public function getPrices(string $provider, ?string $service = null, ?string $country = null): string
     {
         $params = [];
+
         if ($service) {
             $params['service'] = $service;
         }
 
-        return $this->request($provider, 'getPrices', $params);
+        if ($country !== null && $country !== '') {
+            $params['country'] = $country;
+        }
+
+        $action = 'getPrices';
+
+        return $this->request($provider, $action, $params);
     }
 
     public function getCountries(string $provider): string

@@ -119,6 +119,8 @@ trait ManagesHeroStyleVerification
         $apiCost = $quote['usd'];
         $ngn = $pricing->ngnFromUsd($apiCost, $this->heroPricingSettingId(), Auth::user());
 
+        $maxPrice = sprintf('%.4f', $apiCost * 1.02);
+
         $result = $orders->orderHeroStyle(
             Auth::user(),
             $this->heroProviderKey(),
@@ -126,7 +128,7 @@ trait ManagesHeroStyleVerification
             $request->country,
             $ngn,
             $apiCost,
-            null
+            $maxPrice
         );
 
         if (!$result['success']) {

@@ -2,12 +2,18 @@
 
 namespace App\Services\Sms;
 
+use App\Support\SmsBowerCountries;
+
 class HeroCatalogService
 {
     public function __construct(protected HeroHandlerProvider $provider) {}
 
     public function countries(string $providerKey): array
     {
+        if ($providerKey === 'sv3') {
+            return SmsBowerCountries::catalog();
+        }
+
         $raw = $this->provider->getCountries($providerKey);
         $json = json_decode($raw, true);
 
@@ -89,39 +95,56 @@ class HeroCatalogService
 
     public function quote(string $providerKey, string $country, string $service): ?array
     {
-        $raw = $this->provider->getPrices($providerKey, $service);
+        $raw = $this->provider->getPrices($providerKey, $service, $country);
         $json = json_decode($raw, true);
 
         if (!is_array($json)) {
             return null;
         }
 
-        $entry = $json[$country][$service] ?? null;
-
-        if (!is_array($entry)) {
-            foreach ($json as $countryBlock) {
-                if (!is_array($countryBlock)) {
-                    continue;
-                }
-                if (isset($countryBlock[$service]) && is_array($countryBlock[$service])) {
-                    $entry = $countryBlock[$service];
-                    break;
-                }
-            }
-        }
+        $entry = $this->extractPriceEntry($json, $country, $service);
 
         if (!is_array($entry)) {
             return null;
         }
 
-        $usd = (float) ($entry['cost'] ?? $entry['price'] ?? 0);
+        $usd = (float) ($entry['cost'] ?? $entry['price'] ?? $entry['retail_price'] ?? 0);
         if ($usd <= 0) {
             return null;
         }
 
         return [
             'usd' => $usd,
-            'available' => (int) ($entry['count'] ?? $entry['quantity'] ?? 0),
+            'available' => (int) ($entry['count'] ?? $entry['quantity'] ?? $entry['phones'] ?? 0),
         ];
+    }
+
+    /**
+     * @param  array<string, mixed>  $json
+     * @return array<string, mixed>|null
+     */
+    protected function extractPriceEntry(array $json, string $country, string $service): ?array
+    {
+        $entry = $json[$country][$service] ?? null;
+
+        if (is_array($entry)) {
+            return $entry;
+        }
+
+        foreach ($json as $countryKey => $countryBlock) {
+            if (!is_array($countryBlock)) {
+                continue;
+            }
+
+            if (isset($countryBlock[$service]) && is_array($countryBlock[$service])) {
+                return $countryBlock[$service];
+            }
+
+            if ((string) $countryKey === $country && isset($countryBlock['cost'])) {
+                return $countryBlock;
+            }
+        }
+
+        return null;
     }
 }
