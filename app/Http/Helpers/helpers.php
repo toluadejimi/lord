@@ -1,3 +1,678 @@
-<?php
+﻿<?php
 
-require_once __DIR__.'/../../helpers.php';
+use App\Models\Setting;
+use App\Models\User;
+use App\Models\Verification;
+use App\Services\AppConfigService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+function app_config(string $key, ?string $default = null): ?string
+{
+    return app(AppConfigService::class)->get($key, $default);
+}
+
+function app_config_bool(string $key, bool $default = false): bool
+{
+    return app(AppConfigService::class)->getBool($key, $default);
+}
+
+
+function resolve_complete($order_id)
+{
+
+    $curl = curl_init();
+
+    $databody = array('order_id' => "$order_id");
+
+    curl_setopt_array($curl, array(
+        CURLOPT_URL => 'https://web.sprintpay.online/api/resolve-complete',
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'POST',
+        CURLOPT_POSTFIELDS => $databody,
+    ));
+
+    $var = curl_exec($curl);
+    curl_close($curl);
+    $var = json_decode($var);
+
+
+    $status = $var->status ?? null;
+    if ($status == true) {
+        return 200;
+    } else {
+        return 500;
+    }
+}
+
+
+function send_notification($message)
+{
+    $token = app_config('TELEGRAM_BOT_TOKEN');
+    $chatId = app_config('TELEGRAM_ADMIN_CHAT_ID');
+    if (!$token || !$chatId) {
+        return;
+    }
+
+    $curl = curl_init();
+    curl_setopt_array($curl, array(
+        CURLOPT_URL => "https://api.telegram.org/bot{$token}/sendMessage",
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'POST',
+        CURLOPT_POSTFIELDS => array(
+            'chat_id' => $chatId,
+            'text' => $message,
+        ),
+        CURLOPT_HTTPHEADER => array(),
+    ));
+    curl_exec($curl);
+    curl_close($curl);
+}
+
+
+function send_notification2($message)
+{
+    $token = app_config('TELEGRAM_BOT_TOKEN_2') ?: app_config('TELEGRAM_BOT_TOKEN');
+    $chatId = app_config('TELEGRAM_CHAT_ID_2') ?: app_config('TELEGRAM_ADMIN_CHAT_ID');
+    if (!$token || !$chatId) {
+        return;
+    }
+
+    $curl = curl_init();
+    curl_setopt_array($curl, array(
+        CURLOPT_URL => "https://api.telegram.org/bot{$token}/sendMessage",
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'POST',
+        CURLOPT_POSTFIELDS => array(
+            'chat_id' => $chatId,
+            'text' => $message,
+        ),
+        CURLOPT_HTTPHEADER => array(),
+    ));
+    curl_exec($curl);
+    curl_close($curl);
+}
+
+
+function session_resolve($session_id, $ref)
+{
+
+    $curl = curl_init();
+
+    $databody = array(
+        'session_id' => "$session_id",
+        'ref' => "$ref"
+    );
+
+
+    curl_setopt_array($curl, array(
+        CURLOPT_URL => 'https://web.sprintpay.online/api/resolve',
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'POST',
+        CURLOPT_POSTFIELDS => $databody,
+    ));
+
+    $var = curl_exec($curl);
+    curl_close($curl);
+    $var = json_decode($var);
+
+    $message = $var->message ?? null;
+    $status = $var->status ?? null;
+
+    $amount = $var->amount ?? null;
+
+    return array([
+        'status' => $status,
+        'amount' => $amount,
+        'message' => $message
+    ]);
+
+
+}
+
+
+function cancel_order($orderID)
+{
+
+
+    $APIKEY = app_config('KEY');
+    $curl = curl_init();
+
+    curl_setopt_array($curl, array(
+        CURLOPT_URL => "https://daisysms.com/stubs/handler_api.php?api_key=$APIKEY&action=setStatus&id=$orderID&status=8",
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'GET',
+    ));
+
+    $var = curl_exec($curl);
+    curl_close($curl);
+    $result = $var ?? null;
+
+    if (strstr($result, "ACCESS_CANCEL") !== false) {
+
+        return 1;
+
+    } else {
+
+        return 0;
+
+    }
+
+
+}
+
+function check_sms($orderID)
+{
+
+
+    $APIKEY = app_config('KEY');
+    $curl = curl_init();
+
+    curl_setopt_array($curl, array(
+        CURLOPT_URL => "https://daisysms.com/stubs/handler_api.php?api_key=$APIKEY&action=getStatus&id=$orderID",
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'GET',
+    ));
+
+    $var = curl_exec($curl);
+    curl_close($curl);
+    $result = $var ?? null;
+
+    if (strstr($result, "NO_ACTIVATION") !== false) {
+
+        return 1;
+
+    }
+
+    if (strstr($result, "NO_ACTIVATION") !== false) {
+
+        return 1;
+
+    }
+
+    if (strstr($result, "STATUS_WAIT_CODE") !== false) {
+
+        return 2;
+
+    }
+
+    if (strstr($result, "STATUS_CANCEL") !== false) {
+
+        return 4;
+
+    }
+
+
+    if (strstr($result, "STATUS_OK") !== false) {
+
+
+        $parts = explode(":", $result);
+        $text = $parts[0];
+        $sms = $parts[1];
+
+        $data['sms'] = $sms;
+        $data['full_sms'] = $sms;
+
+        Verification::where('order_id', $orderID)->update([
+            'status' => 2,
+            'sms' => $sms,
+            'full_sms' => $sms,
+        ]);
+
+        return 3;
+
+    }
+
+
+}
+
+
+function get_world_countries()
+{
+    $key = app_config('WKEY');
+    $curl = curl_init();
+    curl_setopt_array($curl, array(
+        CURLOPT_URL => "https://api.smspool.net/country/retrieve_all?key=$key",
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'POST',
+        CURLOPT_HTTPHEADER => array(
+            'Content-Type: application/json',
+            'Accept: application/json',
+        ),
+    ));
+
+    $var = curl_exec($curl);
+    curl_close($curl);
+    $var = json_decode($var);
+    $countries = $var ?? null;
+
+
+    // $history = [];
+    // foreach ($countries as $key => $value) {
+    //     $history[] = array(
+    //         "country_id" => $value->ID,
+    //         "name" => $value->name,
+    //         "short_name" => $value->short_name,
+
+    //     );
+    // }
+
+    // $rr =  DB::table('countries')->insert($history);
+
+
+    if ($var == null) {
+        $coiuntries = null;
+    }
+
+
+    return $countries;
+}
+
+
+
+function get_world_services()
+{
+
+    $key = app_config('WKEY');
+
+    $curl = curl_init();
+    curl_setopt_array($curl, array(
+        CURLOPT_URL => "https://api.smspool.net/service/retrieve_all?key=$key",
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'POST',
+        CURLOPT_HTTPHEADER => array(
+            'Content-Type: application/json',
+            'Accept: application/json',
+        ),
+    ));
+
+    $var = curl_exec($curl);
+    curl_close($curl);
+    $var = json_decode($var);
+    $services = $var ?? null;
+
+
+    if ($var == null) {
+        $services = null;
+    }
+
+    return $services;
+
+}
+
+
+function create_world_order($country, $service, $price, $ip)
+{
+
+    $key = app_config('WKEY');
+    $curl = curl_init();
+
+    $databody = array(
+        'country' => $country,
+        'service' => $service,
+        'key' => $key,
+
+    );
+    curl_setopt_array($curl, array(
+        CURLOPT_URL => 'https://api.smspool.net/purchase/sms',
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'POST',
+        CURLOPT_POSTFIELDS => $databody,
+    ));
+
+    $var = curl_exec($curl);
+    curl_close($curl);
+    $var = json_decode($var);
+
+
+    $success = $var->success ?? null;
+
+    if ($success == 0) {
+        return 5;
+
+    }
+
+
+    if ($success == 1) {
+
+        Verification::where('phone', $var->cc . $var->phonenumber)->where('status', 2)->delete() ?? null;
+        $ver = new Verification();
+        $ver->user_id = Auth::id();
+        $ver->phone = $var->cc . $var->phonenumber;
+        $ver->order_id = $var->order_id;
+        $ver->country = $var->country;
+        $ver->service = $var->service;
+        $ver->expires_in = $var->expires_in / 10 - 20;
+        $ver->cost = $price;
+        $ver->api_cost = $var->cost;
+        $ver->ip = $ip;
+        $ver->status = 1;
+        $ver->type = 2;
+
+        $ver->save();
+
+        return 3;
+
+
+    }
+
+
+    $status = $var->type ?? null;
+
+    if ($status == "BALANCE_ERROR") {
+        return 1;
+    }
+
+    if ($status == null) {
+        return 2;
+
+    }
+
+
+}
+
+function cancel_world_order($orderID)
+{
+
+    $key = app_config('WKEY');
+    $curl = curl_init();
+
+    $databody = array(
+        'orderid' => $orderID,
+        'key' => $key,
+    );
+    curl_setopt_array($curl, array(
+        CURLOPT_URL => 'https://api.smspool.net/sms/cancel',
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'POST',
+        CURLOPT_POSTFIELDS => $databody,
+    ));
+
+    $var = curl_exec($curl);
+    curl_close($curl);
+    $var = json_decode($var);
+
+
+    $status = $var->success ?? null;
+    $message = $var->message ?? null;
+
+    if ($status == 0 && $message == "We could not find this order!") {
+        return 3;
+    }
+
+    if ($status == 0 && $message == "Your order cannot be cancelled yet, please try again later.") {
+        return 0;
+    }
+
+
+    if ($status == 0) {
+        return 0;
+    }
+
+    if ($status == 1) {
+        return 1;
+    }
+
+
+}
+
+function check_world_sms($orderID)
+{
+
+    $key = app_config('WKEY');
+    $curl = curl_init();
+
+    $databody = array(
+        'orderid' => $orderID,
+        'key' => $key,
+    );
+    curl_setopt_array($curl, array(
+        CURLOPT_URL => 'https://api.smspool.net/sms/check',
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'POST',
+        CURLOPT_POSTFIELDS => $databody,
+    ));
+
+    $var = curl_exec($curl);
+    curl_close($curl);
+    $var = json_decode($var);
+
+    $status = $var->status ?? null;
+    $sms = $var->sms ?? null;
+    $full_sms = $var->full_sms ?? null;
+
+
+    if ($status == 1) {
+
+        Verification::where('order_id', $orderID)->update([
+            'expires_in' => $var->time_left / 10 - 20,
+        ]);
+
+        return 1;
+    }
+
+    if ($status == 6) {
+        return 6;
+    }
+
+
+    if ($status == 3) {
+
+        $data['sms'] = $sms;
+        $data['full_sms'] = $full_sms;
+
+        Verification::where('order_id', $orderID)->update([
+            'status' => 2,
+            'sms' => $sms,
+            'full_sms' => $full_sms,
+        ]);
+
+        return 3;
+    }
+
+    return 0;
+}
+
+
+ function balance()
+{
+    $token = app_config('SIMTOKEN');
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, 'https://5sim.net/v1/user/profile');
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+    $headers = array();
+    $headers[] = 'Authorization: Bearer ' . $token;
+    $headers[] = 'Accept: application/json';
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+    $var = curl_exec($ch);
+    curl_close($ch);
+    $var = json_decode($var);
+
+    return $var->balance;
+
+}
+
+
+function get_s_countries()
+{
+    $token = app_config('SIMTOKEN');
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, 'https://5sim.net/v1/guest/countries');
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+    $headers = array();
+    $headers[] = 'Authorization: Bearer ' . $token;
+    $headers[] = 'Accept: application/json';
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+    $var = curl_exec($ch);
+    curl_close($ch);
+    $inputArray = json_decode($var, true);
+
+    if (!is_array($inputArray)) {
+        return [];
+    }
+
+    $result = [];
+    foreach ($inputArray as $key => $value) {
+        $result[$key] = $value['text_en'];
+    }
+
+    return $result;
+
+
+}
+
+
+function get_s_product_cost($operator, $country, $product)
+{
+    $token = app_config('SIMTOKEN');
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, 'https://5sim.net/v1/guest/products/' . $country . '/' . $operator);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+    $headers = array();
+    $headers[] = 'Authorization: Bearer ' . $token;
+    $headers[] = 'Accept: application/json';
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+    $var = curl_exec($ch);
+    curl_close($ch);
+    $var = json_decode($var);
+
+    $filterKeyword = $product ?? '';
+
+    if (is_object($var)) {
+        $data = json_decode(json_encode($var), true);
+    }
+
+    $filteredData = array_filter($data, function($key) use ($filterKeyword) {
+        return stripos($key, $filterKeyword) !== false;
+    }, ARRAY_FILTER_USE_KEY);
+
+   if($filteredData == []){
+       return 0;
+   }
+
+
+    $prices = [];
+    foreach ($filteredData as $item) {
+        if (isset($item['Price'])) {
+            $prices[] = $item['Price'];
+        }
+    }
+
+
+    $s_rate = Setting::where('id', 3)->first();
+    $data['rate'] = $s_rate->rate;
+    $data['margin']= $s_rate->margin;
+
+    $fcost = $data['rate'] * $prices[0] + $data['margin'];
+
+    return $fcost;
+
+
+}
+
+
+function pool_cost($service, $country){
+
+    $key = app_config('WKEY');
+
+    $databody = array(
+        "key" => $key,
+        "country" => $country,
+        "service" => $service,
+        "pool" => '',
+    );
+
+    $body = json_encode($databody);
+
+    $curl = curl_init();
+    curl_setopt_array($curl, array(
+        CURLOPT_URL => 'https://api.smspool.net/request/price',
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'POST',
+        CURLOPT_POSTFIELDS => $databody,
+        CURLOPT_HTTPHEADER => array(
+            "Authorization: Bearer $key"
+        ),
+    ));
+
+    $var = curl_exec($curl);
+    curl_close($curl);
+    $var = json_decode($var);
+    $hp = $var->high_price ?? null;
+    if($hp !== null && $hp > 2){
+        $price = $var->price ;
+    }else{
+        $price = $hp ?? null;
+    }
+
+
+    return $price;
+
+}
+
