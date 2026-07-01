@@ -416,10 +416,11 @@
 
 </div><!-- [ Header ] end --><!-- [ Main Content ] start -->
 
-@if(app_config_bool('site_notification_active'))
+@php($siteConfig = app(\App\Services\AppConfigService::class))
+@if($siteConfig->getBool('site_notification_active'))
 <div class="alert alert-info text-center mb-0 rounded-0">
-    <strong>{{ app_config('site_notification_title') }}</strong>
-    {{ app_config('site_notification_message') }}
+    <strong>{{ $siteConfig->get('site_notification_title') }}</strong>
+    {{ $siteConfig->get('site_notification_message') }}
 </div>
 @endif
 

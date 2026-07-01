@@ -5,7 +5,7 @@
     @if(session('error'))<div class="alert alert-danger">{{ session('error') }}</div>@endif
     <h2>{{ ucfirst(str_replace('vas.', '', basename(request()->path()))) }} — VTU</h2>
     <form method="post" action="{{ url('vas/purchase') }}" class="card card-body">@csrf
-        <input type="hidden" name="category_id" value="{{ $categoryId ?? app_config('VTU_CAT_AIRTIME') }}">
+        <input type="hidden" name="category_id" value="{{ $categoryId ?? app(\App\Services\AppConfigService::class)->get('VTU_CAT_AIRTIME') }}">
         <label>Amount (NGN)</label>
         <input class="form-control mb-2" name="amount" type="number" min="50" required>
         <label>Phone / Meter / Smartcard</label>

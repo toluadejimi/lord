@@ -50,3 +50,17 @@ if (!function_exists('static_asset')) {
         return $root === '' ? '/'.$path : $root.'/'.$path;
     }
 }
+
+if (!function_exists('app_config')) {
+    function app_config(string $key, ?string $default = null): ?string
+    {
+        return app(\App\Services\AppConfigService::class)->get($key, $default);
+    }
+}
+
+if (!function_exists('app_config_bool')) {
+    function app_config_bool(string $key, bool $default = false): bool
+    {
+        return app(\App\Services\AppConfigService::class)->getBool($key, $default);
+    }
+}
