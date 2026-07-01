@@ -7,6 +7,7 @@ use App\Models\Setting;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Verification;
+use App\Services\SimWorldCatalogService;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,7 +17,7 @@ class SimController extends Controller
 
     public function index(request $request)
     {
-        $countries = get_s_countries();
+        $countries = SimWorldCatalogService::countries();
 
         $verification = Verification::where('user_id', Auth::id())
             ->where('type', 3)
@@ -37,7 +38,7 @@ class SimController extends Controller
 
     public function countriesJson()
     {
-        $countries = get_s_countries();
+        $countries = SimWorldCatalogService::countries();
 
         return response()->json([
             'countries' => $countries,
@@ -105,7 +106,7 @@ class SimController extends Controller
             $sRate = \App\Models\Setting::find(3);
             $cost = round(((float) $sRate->rate * (float) $request->usd_cost) + (float) $sRate->margin, 2);
         } else {
-            $cost = get_s_product_cost($operator, $country, $product);
+            $cost = SimWorldCatalogService::productCost($operator, $country, $product);
         }
 
         if ($cost == 0) {
@@ -166,7 +167,7 @@ class SimController extends Controller
     public function get_s_country(request $request)
     {
 
-        $balance = get_s_countries();
+        $balance = SimWorldCatalogService::countries();
 
         dd($balance);
 

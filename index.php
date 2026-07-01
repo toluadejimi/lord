@@ -106,6 +106,20 @@ if (!function_exists('send_admin_notification')) {
 
 require __DIR__.'/vendor/autoload.php';
 
+if (!function_exists('get_s_countries')) {
+    function get_s_countries(): array
+    {
+        return \App\Services\SimWorldCatalogService::countries();
+    }
+}
+
+if (!function_exists('get_s_product_cost')) {
+    function get_s_product_cost(string $operator, string $country, string $product): float|int
+    {
+        return \App\Services\SimWorldCatalogService::productCost($operator, $country, $product);
+    }
+}
+
 $app = require_once __DIR__.'/bootstrap/app.php';
 
 $kernel = $app->make(Kernel::class);
