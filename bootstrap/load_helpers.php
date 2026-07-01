@@ -6,7 +6,7 @@
 if (!function_exists('smslord_load_helpers')) {
     function smslord_load_helpers(?string $base = null): void
     {
-        $base = $base ?? dirname(__DIR__);
+        $base = $base ?? (defined('SMSLORD_BASE') ? SMSLORD_BASE : dirname(__DIR__));
 
         foreach ([
             $base.'/app/helpers.php',
@@ -27,7 +27,7 @@ if (!function_exists('smslord_load_helpers')) {
         if (!function_exists('deployed_from_project_root')) {
             function deployed_from_project_root(): bool
             {
-                $base = dirname(__DIR__);
+                $base = defined('SMSLORD_BASE') ? SMSLORD_BASE : dirname(__DIR__);
                 $docRoot = realpath($_SERVER['DOCUMENT_ROOT'] ?? '') ?: '';
                 $projectRoot = realpath($base) ?: '';
 
