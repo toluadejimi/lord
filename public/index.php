@@ -12,16 +12,21 @@ if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php'))
 $root = dirname(__DIR__);
 
 foreach ([
-    $root.'/smslord_bootstrap.php',
     $root.'/app/helpers.php',
     $root.'/bootstrap/helpers_bootstrap.php',
+    $root.'/smslord_bootstrap.php',
     $root.'/bootstrap/helpers_early.php',
 ] as $helperFile) {
-    if (is_file($helperFile) && @filesize($helperFile) > 50) {
+    if (!is_file($helperFile) || @filesize($helperFile) < 100) {
+        continue;
+    }
+    try {
         require_once $helperFile;
-        if (function_exists('static_asset')) {
-            break;
-        }
+    } catch (\Throwable) {
+        continue;
+    }
+    if (function_exists('static_asset')) {
+        break;
     }
 }
 

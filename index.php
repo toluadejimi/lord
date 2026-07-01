@@ -19,16 +19,21 @@ if (file_exists($maintenance = __DIR__.'/storage/framework/maintenance.php')) {
 | Load helpers here; inline fallback if deploy is incomplete.
 */
 foreach ([
-    __DIR__.'/smslord_bootstrap.php',
     __DIR__.'/app/helpers.php',
     __DIR__.'/bootstrap/helpers_bootstrap.php',
+    __DIR__.'/smslord_bootstrap.php',
     __DIR__.'/bootstrap/helpers_early.php',
 ] as $helperFile) {
-    if (is_file($helperFile) && @filesize($helperFile) > 50) {
+    if (!is_file($helperFile) || @filesize($helperFile) < 100) {
+        continue;
+    }
+    try {
         require_once $helperFile;
-        if (function_exists('static_asset')) {
-            break;
-        }
+    } catch (\Throwable) {
+        continue;
+    }
+    if (function_exists('static_asset')) {
+        break;
     }
 }
 

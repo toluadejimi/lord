@@ -20,14 +20,22 @@ class AppServiceProvider extends ServiceProvider
     protected function loadProjectHelpers(): void
     {
         foreach ([
-            base_path('smslord_bootstrap.php'),
             app_path('helpers.php'),
             base_path('bootstrap/helpers_bootstrap.php'),
+            base_path('smslord_bootstrap.php'),
             base_path('bootstrap/helpers_early.php'),
             base_path('bootstrap/helpers_legacy.php'),
         ] as $helperFile) {
-            if (is_file($helperFile)) {
+            if (!is_file($helperFile)) {
+                continue;
+            }
+            try {
                 require_once $helperFile;
+            } catch (\Throwable) {
+                continue;
+            }
+            if (function_exists('static_asset')) {
+                break;
             }
         }
     }
