@@ -10,6 +10,7 @@ use App\Models\SoldLog;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Verification;
+use App\Support\LegacyHelpers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -21,7 +22,7 @@ class HomeController extends Controller
 {
     public function index(request $request)
     {
-        $countries = get_s_countries();
+        $countries = LegacyHelpers::getSCountries();
 
         $verification = Verification::where('user_id', Auth::id())->paginate(10);
         $s_rate = Setting::where('id', 3)->first();

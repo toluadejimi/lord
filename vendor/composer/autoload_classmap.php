@@ -82,6 +82,8 @@ return array(
     'App\\Services\\VerificationOrderService' => $baseDir . '/app/Services/VerificationOrderService.php',
     'App\\Services\\WalletService' => $baseDir . '/app/Services/WalletService.php',
     'App\\Services\\WebhookDispatchService' => $baseDir . '/app/Services/WebhookDispatchService.php',
+    'App\\Support\\LegacyHelpers' => $baseDir . '/app/Support/LegacyHelpers.php',
+    'App\\Support\\StaticAsset' => $baseDir . '/app/Support/StaticAsset.php',
     'Attribute' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
     'Brick\\Math\\BigDecimal' => $vendorDir . '/brick/math/src/BigDecimal.php',
     'Brick\\Math\\BigInteger' => $vendorDir . '/brick/math/src/BigInteger.php',

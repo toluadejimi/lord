@@ -34,6 +34,20 @@ class AppServiceProvider extends ServiceProvider
                 return StaticAsset::deployedFromProjectRoot();
             }
         }
+
+        if (!function_exists('get_s_countries')) {
+            function get_s_countries(): array
+            {
+                return \App\Support\LegacyHelpers::getSCountries();
+            }
+        }
+
+        if (!function_exists('get_s_product_cost')) {
+            function get_s_product_cost(string $operator, string $country, string $product): float|int
+            {
+                return \App\Support\LegacyHelpers::getSProductCost($operator, $country, $product);
+            }
+        }
     }
 
     protected function loadLegacyHelpers(): void
