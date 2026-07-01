@@ -2,7 +2,7 @@
 
 @section('title', 'VTU / Bills')
 @section('page-title', 'VTU & Bill Payments')
-@section('page-subtitle', 'SprintPay VAS categories, API keys, and per-service toggles.')
+@section('page-subtitle', 'Category IDs come from SprintPay — save your API key, fetch the list, then paste each ID into Airtime / Data / Cable / Electricity.')
 
 @section('content')
 <form method="post" action="{{ url('admin/vtu/fetch-categories') }}" class="mb-3">
@@ -70,9 +70,30 @@
     <button type="submit" class="btn btn-primary">Save VTU Settings</button>
 </form>
 
+@if(session('parsedCategories') && count(session('parsedCategories')))
+<div class="card mt-4 border-primary">
+    <div class="card-header bg-light">
+        <strong>SprintPay categories</strong> — copy the ID into the matching service card above
+    </div>
+    <div class="card-body p-0">
+        <table class="table table-sm mb-0">
+            <thead><tr><th>Service name</th><th>Category ID (copy this)</th></tr></thead>
+            <tbody>
+                @foreach(session('parsedCategories') as $cat)
+                <tr>
+                    <td>{{ $cat['name'] }}</td>
+                    <td><code>{{ $cat['id'] }}</code></td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+</div>
+@endif
+
 @if(session('remoteCategories'))
-<div class="card mt-4">
-    <div class="card-header">Remote Categories (reference)</div>
+<div class="card mt-3">
+    <div class="card-header">Raw API response (reference)</div>
     <div class="card-body p-0">
         <pre class="mb-0 p-3 small" style="max-height:300px;overflow:auto;">{{ json_encode(session('remoteCategories'), JSON_PRETTY_PRINT) }}</pre>
     </div>

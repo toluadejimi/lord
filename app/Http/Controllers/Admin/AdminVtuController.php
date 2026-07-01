@@ -68,10 +68,58 @@ class AdminVtuController extends Controller
     {
         try {
             $categories = $this->vas->categories();
-            return back()->with('message', 'Categories fetched.')->with('remoteCategories', $categories);
+            $parsed = $this->parseCategoriesForDisplay($categories);
+
+            return back()
+                ->with('message', 'Categories fetched — copy each ID into the matching service below, then Save.')
+                ->with('remoteCategories', $categories)
+                ->with('parsedCategories', $parsed);
         } catch (\Throwable $e) {
-            return back()->with('error', 'Could not fetch categories from provider.');
+            return back()->with('error', 'Could not fetch categories from provider. Check your SprintPay API key (WEBKEY) is saved first.');
         }
+    }
+
+    protected function parseCategoriesForDisplay(array $raw): array
+    {
+        $rows = [];
+
+        $list = $raw['data'] ?? $raw['categories'] ?? $raw['content'] ?? $raw;
+
+        if (isset($list['data']) && is_array($list['data'])) {
+            $list = $list['data'];
+        }
+
+        if (!is_array($list)) {
+            return $rows;
+        }
+
+        if (array_is_list($list)) {
+            foreach ($list as $item) {
+                if (!is_array($item)) {
+                    continue;
+                }
+                $id = $item['id'] ?? $item['category_id'] ?? $item['ID'] ?? null;
+                $name = $item['name'] ?? $item['title'] ?? $item['category_name'] ?? null;
+                if ($id !== null && $name !== null) {
+                    $rows[] = ['id' => (string) $id, 'name' => (string) $name];
+                }
+            }
+        } else {
+            foreach ($list as $id => $name) {
+                if (is_array($name)) {
+                    $rows[] = [
+                        'id' => (string) ($name['id'] ?? $name['category_id'] ?? $id),
+                        'name' => (string) ($name['name'] ?? $name['title'] ?? $id),
+                    ];
+                } else {
+                    $rows[] = ['id' => (string) $id, 'name' => (string) $name];
+                }
+            }
+        }
+
+        usort($rows, fn ($a, $b) => strcasecmp($a['name'], $b['name']));
+
+        return $rows;
     }
 
     protected function maskOrEmpty(?string $value): string
