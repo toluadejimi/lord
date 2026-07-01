@@ -23,10 +23,24 @@ class WebhookDispatchService
             'order_id' => (string) $verification->id,
             'full_sms' => $verification->full_sms ?? $verification->sms,
             'country' => $verification->country,
+            'timestamp' => time(),
         ];
 
+        $body = json_encode($payload, JSON_UNESCAPED_SLASHES);
+        $signature = $user->api_key
+            ? hash_hmac('sha256', $body, $user->api_key)
+            : null;
+
         try {
-            $response = Http::timeout(15)->post($user->webhook_url, $payload);
+            $request = Http::timeout(15)
+                ->withHeaders(array_filter([
+                    'Content-Type' => 'application/json',
+                    'X-SMSLORD-Signature' => $signature,
+                    'X-SMSLORD-Timestamp' => (string) $payload['timestamp'],
+                ]))
+                ->withBody($body, 'application/json');
+
+            $response = $request->post($user->webhook_url);
             WebhookResponse::create([
                 'order_id' => (string) $verification->id,
                 'response_code' => $response->status(),

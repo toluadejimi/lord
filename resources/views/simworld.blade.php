@@ -120,54 +120,12 @@
             </div>
 
             <div class="col-lg-5">
-                <div class="card cw-card cw-orders-card h-100">
-                    <div class="card-body p-4">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h5 class="mb-0 fw-bold">Recent orders</h5>
-                            <a href="{{ url('orders') }}" class="small text-decoration-none">View all</a>
-                        </div>
-
-                        @if($verification->isEmpty())
-                            <div class="cw-empty">
-                                <i class="ti ti-inbox d-block mb-2" style="font-size:2rem;opacity:.5;"></i>
-                                No orders yet. Rent a number to get started.
-                            </div>
-                        @else
-                            <div class="table-responsive">
-                                <table class="table table-hover mb-0">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>Service</th>
-                                            <th>Number</th>
-                                            <th>Code</th>
-                                            <th>Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach($verification->take(8) as $data)
-                                            <tr>
-                                                <td class="text-truncate" style="max-width:90px;">{{ $data->service }}</td>
-                                                <td>
-                                                    <a href="{{ url('receive-sms?phone='.$data->id) }}" class="text-decoration-none font-monospace small">
-                                                        {{ $data->phone }}
-                                                    </a>
-                                                </td>
-                                                <td class="font-monospace small">{{ $data->sms ?: '—' }}</td>
-                                                <td>
-                                                    @if ((int) $data->status === 1)
-                                                        <span class="cw-badge-pending">Pending</span>
-                                                    @else
-                                                        <span class="cw-badge-done">Done</span>
-                                                    @endif
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        @endif
-                    </div>
-                </div>
+                @include('partials.verification-orders-panel', [
+                    'verifications' => $verification->take(8),
+                    'panelTitle' => 'Recent orders',
+                    'panelLink' => url('orders'),
+                    'panelId' => 'simworld-orders-panel',
+                ])
             </div>
         </div>
     </div>
@@ -228,7 +186,7 @@ $(document).ready(function () {
                     var cost = providerData.cost * rate + margin;
                     var formatted = cost.toLocaleString('en-US', { style: 'currency', currency: 'NGN' });
 
-                    output += '<div class="cw-service-card operator-card" data-country="' + key + '" data-operator="' + provider + '" data-product="' + providerId + '" data-count="' + providerData.count + '">' +
+                    output += '<div class="cw-service-card operator-card" data-country="' + key + '" data-operator="' + provider + '" data-product="' + providerId + '" data-count="' + providerData.count + '" data-usd-cost="' + providerData.cost + '">' +
                         '<div class="d-flex justify-content-between align-items-start gap-2">' +
                         '<div><div class="svc-name">' + providerId + '</div><div class="svc-meta mt-1">' + provider + ' · ' + providerData.count + ' available</div></div>' +
                         '<div class="text-end"><div class="svc-price">' + formatted + '</div><div class="svc-meta"><i class="ti ti-shopping-cart"></i> Rent</div></div>' +
@@ -271,6 +229,7 @@ $(document).ready(function () {
                 operator: $card.data('operator'),
                 product: $card.data('product'),
                 count: $card.data('count'),
+                usd_cost: $card.data('usd-cost'),
                 _token: '{{ csrf_token() }}'
             },
             success: function (response) {

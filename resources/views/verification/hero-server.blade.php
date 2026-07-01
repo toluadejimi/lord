@@ -82,7 +82,11 @@
             </div>
 
             <div class="col-lg-5">
-                @include('partials.verification-list', ['verifications' => $verifications, 'pollUrl' => $pollUrl])
+                @include('partials.verification-list', [
+                    'verifications' => $verifications,
+                    'panelTitle' => 'Recent orders',
+                    'panelId' => 'hero-orders-panel',
+                ])
             </div>
         </div>
     </div>

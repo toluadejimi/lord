@@ -70,6 +70,31 @@ class WalletFundingService
             ->first();
     }
 
+    public function findCompletedFunding(User $user, ?string $ref = null): ?Transaction
+    {
+        $query = Transaction::where('user_id', $user->id)
+            ->where('status', 2)
+            ->where('type', 2)
+            ->where('ref_id', 'like', 'VERF%');
+
+        if ($ref) {
+            $match = (clone $query)->where('ref_id', $ref)->first();
+            if ($match) {
+                return $match;
+            }
+        }
+
+        return $query
+            ->where('updated_at', '>=', now()->subHours(3))
+            ->orderByDesc('id')
+            ->first();
+    }
+
+    public function processedMessage(Transaction $txn): string
+    {
+        return 'Transaction processed. ₦'.number_format((float) $txn->amount, 2).' has been added to your wallet.';
+    }
+
     /**
      * @return array{success: bool, amount: float, message: ?string}
      */
@@ -144,18 +169,35 @@ class WalletFundingService
                 ->lockForUpdate()
                 ->first();
 
+            if (!$txn) {
+                $txn = Transaction::where('user_id', $user->id)
+                    ->where('status', 1)
+                    ->where('type', 2)
+                    ->where('ref_id', 'like', 'VERF%')
+                    ->orderByDesc('id')
+                    ->lockForUpdate()
+                    ->first();
+
+                if ($txn && abs((float) $txn->amount - $amount) > 0.01) {
+                    $txn = null;
+                }
+            }
+
             if ($txn && (int) $txn->status === 2) {
                 return $txn;
             }
 
             $locked = User::where('id', $user->id)->lockForUpdate()->firstOrFail();
             $oldBalance = (float) $locked->wallet;
+            $creditRef = $txn?->ref_id ?? $refId;
 
             if ($txn && (int) $txn->status === 1) {
                 $locked->increment('wallet', $amount);
                 $txn->update([
                     'amount' => $amount,
+                    'ref_id' => $creditRef,
                     'status' => 2,
+                    'type' => 2,
                     'old_balance' => $oldBalance,
                     'balance' => $oldBalance + $amount,
                 ]);
@@ -163,12 +205,21 @@ class WalletFundingService
                 return $txn->fresh();
             }
 
+            $existing = Transaction::where('ref_id', $creditRef)
+                ->where('user_id', $user->id)
+                ->where('status', 2)
+                ->first();
+
+            if ($existing) {
+                return $existing;
+            }
+
             $locked->increment('wallet', $amount);
 
             return Transaction::create([
                 'user_id' => $locked->id,
                 'amount' => $amount,
-                'ref_id' => $refId,
+                'ref_id' => $creditRef,
                 'status' => 2,
                 'type' => 2,
                 'old_balance' => $oldBalance,

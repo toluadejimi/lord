@@ -331,7 +331,7 @@
                 </li>
                 @endauth
                 <li class="dropdown pc-h-item">
-                    <a class="pc-head-link dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown" href="#"
+                    <a class="pc-head-link dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown" href="javascript:void(0)"
                        role="button" aria-haspopup="false" aria-expanded="false">
                         <svg class="pc-icon">
                             <use xlink:href="#custom-sun-1"></use>
@@ -340,18 +340,19 @@
 
 
                     <div class="dropdown-menu dropdown-menu-end pc-h-dropdown">
-                        <a href="#!"
+                        <a href="javascript:void(0)"
                            class="dropdown-item"
-                           onclick="layout_change('dark')">
+                           role="button"
+                           onclick="layout_change('dark'); return false;">
                             <svg class="pc-icon">
                                 <use xlink:href="#custom-moon"></use>
                             </svg>
                             <span>Dark</span> </a>
-                        <a href="#!" class="dropdown-item" onclick="layout_change('light')">
+                        <a href="javascript:void(0)" class="dropdown-item" role="button" onclick="layout_change('light'); return false;">
                             <svg class="pc-icon">
                                 <use xlink:href="#custom-sun-1"></use>
                             </svg>
-                            <span>Light</span> </a><a href="#!" class="dropdown-item" onclick="layout_change_default()">
+                            <span>Light</span> </a><a href="javascript:void(0)" class="dropdown-item" role="button" onclick="layout_change_default(); return false;">
                             <svg class="pc-icon">
                                 <use xlink:href="#custom-setting-2"></use>
                             </svg>
@@ -513,6 +514,14 @@
 <script src="{{ static_asset('assets/js/plugins/feather.min.js') }}"></script>
 <script>
 (function () {
+    function cleanThemeHash() {
+        if (window.location.hash === '#!' || window.location.hash === '#') {
+            history.replaceState(null, '', window.location.pathname + window.location.search);
+        }
+    }
+
+    cleanThemeHash();
+
     var savedTheme = localStorage.getItem('smslord_theme');
 
     if (typeof layout_change === 'function') {
@@ -532,7 +541,9 @@
             if (theme === 'dark' || theme === 'light') {
                 localStorage.setItem('smslord_theme', theme);
             }
-            return originalLayoutChange(theme);
+            var result = originalLayoutChange(theme);
+            cleanThemeHash();
+            return result;
         };
     }
 
@@ -540,9 +551,20 @@
         var originalLayoutChangeDefault = layout_change_default;
         window.layout_change_default = function () {
             localStorage.setItem('smslord_theme', 'default');
-            return originalLayoutChangeDefault();
+            var result = originalLayoutChangeDefault();
+            cleanThemeHash();
+            return result;
         };
     }
+
+    document.addEventListener('click', function (e) {
+        var link = e.target.closest('a[href="javascript:void(0)"], a[href="#"]');
+        if (!link) return;
+        if (link.getAttribute('onclick') || link.closest('.pc-h-dropdown, .pct-offcanvas, .theme-color, .theme-main-layout')) {
+            e.preventDefault();
+            cleanThemeHash();
+        }
+    });
 })();
 </script>
 <script>layout_theme_contrast_change('false');</script>
@@ -556,7 +578,7 @@
         main_layout_change('vertical');
     }
 </script>
-<div class="pct-c-btn"><a href="#" data-bs-toggle="offcanvas"
+<div class="pct-c-btn"><a href="javascript:void(0)" data-bs-toggle="offcanvas"
                           data-bs-target="#offcanvas_pc_layout"><i class="ph-duotone ph-gear-six"></i></a></div>
 <div class="offcanvas border-0 pct-offcanvas offcanvas-end" tabindex="-1" id="offcanvas_pc_layout">
     <div class="offcanvas-header"><h5 class="offcanvas-title">Settings</h5>
@@ -631,28 +653,28 @@
                 </li>
                 <li class="list-group-item"><h6 class="mb-1">Custom Theme</h6>
                     <p class="text-muted text-sm">Choose your primary theme color</p>
-                    <div class="theme-color preset-color"><a href="#!" data-bs-toggle="tooltip"
+                    <div class="theme-color preset-color"><a href="javascript:void(0)" data-bs-toggle="tooltip"
                                                              title="Blue" class="active" data-value="preset-1"><i
-                                class="ti ti-checks"></i></a> <a href="#!"
+                                class="ti ti-checks"></i></a> <a href="javascript:void(0)"
                                                                  data-bs-toggle="tooltip" title="Indigo"
                                                                  data-value="preset-2"><i class="ti ti-checks"></i></a>
-                        <a href="#!" data-bs-toggle="tooltip" title="Purple"
-                           data-value="preset-3"><i class="ti ti-checks"></i></a> <a href="#!"
+                        <a href="javascript:void(0)" data-bs-toggle="tooltip" title="Purple"
+                           data-value="preset-3"><i class="ti ti-checks"></i></a> <a href="javascript:void(0)"
                                                                                      data-bs-toggle="tooltip"
                                                                                      title="Pink" data-value="preset-4"><i
-                                class="ti ti-checks"></i></a> <a href="#!"
+                                class="ti ti-checks"></i></a> <a href="javascript:void(0)"
                                                                  data-bs-toggle="tooltip" title="Red"
                                                                  data-value="preset-5"><i class="ti ti-checks"></i></a>
-                        <a href="#!" data-bs-toggle="tooltip" title="Orange"
-                           data-value="preset-6"><i class="ti ti-checks"></i></a> <a href="#!"
+                        <a href="javascript:void(0)" data-bs-toggle="tooltip" title="Orange"
+                           data-value="preset-6"><i class="ti ti-checks"></i></a> <a href="javascript:void(0)"
                                                                                      data-bs-toggle="tooltip"
                                                                                      title="Yellow"
                                                                                      data-value="preset-7"><i
-                                class="ti ti-checks"></i></a> <a href="#!"
+                                class="ti ti-checks"></i></a> <a href="javascript:void(0)"
                                                                  data-bs-toggle="tooltip" title="Green"
                                                                  data-value="preset-8"><i class="ti ti-checks"></i></a>
-                        <a href="#!" data-bs-toggle="tooltip" title="Teal"
-                           data-value="preset-9"><i class="ti ti-checks"></i></a> <a href="#!"
+                        <a href="javascript:void(0)" data-bs-toggle="tooltip" title="Teal"
+                           data-value="preset-9"><i class="ti ti-checks"></i></a> <a href="javascript:void(0)"
                                                                                      data-bs-toggle="tooltip"
                                                                                      title="Cyan"
                                                                                      data-value="preset-10"><i
@@ -660,25 +682,25 @@
                 </li>
                 <li class="list-group-item"><h6 class="mb-1">Theme layout</h6>
                     <p class="text-muted text-sm">Choose your layout</p>
-                    <div class="theme-main-layout d-flex align-center gap-1 w-100"><a href="#!"
+                    <div class="theme-main-layout d-flex align-center gap-1 w-100"><a href="javascript:void(0)"
                                                                                       data-bs-toggle="tooltip"
                                                                                       title="Vertical" class="active"
                                                                                       data-value="vertical"><img
                                 src="{{ static_asset('assets/images/customizer/caption-on.svg') }}" alt="img"
                                 class="img-fluid"> </a><a
-                            href="#!" data-bs-toggle="tooltip" title="Horizontal"
+                            href="javascript:void(0)" data-bs-toggle="tooltip" title="Horizontal"
                             data-value="horizontal"><img
                                 src="{{ static_asset('assets/images/customizer/horizontal.svg') }}" alt="img"
-                                class="img-fluid"> </a><a href="#!"
+                                class="img-fluid"> </a><a href="javascript:void(0)"
                                                           data-bs-toggle="tooltip"
                                                           title="Color Header"
                                                           data-value="color-header"><img
                                 src="{{ static_asset('assets/images/customizer/color-header.svg') }}" alt="img"
                                 class="img-fluid"> </a><a
-                            href="#!" data-bs-toggle="tooltip" title="Compact"
+                            href="javascript:void(0)" data-bs-toggle="tooltip" title="Compact"
                             data-value="compact"><img src="{{ static_asset('assets/images/customizer/compact.svg') }}"
                                                       alt="img"
-                                                      class="img-fluid"> </a><a href="#!"
+                                                      class="img-fluid"> </a><a href="javascript:void(0)"
                                                                                 data-bs-toggle="tooltip" title="Tab"
                                                                                 data-value="tab"><img
                                 src="{{ static_asset('assets/images/customizer/tab.svg') }}" alt="img"

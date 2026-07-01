@@ -65,6 +65,7 @@ class VerificationOrderService
         return match ((int) $verification->type) {
             1 => $this->heroHandler->cancel('usa1', (string) $verification->order_id),
             2, 8 => (bool) ($this->smsPool->cancel((string) $verification->order_id)->success ?? false),
+            3 => $this->cancel5sim($verification),
             4 => (bool) ($this->usa2->reject((string) $verification->order_id)->success ?? true),
             9 => $this->heroHandler->cancel('hero', (string) $verification->order_id),
             10 => $this->heroHandler->cancel('sv3', (string) $verification->order_id),
@@ -205,7 +206,9 @@ class VerificationOrderService
         }
 
         return match ((int) $verification->type) {
+            1 => $this->pollHero($verification, 'usa1'),
             2, 8 => $this->pollSmsPool($verification),
+            3 => $this->poll5sim($verification),
             4 => $this->pollUsa2($verification),
             9 => $this->pollHero($verification, 'hero'),
             10 => $this->pollHero($verification, 'sv3'),
@@ -265,5 +268,69 @@ class VerificationOrderService
         }
 
         return null;
+    }
+
+    protected function poll5sim(Verification $verification): ?array
+    {
+        $token = $this->config->get('SIMTOKEN');
+        if (!$token) {
+            return null;
+        }
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, 'https://5sim.net/v1/user/check/'.$verification->order_id);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Authorization: Bearer '.$token,
+            'Accept: application/json',
+        ]);
+
+        $result = curl_exec($ch);
+        curl_close($ch);
+
+        $payload = json_decode($result);
+        $status = $payload->status ?? null;
+        $smsRow = $payload->sms[0] ?? null;
+
+        if (!in_array($status, ['RECEIVED', 'FINISHED'], true) || !$smsRow) {
+            return null;
+        }
+
+        $code = $smsRow->code ?? null;
+        $text = $smsRow->text ?? null;
+
+        if (!$code) {
+            return null;
+        }
+
+        $this->completeVerification($verification, (string) $code, (string) ($text ?? $code));
+
+        return ['code' => $code];
+    }
+
+    protected function cancel5sim(Verification $verification): bool
+    {
+        $token = $this->config->get('SIMTOKEN');
+        if (!$token) {
+            return false;
+        }
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, 'https://5sim.net/v1/user/cancel/'.$verification->order_id);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Authorization: Bearer '.$token,
+            'Accept: application/json',
+        ]);
+
+        $result = curl_exec($ch);
+        curl_close($ch);
+
+        $payload = json_decode($result);
+        $status = $payload->status ?? null;
+
+        return $status === 'CANCELED' || $status === 'TIMEOUT' || $status === 'BANNED';
     }
 }

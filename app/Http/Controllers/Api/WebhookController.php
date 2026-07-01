@@ -103,11 +103,15 @@ class WebhookController extends Controller
             return response()->json(['success' => false], 401);
         }
 
-        $refId = $request->input('ref_id') ?? $request->input('ref');
+        $refId = (string) ($request->input('ref_id')
+            ?? $request->input('ref')
+            ?? $request->input('order_id')
+            ?? $request->input('trx_ref')
+            ?? '');
         $email = $request->input('email');
-        $amount = (float) ($request->input('amount') ?? 0);
+        $amount = (float) ($request->input('amount') ?? $request->input('trx') ?? 0);
 
-        if (!$refId || !$email || $amount <= 0) {
+        if ($refId === '' || !$email || $amount <= 0) {
             return response()->json(['success' => false, 'message' => 'Invalid payload'], 422);
         }
 
@@ -120,8 +124,13 @@ class WebhookController extends Controller
             return response()->json(['success' => false, 'message' => 'User not found'], 404);
         }
 
-        $this->funding->completePendingFunding($user, $refId, $amount);
+        $txn = $this->funding->completePendingFunding($user, $refId, $amount);
 
-        return response()->json(['success' => true]);
+        return response()->json([
+            'success' => true,
+            'message' => 'Deposit recorded',
+            'ref_id' => $txn->ref_id,
+            'amount' => (float) $txn->amount,
+        ]);
     }
 }

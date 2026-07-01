@@ -11,7 +11,7 @@ use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Verification;
 use App\Services\Payment\SprintPayClient;
-use App\Services\WalletFundingService;
+use App\Services\VerificationOrderService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -335,6 +335,7 @@ class HomeController extends Controller
         $pay = PaymentMethod::all();
         $transaction = Transaction::query()
             ->where('user_id', Auth::id())
+            ->where('type', 2)
             ->latest()
             ->paginate(10);
 
@@ -384,6 +385,8 @@ class HomeController extends Controller
             $data->status = 1; //initiate
             $data->save();
 
+            $request->session()->put('sprintpay_pending_ref', $ref);
+            $request->session()->put('sprintpay_pending_amount', (float) $request->amount);
 
             $message = Auth::user()->email . "| wants to fund |  NGN " . number_format($request->amount) . " | with ref | $ref |  on SMSLORD";
             if (function_exists('send_admin_notification')) {
@@ -496,7 +499,8 @@ class HomeController extends Controller
     protected function handlePaymentReturn(Request $request, WalletFundingService $funding)
     {
         $user = Auth::user();
-        $ref = $funding->extractRefFromRequest($request->all());
+        $ref = $funding->extractRefFromRequest($request->all())
+            ?? $request->session()->get('sprintpay_pending_ref');
         $sessionId = $funding->extractSessionIdFromRequest($request->all());
 
         $txn = $ref
@@ -510,11 +514,17 @@ class HomeController extends Controller
             }
         }
 
+        $completed = $funding->findCompletedFunding($user, $ref);
+        if ($completed) {
+            $request->session()->forget(['sprintpay_pending_ref', 'sprintpay_pending_amount']);
+
+            return redirect('fund-wallet')->with('message', $funding->processedMessage($completed));
+        }
+
         if ($txn && (int) $txn->status === 2) {
-            return redirect('fund-wallet')->with(
-                'message',
-                'Wallet funded successfully with ₦'.number_format((float) $txn->amount, 2)
-            );
+            $request->session()->forget(['sprintpay_pending_ref', 'sprintpay_pending_amount']);
+
+            return redirect('fund-wallet')->with('message', $funding->processedMessage($txn));
         }
 
         if ($request->filled('status') && $funding->isFailureStatus($request->status)) {
@@ -526,14 +536,15 @@ class HomeController extends Controller
             if ($amount <= 0 && $txn) {
                 $amount = (float) $txn->amount;
             }
+            if ($amount <= 0) {
+                $amount = (float) $request->session()->get('sprintpay_pending_amount', 0);
+            }
 
             if ($ref && $amount > 0) {
                 $completed = $funding->completePendingFunding($user, $ref, $amount);
+                $request->session()->forget(['sprintpay_pending_ref', 'sprintpay_pending_amount']);
 
-                return redirect('fund-wallet')->with(
-                    'message',
-                    'Wallet funded successfully with ₦'.number_format((float) $completed->amount, 2)
-                );
+                return redirect('fund-wallet')->with('message', $funding->processedMessage($completed));
             }
         }
 
@@ -541,11 +552,16 @@ class HomeController extends Controller
             $resolved = $funding->resolveWithProvider($ref, $sessionId);
             if ($resolved['success']) {
                 $completed = $funding->completePendingFunding($user, $ref, $resolved['amount']);
+                $request->session()->forget(['sprintpay_pending_ref', 'sprintpay_pending_amount']);
 
-                return redirect('fund-wallet')->with(
-                    'message',
-                    'Wallet funded successfully with ₦'.number_format((float) $completed->amount, 2)
-                );
+                return redirect('fund-wallet')->with('message', $funding->processedMessage($completed));
+            }
+
+            $completed = $funding->findCompletedFunding($user, $ref);
+            if ($completed) {
+                $request->session()->forget(['sprintpay_pending_ref', 'sprintpay_pending_amount']);
+
+                return redirect('fund-wallet')->with('message', $funding->processedMessage($completed));
             }
         }
 
@@ -554,6 +570,13 @@ class HomeController extends Controller
                 'message',
                 'Payment received — your wallet will update shortly. If it stays pending, tap Resolve next to the transaction.'
             );
+        }
+
+        $recentCompleted = $funding->findCompletedFunding($user);
+        if ($recentCompleted) {
+            $request->session()->forget(['sprintpay_pending_ref', 'sprintpay_pending_amount']);
+
+            return redirect('fund-wallet')->with('message', $funding->processedMessage($recentCompleted));
         }
 
         if ($request->filled('status')) {
@@ -1122,7 +1145,11 @@ class HomeController extends Controller
 
     public function orders(request $request)
     {
-        $orders = Verification::latest()->where('user_id', Auth::id())->get() ?? null;
+        $orders = Verification::where('user_id', Auth::id())
+            ->whereIn('type', [1, 2, 3, 4, 8, 9, 10])
+            ->latest()
+            ->get();
+
         return view('orders', compact('orders'));
     }
 
@@ -1141,80 +1168,25 @@ class HomeController extends Controller
     }
 
 
-    public function delete_order(request $request)
+    public function delete_order(Request $request, VerificationOrderService $orders)
     {
+        $order = Verification::where('user_id', Auth::id())->where('id', $request->id)->first();
 
-        $order = Verification::where('id', $request->id)->first() ?? null;
-
-        if ($order == null) {
-            return redirect('home')->with('error', 'Order not found');
+        if ($order === null) {
+            return back()->with('error', 'Order not found');
         }
 
-        if ($order->status == 2) {
-            Verification::where('id', $request->id)->delete();
-            return back()->with('message', "Order has been successfully deleted");
+        if ((int) $order->status === 2) {
+            return back()->with('message', 'Completed orders cannot be cancelled.');
         }
 
-        if ($order->status == 1) {
-
-            $orderID = $order->order_id;
-            $can_order = cancel_order($orderID);
-
-            if ($can_order == 0) {
-
-                $amount = number_format($order->cost, 2);
-                User::where('id', Auth::id())->increment('wallet', $order->cost);
-                Verification::where('id', $request->id)->delete();
-                return redirect('home')->with('message', "Order has been cancled, NGN$amount has been refunded");
-
-            }
-
-
-            if ($can_order == 1) {
-                $amount = number_format($order->cost, 2);
-                User::where('id', Auth::id())->increment('wallet', $order->cost);
-                Verification::where('id', $request->id)->delete();
-                return back()->with('message', "Order has been cancled, NGN$amount has been refunded");
-            }
-
-
-            if ($can_order == 3) {
-                $amount = number_format($order->cost, 2);
-                User::where('id', Auth::id())->increment('wallet', $order->cost);
-                Verification::where('id', $request->id)->delete();
-                return back()->with('message', "Order has been cancled, NGN$amount has been refunded");
-            }
+        if ((int) $order->status === 99) {
+            return back()->with('message', 'Order already cancelled.');
         }
 
-        if ($order->status == 1 && $order->type == 2) {
+        $result = $orders->cancelAndRefund($order);
 
-
-
-            $orderID = $order->order_id;
-            $can_order = cancel_world_order($orderID);
-
-            if ($can_order == 0) {
-                return back()->with('error', "Your order cannot be cancelled yet, please try again later");
-            }
-
-
-            if ($can_order == 1) {
-                $amount = number_format($order->cost, 2);
-                User::where('id', Auth::id())->increment('wallet', $order->cost);
-                Verification::where('id', $request->id)->delete();
-                return back()->with('message', "Order has been cancled, NGN$amount has been refunded");
-            }
-
-
-            if ($can_order == 3) {
-                $amount = number_format($order->cost, 2);
-                User::where('id', Auth::id())->increment('wallet', $order->cost);
-                Verification::where('id', $request->id)->delete();
-                return back()->with('message', "Order has been cancled, NGN$amount has been refunded");
-            }
-        }
-
-        return back()->with('error', 'Order has been deleted or completed');
+        return back()->with($result['success'] ? 'message' : 'error', $result['message']);
     }
 
 

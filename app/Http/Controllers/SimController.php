@@ -75,7 +75,13 @@ class SimController extends Controller
         $country = $request->input('country');
         $operator = $request->input('operator');
         $product = $request->input('product');
-        $cost = get_s_product_cost($operator, $country, $product);
+
+        if ($request->filled('usd_cost')) {
+            $sRate = \App\Models\Setting::find(3);
+            $cost = round(((float) $sRate->rate * (float) $request->usd_cost) + (float) $sRate->margin, 2);
+        } else {
+            $cost = get_s_product_cost($operator, $country, $product);
+        }
 
         if($cost == 0){
             return 0;
@@ -217,56 +223,20 @@ class SimController extends Controller
     }
 
 
-    public function delete_sms(request $request)
+    public function delete_sms(request $request, \App\Services\VerificationOrderService $orders)
     {
+        $verification = Verification::where('id', $request->id)
+            ->where('user_id', Auth::id())
+            ->where('type', 3)
+            ->first();
 
-
-        $token = env('SIMTOKEN');
-        $ch = curl_init();
-        $id = Verification::where('id', $request->id)->first()->order_id ?? null;
-        $cost = Verification::where('id', $request->id)->first()->cost ?? null;
-        $user_id = Verification::where('id', $request->id)->first()->user_id ?? null;
-
-        if($id == null){
-            return back()->with('error', "Verification has been deleted");
+        if ($verification === null) {
+            return back()->with('error', 'Verification not found');
         }
 
-        curl_setopt($ch, CURLOPT_URL, 'https://5sim.net/v1/user/cancel/' . $id);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+        $result = $orders->cancelAndRefund($verification);
 
-
-        $headers = array();
-        $headers[] = 'Authorization: Bearer ' . $token;
-        $headers[] = 'Accept: application/json';
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-
-        $result = curl_exec($ch);
-        curl_close($ch);
-        $var = json_decode($result);
-        $status = $var->status ?? null;
-
-
-
-        if($status == "CANCELED"){
-
-            Verification::where('id', $request->id)->delete();
-            User::where('id', $user_id)->increment('wallet', $cost);
-            return back()->with('message', "Number Canceled, NGN $cost has been refunded");
-
-        }
-
-        $status = Verification::where('id', $request->id)->first()->status ?? null;
-
-        if($status != null && $status != 2){
-            Verification::where('id', $request->id)->delete();
-            User::where('id', $user_id)->increment('wallet', $cost);
-            return back()->with('message', "Number Canceled, NGN $cost has been refunded");
-        }
-
-
-
-
+        return back()->with($result['success'] ? 'message' : 'error', $result['message']);
     }
     public function admin_delete_sms(request $request)
     {

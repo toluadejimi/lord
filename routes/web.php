@@ -11,6 +11,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SimController;
 use App\Http\Controllers\Usa2Controller;
+use App\Http\Controllers\VerificationOrderController;
 use App\Http\Controllers\VtuController;
 use App\Http\Controllers\WalletTransactionController;
 use App\Http\Controllers\WorldHeroController;
@@ -145,6 +146,8 @@ Route::group(['middleware' => ['auth', 'user']], function () {
 
     Route::get('usno',  [HomeController::class,'home']);
     Route::any('orders',  [HomeController::class,'orders']);
+    Route::get('verification/{id}/poll', [VerificationOrderController::class, 'poll'])->whereNumber('id');
+    Route::post('verification/{id}/cancel', [VerificationOrderController::class, 'cancel'])->whereNumber('id');
     Route::any('receive-sms',  [HomeController::class,'receive_sms']);
     Route::any('delete-order',  [HomeController::class,'delete_order']);
     Route::post('order-usanumber-now',  [HomeController::class,'order_now']);
@@ -171,6 +174,7 @@ Route::get('change-password',  [HomeController::class,'change_password']);
 
     Route::get('usa2', [Usa2Controller::class, 'index']);
     Route::post('order-usa2', [Usa2Controller::class, 'order']);
+    Route::get('usa2/catalog/price', [Usa2Controller::class, 'catalogPrice']);
     Route::any('get-smscode-usa2', [Usa2Controller::class, 'pollSms']);
     Route::get('world-sv2', [WorldHeroController::class, 'index']);
     Route::get('world-sv2/catalog/countries', [WorldHeroController::class, 'catalogCountries']);
@@ -188,6 +192,7 @@ Route::get('change-password',  [HomeController::class,'change_password']);
     Route::get('api-docs', [ApiDocsController::class, 'index']);
     Route::post('api-docs/webhook', [ApiDocsController::class, 'updateWebhook']);
     Route::post('api-docs/regenerate', [ApiDocsController::class, 'regenerateKey']);
+    Route::post('api-docs/reveal-key', [ApiDocsController::class, 'revealKey']);
     Route::get('vas', [VtuController::class, 'index'])->name('vas.index');
     Route::get('vas/airtime', [VtuController::class, 'airtime'])->name('vas.airtime');
     Route::post('vas/airtime', [VtuController::class, 'buyAirtime'])->name('vas.airtime.buy');

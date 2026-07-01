@@ -23,9 +23,9 @@ class SprintPayClient
             'key' => $key,
             'ref' => $ref,
             'email' => $email,
-            'redirect_url' => url('/verify'),
-            'callback_url' => url('/verify'),
-            'return_url' => url('/verify'),
+            'redirect_url' => url('/verifypay'),
+            'callback_url' => url('/api/e_fund'),
+            'return_url' => url('/verifypay'),
         ]));
     }
 

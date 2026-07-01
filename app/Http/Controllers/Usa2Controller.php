@@ -62,10 +62,27 @@ class Usa2Controller extends Controller
         }
 
         if ((int) $verification->status === 1) {
-            $this->orders->pollVerification($verification);
+            $this->orders->pollVerificationIfDue($verification, 8);
             $verification->refresh();
         }
 
-        return response()->json(['message' => $verification->sms ?? 'waiting for sms']);
+        return response()->json([
+            'message' => $verification->sms ?? 'waiting for sms',
+            'status' => (int) $verification->status,
+            'next_poll_seconds' => 10,
+        ]);
+    }
+
+    public function catalogPrice(Request $request)
+    {
+        $apiCost = (float) ($request->query('usd', $request->query('api_cost', 1)));
+        $ngn = $this->pricing->ngnFromUsd($apiCost, 4, Auth::user());
+        $hasExtra = $request->filled('area_code') || $request->filled('carrier') || $request->boolean('surcharge');
+        $ngn = $this->pricing->usaSurcharge($ngn, $hasExtra);
+
+        return response()->json([
+            'ngn' => $ngn,
+            'usd' => $apiCost,
+        ]);
     }
 }

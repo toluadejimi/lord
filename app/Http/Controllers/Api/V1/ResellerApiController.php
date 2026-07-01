@@ -11,6 +11,7 @@ use App\Services\Sms\HeroHandlerProvider;
 use App\Services\Sms\SmsPoolProvider;
 use App\Services\VerificationOrderService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\RateLimiter;
 
 class ResellerApiController extends Controller
 {
@@ -24,8 +25,19 @@ class ResellerApiController extends Controller
 
     protected function userFromApiKey(Request $request): ?User
     {
-        $apiKey = $request->input('api_key') ?? $request->query('api_key');
-        if (!$apiKey) {
+        $apiKey = $request->bearerToken()
+            ?? $request->header('X-API-Key')
+            ?? $request->header('X-SMSLORD-Key')
+            ?? $request->input('api_key')
+            ?? $request->query('api_key');
+
+        if (!$apiKey || !is_string($apiKey)) {
+            return null;
+        }
+
+        $apiKey = trim($apiKey);
+
+        if (strlen($apiKey) < 32 || strlen($apiKey) > 64) {
             return null;
         }
 
@@ -34,10 +46,34 @@ class ResellerApiController extends Controller
 
     protected function authUser(Request $request)
     {
+        $failKey = 'api-auth-fail:'.$request->ip();
+
+        if (RateLimiter::tooManyAttempts($failKey, 30)) {
+            $seconds = RateLimiter::availableIn($failKey);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Too many failed attempts. Try again in '.$seconds.' seconds.',
+            ], 429);
+        }
+
         $user = $this->userFromApiKey($request);
         if (!$user) {
+            RateLimiter::hit($failKey, 300);
+
             return response()->json(['success' => false, 'message' => 'Invalid API key.'], 401);
         }
+
+        RateLimiter::clear($failKey);
+
+        $userLimitKey = 'api-user:'.$user->id;
+        if (RateLimiter::tooManyAttempts($userLimitKey, 120)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Rate limit exceeded. Maximum 120 requests per minute.',
+            ], 429);
+        }
+        RateLimiter::hit($userLimitKey, 60);
 
         return $user;
     }
@@ -136,13 +172,13 @@ class ResellerApiController extends Controller
         }
 
         if ((int) $verification->status === 1) {
-            $this->orders->pollVerification($verification);
+            $this->orders->pollVerificationIfDue($verification, 10);
             $verification->refresh();
         }
 
         return response()->json([
             'success' => true,
-            'status' => $verification->status,
+            'status' => (int) $verification->status,
             'code' => $verification->sms,
             'full_sms' => $verification->full_sms,
         ]);
@@ -192,13 +228,13 @@ class ResellerApiController extends Controller
         }
 
         if ((int) $verification->status === 1) {
-            $this->orders->pollVerification($verification);
+            $this->orders->pollVerificationIfDue($verification, 10);
             $verification->refresh();
         }
 
         return response()->json([
             'success' => true,
-            'status' => $verification->status,
+            'status' => (int) $verification->status,
             'code' => $verification->sms,
         ]);
     }
