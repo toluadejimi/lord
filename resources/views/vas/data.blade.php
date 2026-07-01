@@ -1,73 +1,63 @@
-@extends('layout.main')
-@section('content')
-<div class="pc-container">
-    <div class="pc-content p-4">
-        @if(session('message'))<div class="alert alert-success">{{ session('message') }}</div>@endif
-        @if(session('error'))<div class="alert alert-danger">{{ session('error') }}</div>@endif
+@extends('vas.layout', [
+    'vasTitle' => 'Data Bundles',
+    'vasSubtitle' => 'Pick a network, choose a plan, enter phone number',
+    'vasIcon' => 'ti-wifi',
+    'wallet' => $wallet,
+    'vasConfigured' => $vasConfigured,
+])
 
-        <div class="mb-3">
-            <a href="{{ route('vas.index') }}" class="text-muted small"><i class="ti ti-arrow-left"></i> Bills &amp; VTU</a>
-        </div>
+@section('vas-body')
+<div class="row justify-content-center">
+    <div class="col-lg-9">
+        <form method="post" action="{{ route('vas.data.buy') }}" class="card vas-card" id="vas-form">
+            @csrf
+            <input type="hidden" name="variation_code" id="variation-code" value="{{ old('variation_code') }}">
+            <div class="card-body">
+                @include('vas.partials.network-picker', ['networks' => $networks])
 
-        <h2 class="mb-1">Data Bundles</h2>
-        <p class="text-muted small mb-3">Choose network, pick a bundle, then enter the phone number.</p>
-
-        @include('vas.partials.subnav')
-
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <form method="post" action="{{ route('vas.data.buy') }}" class="card border-0 shadow-sm" id="vas-form">
-                    @csrf
-                    <input type="hidden" name="variation_code" id="variation-code" value="{{ old('variation_code') }}">
-                    <div class="card-body p-4">
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Network</label>
-                            <select id="network-select" name="service_id" class="form-select" required>
-                                <option value="">Select network</option>
-                                @foreach($networks as $network)
-                                <option value="{{ $network['id'] }}" @selected(old('service_id') === $network['id'])>{{ $network['name'] }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Search bundles</label>
-                            <input type="text" class="form-control" id="bundle-search" placeholder="Search plan name…">
-                            <div class="d-flex flex-wrap gap-2 mt-2">
-                                <button type="button" class="btn btn-sm btn-outline-secondary filter-btn" data-filter="daily">Daily</button>
-                                <button type="button" class="btn btn-sm btn-outline-secondary filter-btn" data-filter="weekly">Weekly</button>
-                                <button type="button" class="btn btn-sm btn-outline-secondary filter-btn" data-filter="monthly">Monthly</button>
-                                <button type="button" class="btn btn-sm btn-outline-secondary filter-btn" data-filter="yearly">Yearly</button>
-                            </div>
-                        </div>
-
-                        <div id="bundle-grid" class="row g-2 mb-3">
-                            <div class="col-12 text-muted small">Select a network to load bundles.</div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Phone number</label>
-                            <input class="form-control phone-input" name="phone" type="tel" maxlength="11"
-                                pattern="[0-9]{11}" placeholder="08012345678" value="{{ old('phone') }}" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Amount (₦)</label>
-                            <input class="form-control form-control-lg amount-input" name="amount" id="amount-input"
-                                type="number" min="1" max="500000" step="1" value="{{ old('amount') }}" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-lg w-100" id="submit-btn" disabled>
-                            Pay from wallet
-                        </button>
+                <div class="mb-3">
+                    <div class="vas-field-label">Search bundles</div>
+                    <input type="text" class="form-control vas-input" id="bundle-search" placeholder="Search plan name…">
+                    <div class="amount-chips mt-2">
+                        <button type="button" class="amount-chip filter-btn" data-filter="daily">Daily</button>
+                        <button type="button" class="amount-chip filter-btn" data-filter="weekly">Weekly</button>
+                        <button type="button" class="amount-chip filter-btn" data-filter="monthly">Monthly</button>
+                        <button type="button" class="amount-chip filter-btn" data-filter="yearly">Yearly</button>
                     </div>
-                </form>
+                </div>
+
+                <div id="bundle-grid" class="row g-2 mb-4">
+                    <div class="col-12 text-muted small py-3 text-center">Select a network to load bundles.</div>
+                </div>
+
+                <div class="mb-4">
+                    <div class="vas-field-label">Phone number</div>
+                    <input class="form-control vas-input phone-input" name="phone" type="tel" maxlength="11"
+                        placeholder="08012345678" value="{{ old('phone') }}" required>
+                </div>
+
+                <div class="mb-4">
+                    <div class="vas-field-label">Amount</div>
+                    <div class="input-group">
+                        <span class="input-group-text border-end-0 bg-white">₦</span>
+                        <input class="form-control vas-input amount-input border-start-0 ps-0" name="amount" id="amount-input"
+                            type="number" min="1" max="500000" step="1" value="{{ old('amount') }}" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary vas-submit btn-lg w-100 text-white" id="submit-btn" disabled>
+                    Pay from wallet
+                </button>
             </div>
-        </div>
+        </form>
     </div>
 </div>
-@include('vas.partials.form-js')
+@endsection
+
+@push('vas-scripts')
 <script>
 (function () {
-    const networkSelect = document.getElementById('network-select');
+    const networkInput = document.getElementById('network-input');
     const bundleGrid = document.getElementById('bundle-grid');
     const variationInput = document.getElementById('variation-code');
     const amountInput = document.getElementById('amount-input');
@@ -100,17 +90,17 @@
 
         bundleGrid.innerHTML = '';
         if (!filtered.length) {
-            bundleGrid.innerHTML = '<div class="col-12 text-muted small">No bundles found.</div>';
+            bundleGrid.innerHTML = '<div class="col-12 text-muted small py-3 text-center">No bundles found.</div>';
             return;
         }
 
         filtered.forEach(function (b) {
             const col = document.createElement('div');
-            col.className = 'col-md-6';
+            col.className = 'col-md-6 col-lg-4';
             const card = document.createElement('div');
             card.className = 'bundle-card' + (variationInput.value === b.code ? ' selected' : '');
-            card.innerHTML = '<div class="fw-semibold">' + b.name + '</div>' +
-                (b.amount ? '<div class="small text-muted">₦' + Number(b.amount).toLocaleString() + '</div>' : '');
+            card.innerHTML = '<div class="fw-semibold small">' + b.name + '</div>' +
+                (b.amount ? '<div class="text-primary fw-bold mt-1">₦' + Number(b.amount).toLocaleString() + '</div>' : '');
             card.addEventListener('click', function () {
                 variationInput.value = b.code;
                 if (b.amount) amountInput.value = b.amount;
@@ -124,7 +114,7 @@
     }
 
     function loadBundles(network) {
-        bundleGrid.innerHTML = '<div class="col-12 text-muted small">Loading bundles…</div>';
+        bundleGrid.innerHTML = '<div class="col-12 text-muted small py-4 text-center">Loading bundles…</div>';
         variationInput.value = '';
         submitBtn.disabled = true;
         fetch(catalogUrl + '?network=' + encodeURIComponent(network))
@@ -134,12 +124,12 @@
                 renderBundles();
             })
             .catch(function () {
-                bundleGrid.innerHTML = '<div class="col-12 text-danger small">Could not load bundles.</div>';
+                bundleGrid.innerHTML = '<div class="col-12 text-danger small py-3 text-center">Could not load bundles.</div>';
             });
     }
 
-    networkSelect?.addEventListener('change', function () {
-        if (networkSelect.value) loadBundles(networkSelect.value);
+    networkInput?.addEventListener('change', function () {
+        if (networkInput.value) loadBundles(networkInput.value);
     });
 
     bundleSearch?.addEventListener('input', renderBundles);
@@ -153,7 +143,7 @@
         });
     });
 
-    if (networkSelect?.value) loadBundles(networkSelect.value);
+    if (networkInput?.value) loadBundles(networkInput.value);
 })();
 </script>
-@endsection
+@endpush

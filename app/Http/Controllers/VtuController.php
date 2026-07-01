@@ -49,7 +49,7 @@ class VtuController extends Controller
         }
 
         return view('vas.data', $this->pageData([
-            'networks' => config('vtu.networks', []),
+            'networks' => $this->loadAirtimeNetworks(),
         ]));
     }
 
@@ -471,19 +471,74 @@ class VtuController extends Controller
         return $services;
     }
 
-  /**
-   * @return list<array{id: string, name: string}>
-   */
+    /**
+     * @return list<array{id: string, name: string}>
+     */
     protected function loadAirtimeNetworks(): array
     {
-        if (!$this->vas->configured()) {
-            return config('vtu.networks', []);
+        $networks = $this->canonicalNetworks();
+
+        if ($this->vas->configured()) {
+            try {
+                $response = $this->vas->getPublic('/get-service');
+                $this->enrichNetworkNames($networks, $response->json() ?? []);
+            } catch (\Throwable) {
+                // Keep canonical list when provider catalogue is unavailable.
+            }
         }
 
-        $response = $this->vas->getPublic('/get-service');
-        $parsed = $this->parseNetworkList($response->json() ?? []);
+        return $networks;
+    }
 
-        return $parsed !== [] ? $parsed : config('vtu.networks', []);
+    /**
+     * @return list<array{id: string, name: string}>
+     */
+    protected function canonicalNetworks(): array
+    {
+        return config('vtu.networks', []);
+    }
+
+    /**
+     * @param  list<array{id: string, name: string}>  $networks
+     */
+    protected function enrichNetworkNames(array &$networks, array $raw): void
+    {
+        foreach ($this->parseNetworkList($raw) as $item) {
+            $canonicalId = $this->normalizeNetworkSlug((string) $item['id'], $item['name'] ?? null);
+            if (!$canonicalId) {
+                continue;
+            }
+
+            foreach ($networks as $index => $network) {
+                if ($network['id'] === $canonicalId && !empty($item['name'])) {
+                    $networks[$index]['name'] = $item['name'];
+                }
+            }
+        }
+    }
+
+    protected function normalizeNetworkSlug(string $id, ?string $name = null): ?string
+    {
+        $haystack = strtolower(trim($id.' '.($name ?? '')));
+
+        $map = [
+            'mtn' => ['mtn'],
+            'glo' => ['glo', 'globacom'],
+            'airtel' => ['airtel'],
+            '9mobile' => ['9mobile', 'etisalat', '9 mobile'],
+        ];
+
+        foreach ($map as $slug => $needles) {
+            foreach ($needles as $needle) {
+                if (str_contains($haystack, $needle)) {
+                    return $slug;
+                }
+            }
+        }
+
+        $id = strtolower($id);
+
+        return in_array($id, ['mtn', 'glo', 'airtel', '9mobile'], true) ? $id : null;
     }
 
     /**
@@ -508,8 +563,9 @@ class VtuController extends Controller
                 if (!is_array($item)) {
                     continue;
                 }
-                $id = $item['service_id'] ?? $item['id'] ?? $item['code'] ?? null;
-                $name = $item['name'] ?? $item['title'] ?? null;
+                $id = $item['service_id'] ?? $item['serviceID'] ?? $item['serviceId']
+                    ?? $item['network'] ?? $item['slug'] ?? $item['id'] ?? $item['code'] ?? null;
+                $name = $item['name'] ?? $item['title'] ?? $item['label'] ?? null;
                 if ($id && $name) {
                     $networks[] = ['id' => strtolower((string) $id), 'name' => (string) $name];
                 }
@@ -518,7 +574,7 @@ class VtuController extends Controller
             foreach ($list as $id => $name) {
                 if (is_array($name)) {
                     $networks[] = [
-                        'id' => strtolower((string) ($name['service_id'] ?? $name['id'] ?? $id)),
+                        'id' => strtolower((string) ($name['service_id'] ?? $name['serviceID'] ?? $name['id'] ?? $id)),
                         'name' => (string) ($name['name'] ?? $name['title'] ?? $id),
                     ];
                 } else {

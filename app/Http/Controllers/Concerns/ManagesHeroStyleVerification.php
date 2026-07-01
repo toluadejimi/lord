@@ -67,15 +67,6 @@ trait ManagesHeroStyleVerification
 
     public function heroCatalogCountries(Request $request, HeroCatalogService $catalog)
     {
-        if ($this->heroPickerFlow() === 'service-first' && $request->filled('service')) {
-            return response()->json([
-                'countries' => $catalog->countriesForService(
-                    $this->heroProviderKey(),
-                    (string) $request->query('service')
-                ),
-            ]);
-        }
-
         return response()->json([
             'countries' => $catalog->countries($this->heroProviderKey()),
         ]);
@@ -166,14 +157,22 @@ trait ManagesHeroStyleVerification
             ->first();
 
         if (!$verification) {
-            return response()->json(['message' => 'waiting for sms']);
+            return response()->json([
+                'message' => 'waiting for sms',
+                'status' => 0,
+                'next_poll_seconds' => 12,
+            ]);
         }
 
         if ((int) $verification->status === 1) {
-            $orders->pollVerification($verification);
+            $orders->pollVerificationIfDue($verification, 10);
             $verification->refresh();
         }
 
-        return response()->json(['message' => $verification->sms ?? 'waiting for sms']);
+        return response()->json([
+            'message' => $verification->sms ?? 'waiting for sms',
+            'status' => (int) $verification->status,
+            'next_poll_seconds' => 10,
+        ]);
     }
 }

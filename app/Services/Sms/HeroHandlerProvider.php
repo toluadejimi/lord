@@ -47,9 +47,15 @@ class HeroHandlerProvider
         return (string) $response->body();
     }
 
-    public function getNumber(string $provider, string $service, ?string $country = null, ?string $maxPrice = null): array
-    {
-        $params = ['service' => $service];
+    public function getNumber(
+        string $provider,
+        string $service,
+        ?string $country = null,
+        ?string $maxPrice = null,
+        array $extra = [],
+    ): array {
+        $params = array_merge(['service' => $service], $extra);
+
         if ($country) {
             $params['country'] = $country;
         }
@@ -94,7 +100,7 @@ class HeroHandlerProvider
 
     public function getStatus(string $provider, string $orderId): array
     {
-        $body = $this->request($provider, 'getStatus', ['id' => $orderId]);
+        $body = trim($this->request($provider, 'getStatus', ['id' => $orderId]));
 
         if (str_contains($body, 'STATUS_OK:')) {
             $code = explode(':', $body, 2)[1] ?? '';

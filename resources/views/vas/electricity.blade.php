@@ -1,74 +1,75 @@
-@extends('layout.main')
-@section('content')
-<div class="pc-container">
-    <div class="pc-content p-4">
-        @if(session('message'))<div class="alert alert-success">{{ session('message') }}</div>@endif
-        @if(session('error'))<div class="alert alert-danger">{{ session('error') }}</div>@endif
+@extends('vas.layout', [
+    'vasTitle' => 'Electricity',
+    'vasSubtitle' => 'Prepaid & postpaid token purchase',
+    'vasIcon' => 'ti-bolt',
+    'wallet' => $wallet,
+    'vasConfigured' => $vasConfigured,
+])
 
-        <div class="mb-3">
-            <a href="{{ route('vas.index') }}" class="text-muted small"><i class="ti ti-arrow-left"></i> Bills &amp; VTU</a>
-        </div>
-
-        <h2 class="mb-1">Electricity</h2>
-        <p class="text-muted small mb-3">Pay prepaid or postpaid electricity bills and receive your token.</p>
-
-        @include('vas.partials.subnav')
-
-        <div class="row justify-content-center">
-            <div class="col-lg-7">
-                <form method="post" action="{{ route('vas.electricity.buy') }}" class="card border-0 shadow-sm" id="vas-form">
-                    @csrf
-                    <input type="hidden" name="variation_code" id="variation-code" value="{{ old('variation_code') }}">
-                    <div class="card-body p-4">
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">DISCO</label>
-                            <select id="disco-select" name="service_id" class="form-select" required>
-                                <option value="">Select disco</option>
-                                @foreach($discos as $disco)
-                                <option value="{{ $disco['id'] }}" @selected(old('service_id') === $disco['id'])>{{ $disco['name'] }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Meter type</label>
-                            <select id="meter-type" class="form-select" required>
-                                <option value="prepaid">Prepaid</option>
-                                <option value="postpaid">Postpaid</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Tariff / plan</label>
-                            <select id="tariff-select" class="form-select" required disabled>
-                                <option value="">Select DISCO first</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Meter number</label>
-                            <input class="form-control" name="billersCode" id="billers-code" type="text"
-                                value="{{ old('billersCode') }}" required>
-                        </div>
-                        <div class="mb-3">
-                            <button type="button" class="btn btn-outline-secondary btn-sm" id="validate-btn">Validate meter</button>
-                            <div id="validate-result" class="small mt-2"></div>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Phone number</label>
-                            <input class="form-control phone-input" name="phone" type="tel" minlength="10" maxlength="11"
-                                value="{{ old('phone') }}" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Amount (₦)</label>
-                            <input class="form-control form-control-lg amount-input" name="amount" type="number"
-                                min="100" max="500000" step="1" value="{{ old('amount') }}" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-lg w-100" @disabled(!$vasConfigured)>Pay from wallet</button>
+@section('vas-body')
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-xl-7">
+        <form method="post" action="{{ route('vas.electricity.buy') }}" class="card vas-card" id="vas-form">
+            @csrf
+            <input type="hidden" name="variation_code" id="variation-code" value="{{ old('variation_code') }}">
+            <div class="card-body">
+                <div class="mb-4">
+                    <div class="vas-field-label">Distribution company (DISCO)</div>
+                    <select id="disco-select" name="service_id" class="form-select vas-input" required>
+                        <option value="">Select disco</option>
+                        @foreach($discos as $disco)
+                        <option value="{{ $disco['id'] }}" @selected(old('service_id') === $disco['id'])>{{ $disco['name'] }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <div class="vas-field-label">Meter type</div>
+                    <select id="meter-type" class="form-select vas-input" required>
+                        <option value="prepaid">Prepaid</option>
+                        <option value="postpaid">Postpaid</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <div class="vas-field-label">Tariff / plan</div>
+                    <select id="tariff-select" class="form-select vas-input" required disabled>
+                        <option value="">Select DISCO first</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <div class="vas-field-label">Meter number</div>
+                    <input class="form-control vas-input" name="billersCode" id="billers-code" type="text"
+                        value="{{ old('billersCode') }}" placeholder="Enter meter number" required>
+                </div>
+                <div class="mb-3">
+                    <button type="button" class="btn btn-outline-primary btn-sm rounded-pill" id="validate-btn">
+                        <i class="ti ti-check"></i> Validate meter
+                    </button>
+                    <div id="validate-result" class="small mt-2"></div>
+                </div>
+                <div class="mb-4">
+                    <div class="vas-field-label">Phone number</div>
+                    <input class="form-control vas-input phone-input" name="phone" type="tel" minlength="10" maxlength="11"
+                        value="{{ old('phone') }}" placeholder="08012345678" required>
+                </div>
+                <div class="mb-4">
+                    <div class="vas-field-label">Amount</div>
+                    <div class="input-group">
+                        <span class="input-group-text border-end-0 bg-white">₦</span>
+                        <input class="form-control vas-input amount-input border-start-0 ps-0" name="amount" type="number"
+                            min="100" max="500000" step="1" value="{{ old('amount') }}" required>
                     </div>
-                </form>
+                    <div class="form-text">Minimum ₦100</div>
+                </div>
+                <button type="submit" class="btn btn-primary vas-submit btn-lg w-100 text-white" @disabled(!$vasConfigured)>
+                    Pay from wallet
+                </button>
             </div>
-        </div>
+        </form>
     </div>
 </div>
-@include('vas.partials.form-js')
+@endsection
+
+@push('vas-scripts')
 <script>
 (function () {
     const discoSelect = document.getElementById('disco-select');
@@ -117,9 +118,8 @@
         variationInput.value = tariffSelect.value || meterType.value;
     });
     meterType?.addEventListener('change', function () {
-        if (!tariffSelect.value) variationInput.value = meterType.value;
+        if (!variationInput.value) variationInput.value = meterType.value;
     });
-
     if (!variationInput.value) variationInput.value = meterType.value;
 
     validateBtn?.addEventListener('click', function () {
@@ -138,19 +138,15 @@
             .then(function (r) { return r.json(); })
             .then(function (data) {
                 const name = data.customer_name || data.name || data.data?.customer_name || data.data?.name;
-                if (name) {
-                    validateResult.innerHTML = '<span class="text-success"><strong>' + name + '</strong> — verified.</span>';
-                } else {
-                    validateResult.innerHTML = '<span class="text-danger">' + (data.message || data.msg || 'Validation failed.') + '</span>';
-                }
+                validateResult.innerHTML = name
+                    ? '<span class="text-success"><strong>' + name + '</strong> — verified.</span>'
+                    : '<span class="text-danger">' + (data.message || data.msg || 'Validation failed.') + '</span>';
             })
-            .catch(function () {
-                validateResult.innerHTML = '<span class="text-danger">Validation request failed.</span>';
-            })
+            .catch(function () { validateResult.innerHTML = '<span class="text-danger">Validation request failed.</span>'; })
             .finally(function () { validateBtn.disabled = false; });
     });
 
     if (discoSelect?.value) loadTariffs();
 })();
 </script>
-@endsection
+@endpush

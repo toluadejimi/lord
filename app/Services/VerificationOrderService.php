@@ -9,6 +9,7 @@ use App\Services\Sms\HeroHandlerProvider;
 use App\Services\Sms\SmsPoolProvider;
 use App\Services\Sms\UnlimitedPortalProvider;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class VerificationOrderService
@@ -210,6 +211,23 @@ class VerificationOrderService
             10 => $this->pollHero($verification, 'sv3'),
             default => null,
         };
+    }
+
+    public function pollVerificationIfDue(Verification $verification, int $minSeconds = 10): ?array
+    {
+        if ((int) $verification->status !== 1) {
+            return null;
+        }
+
+        $cacheKey = 'verification.provider_poll.'.$verification->id;
+
+        if (Cache::has($cacheKey)) {
+            return null;
+        }
+
+        Cache::put($cacheKey, true, $minSeconds);
+
+        return $this->pollVerification($verification);
     }
 
     protected function pollSmsPool(Verification $verification): ?array

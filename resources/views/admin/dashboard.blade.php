@@ -61,7 +61,7 @@
                                 <th>User</th>
                                 <th>Order ID</th>
                                 <th>Country</th>
-                                <th>Type</th>
+                                <th>Provider</th>
                                 <th>Service</th>
                                 <th>Phone</th>
                                 <th>Amount</th>

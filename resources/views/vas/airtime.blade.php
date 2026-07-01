@@ -1,58 +1,46 @@
-@extends('layout.main')
-@section('content')
-<div class="pc-container">
-    <div class="pc-content p-4">
-        @if(session('message'))<div class="alert alert-success">{{ session('message') }}</div>@endif
-        @if(session('error'))<div class="alert alert-danger">{{ session('error') }}</div>@endif
+@extends('vas.layout', [
+    'vasTitle' => 'Airtime',
+    'vasSubtitle' => 'Instant top-up for MTN, Glo, Airtel & 9mobile',
+    'vasIcon' => 'ti-phone',
+    'wallet' => $wallet,
+    'vasConfigured' => $vasConfigured,
+])
 
-        <div class="mb-3">
-            <a href="{{ route('vas.index') }}" class="text-muted small"><i class="ti ti-arrow-left"></i> Bills &amp; VTU</a>
-        </div>
+@section('vas-body')
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-xl-7">
+        <form method="post" action="{{ route('vas.airtime.buy') }}" class="card vas-card" id="vas-form">
+            @csrf
+            <div class="card-body">
+                @include('vas.partials.network-picker', ['networks' => $networks])
 
-        <h2 class="mb-1">Airtime</h2>
-        <p class="text-muted small mb-3">Top up any Nigerian mobile line from your wallet.</p>
+                <div class="mb-4">
+                    <div class="vas-field-label">Phone number</div>
+                    <input class="form-control vas-input phone-input" name="phone" type="tel" inputmode="numeric"
+                        maxlength="11" placeholder="08012345678" value="{{ old('phone') }}" required>
+                    <div class="form-text">11-digit Nigerian mobile number</div>
+                </div>
 
-        @include('vas.partials.subnav')
-
-        <div class="row justify-content-center">
-            <div class="col-lg-7">
-                <form method="post" action="{{ route('vas.airtime.buy') }}" class="card border-0 shadow-sm" id="vas-form">
-                    @csrf
-                    <div class="card-body p-4">
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Network</label>
-                            <select name="service_id" class="form-select" required>
-                                <option value="">Select network</option>
-                                @foreach($networks as $network)
-                                <option value="{{ $network['id'] }}" @selected(old('service_id') === $network['id'])>{{ $network['name'] }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Phone number</label>
-                            <input class="form-control phone-input" name="phone" type="tel" inputmode="numeric"
-                                maxlength="11" pattern="[0-9]{11}" placeholder="08012345678"
-                                value="{{ old('phone') }}" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Amount (₦)</label>
-                            <input class="form-control form-control-lg amount-input" name="amount" type="number"
-                                min="50" max="100000" step="1" value="{{ old('amount') }}" required>
-                            <div class="form-text">Min ₦50. Airtel max ₦10,000 per transaction.</div>
-                            <div class="d-flex flex-wrap gap-2 mt-2">
-                                @foreach([100, 200, 500, 1000, 2000, 5000] as $preset)
-                                <button type="button" class="btn btn-sm btn-outline-primary amount-preset" data-amount="{{ $preset }}">₦{{ number_format($preset) }}</button>
-                                @endforeach
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-lg w-100" @disabled(!$vasConfigured)>
-                            Pay from wallet
-                        </button>
+                <div class="mb-4">
+                    <div class="vas-field-label">Amount</div>
+                    <div class="input-group mb-2">
+                        <span class="input-group-text border-end-0 bg-white">₦</span>
+                        <input class="form-control vas-input amount-input border-start-0 ps-0" name="amount" type="number"
+                            min="50" max="100000" step="1" value="{{ old('amount') }}" placeholder="500" required>
                     </div>
-                </form>
+                    <div class="form-text mb-2">Min ₦50 · Airtel max ₦10,000 per transaction</div>
+                    <div class="amount-chips">
+                        @foreach([100, 200, 500, 1000, 2000, 5000] as $preset)
+                        <button type="button" class="amount-chip amount-preset" data-amount="{{ $preset }}">₦{{ number_format($preset) }}</button>
+                        @endforeach
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary vas-submit btn-lg w-100 text-white" @disabled(!$vasConfigured)>
+                    Pay from wallet
+                </button>
             </div>
-        </div>
+        </form>
     </div>
 </div>
-@include('vas.partials.form-js')
 @endsection

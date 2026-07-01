@@ -1,63 +1,63 @@
-@extends('layout.main')
-@section('content')
-<div class="pc-container">
-    <div class="pc-content p-4">
-        @if(session('message'))<div class="alert alert-success">{{ session('message') }}</div>@endif
-        @if(session('error'))<div class="alert alert-danger">{{ session('error') }}</div>@endif
+@extends('vas.layout', [
+    'vasTitle' => 'Cable TV',
+    'vasSubtitle' => 'DSTV, GOtv, StarTimes & more',
+    'vasIcon' => 'ti-device-tv',
+    'wallet' => $wallet,
+    'vasConfigured' => $vasConfigured,
+])
 
-        <div class="mb-3">
-            <a href="{{ route('vas.index') }}" class="text-muted small"><i class="ti ti-arrow-left"></i> Bills &amp; VTU</a>
-        </div>
-
-        <h2 class="mb-1">Cable TV</h2>
-        <p class="text-muted small mb-3">Renew DSTV, GOtv, StarTimes and other TV subscriptions.</p>
-
-        @include('vas.partials.subnav')
-
-        <div class="row justify-content-center">
-            <div class="col-lg-7">
-                <form method="post" action="{{ route('vas.cable.buy') }}" class="card border-0 shadow-sm" id="vas-form">
-                    @csrf
-                    <input type="hidden" name="variation_code" id="variation-code" value="{{ old('variation_code') }}">
-                    <div class="card-body p-4">
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Provider</label>
-                            <select id="provider-select" name="service_id" class="form-select" required>
-                                <option value="">Loading providers…</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Plan</label>
-                            <select id="plan-select" class="form-select" required disabled>
-                                <option value="">Select provider first</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Smartcard / IUC</label>
-                            <input class="form-control" name="billersCode" id="billers-code" type="text"
-                                value="{{ old('billersCode') }}" required>
-                        </div>
-                        <div class="mb-3">
-                            <button type="button" class="btn btn-outline-secondary btn-sm" id="validate-btn">Validate customer</button>
-                            <div id="validate-result" class="small mt-2"></div>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Contact phone (optional)</label>
-                            <input class="form-control phone-input" name="phone" type="tel" maxlength="11" value="{{ old('phone') }}">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Amount (₦)</label>
-                            <input class="form-control form-control-lg amount-input" name="amount" id="amount-input"
-                                type="number" min="1" step="1" value="{{ old('amount') }}" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-lg w-100" @disabled(!$vasConfigured)>Pay from wallet</button>
+@section('vas-body')
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-xl-7">
+        <form method="post" action="{{ route('vas.cable.buy') }}" class="card vas-card" id="vas-form">
+            @csrf
+            <input type="hidden" name="variation_code" id="variation-code" value="{{ old('variation_code') }}">
+            <div class="card-body">
+                <div class="mb-4">
+                    <div class="vas-field-label">TV provider</div>
+                    <select id="provider-select" name="service_id" class="form-select vas-input" required>
+                        <option value="">Loading providers…</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <div class="vas-field-label">Subscription plan</div>
+                    <select id="plan-select" class="form-select vas-input" required disabled>
+                        <option value="">Select provider first</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <div class="vas-field-label">Smartcard / IUC</div>
+                    <input class="form-control vas-input" name="billersCode" id="billers-code" type="text"
+                        value="{{ old('billersCode') }}" placeholder="Enter decoder number" required>
+                </div>
+                <div class="mb-3">
+                    <button type="button" class="btn btn-outline-primary btn-sm rounded-pill" id="validate-btn">
+                        <i class="ti ti-check"></i> Validate customer
+                    </button>
+                    <div id="validate-result" class="small mt-2"></div>
+                </div>
+                <div class="mb-4">
+                    <div class="vas-field-label">Contact phone <span class="text-muted fw-normal">(optional)</span></div>
+                    <input class="form-control vas-input phone-input" name="phone" type="tel" maxlength="11" value="{{ old('phone') }}">
+                </div>
+                <div class="mb-4">
+                    <div class="vas-field-label">Amount</div>
+                    <div class="input-group">
+                        <span class="input-group-text border-end-0 bg-white">₦</span>
+                        <input class="form-control vas-input amount-input border-start-0 ps-0" name="amount" id="amount-input"
+                            type="number" min="1" step="1" value="{{ old('amount') }}" required>
                     </div>
-                </form>
+                </div>
+                <button type="submit" class="btn btn-primary vas-submit btn-lg w-100 text-white" @disabled(!$vasConfigured)>
+                    Pay from wallet
+                </button>
             </div>
-        </div>
+        </form>
     </div>
 </div>
-@include('vas.partials.form-js')
+@endsection
+
+@push('vas-scripts')
 <script>
 (function () {
     const providerSelect = document.getElementById('provider-select');
@@ -130,10 +130,7 @@
             providerSelect.innerHTML = '<option value="">Could not load providers</option>';
         });
 
-    providerSelect?.addEventListener('change', function () {
-        fillPlans(providerSelect.value);
-    });
-
+    providerSelect?.addEventListener('change', function () { fillPlans(providerSelect.value); });
     planSelect?.addEventListener('change', function () {
         const opt = planSelect.selectedOptions[0];
         variationInput.value = opt ? opt.value : '';
@@ -155,17 +152,13 @@
             .then(function (r) { return r.json(); })
             .then(function (data) {
                 const name = data.customer_name || data.name || data.data?.customer_name || data.data?.name;
-                if (name) {
-                    validateResult.innerHTML = '<span class="text-success"><strong>' + name + '</strong> — verified.</span>';
-                } else {
-                    validateResult.innerHTML = '<span class="text-danger">' + (data.message || data.msg || 'Validation failed.') + '</span>';
-                }
+                validateResult.innerHTML = name
+                    ? '<span class="text-success"><strong>' + name + '</strong> — verified.</span>'
+                    : '<span class="text-danger">' + (data.message || data.msg || 'Validation failed.') + '</span>';
             })
-            .catch(function () {
-                validateResult.innerHTML = '<span class="text-danger">Validation request failed.</span>';
-            })
+            .catch(function () { validateResult.innerHTML = '<span class="text-danger">Validation request failed.</span>'; })
             .finally(function () { validateBtn.disabled = false; });
     });
 })();
 </script>
-@endsection
+@endpush

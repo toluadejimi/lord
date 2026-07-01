@@ -13,7 +13,7 @@
                 <h2 class="mb-1">{{ $serverLabel }}</h2>
                 <p class="text-muted mb-0 small">
                     @if($serviceFirst)
-                        Pick a service, choose a country with stock, confirm price, then rent a number.
+                        Pick a service, choose a country, confirm price, then rent a number.
                     @else
                         Search a country, pick a service, confirm price, then rent a number.
                     @endif
@@ -173,7 +173,7 @@
             countrySearch.value = '';
             countryStep.style.display = '';
             resetPriceStep();
-            loadCountriesForService(item.code);
+            loadCountries();
         } else {
             loadPrice();
         }
@@ -200,16 +200,13 @@
         renderList(serviceResults, services, selectService, 'No services loaded');
     }
 
-    function loadCountriesForService(serviceCode) {
+    function loadCountries() {
         if (countryLoading) {
             countryLoading.classList.remove('d-none');
         }
-        countryResults.innerHTML = '<div class="list-group-item text-muted small">Loading…</div>';
+        countryResults.innerHTML = '<div class="list-group-item text-muted small">Loading countries…</div>';
 
-        const url = new URL(countriesUrl);
-        url.searchParams.set('service', serviceCode);
-
-        fetch(url)
+        fetch(countriesUrl)
             .then(function (r) { return r.json(); })
             .then(function (data) {
                 countries = data.countries || [];
@@ -217,7 +214,7 @@
                     countryLoading.classList.add('d-none');
                 }
                 if (!countries.length) {
-                    countryResults.innerHTML = '<div class="list-group-item text-muted small">No countries available for this service right now.</div>';
+                    countryResults.innerHTML = '<div class="list-group-item text-muted small">No countries available.</div>';
                     return;
                 }
                 renderList(countryResults, countries, selectCountry, 'No matches');
@@ -282,24 +279,6 @@
             })
             .catch(function () {
                 serviceResults.innerHTML = '<div class="list-group-item text-danger small">Could not load services.</div>';
-            });
-    }
-
-    function loadCountries() {
-        countryResults.innerHTML = '<div class="list-group-item text-muted small">Loading countries…</div>';
-
-        fetch(countriesUrl)
-            .then(function (r) { return r.json(); })
-            .then(function (data) {
-                countries = data.countries || [];
-                if (!countries.length) {
-                    countryResults.innerHTML = '<div class="list-group-item text-muted small">No countries available.</div>';
-                    return;
-                }
-                renderList(countryResults, countries, selectCountry, 'No matches');
-            })
-            .catch(function () {
-                countryResults.innerHTML = '<div class="list-group-item text-danger small">Could not load countries.</div>';
             });
     }
 

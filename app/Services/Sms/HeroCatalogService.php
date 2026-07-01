@@ -12,7 +12,7 @@ class HeroCatalogService
     public function countries(string $providerKey): array
     {
         if ($providerKey === 'sv3') {
-            return SmsBowerCountries::catalog();
+            return $this->fetchSmsBowerCountries();
         }
 
         $raw = $this->provider->getCountries($providerKey);
@@ -22,38 +22,65 @@ class HeroCatalogService
             return [];
         }
 
+        return $this->parseCountryMap($json);
+    }
+
+    /**
+     * @return list<array{id: string, name: string}>
+     */
+    protected function fetchSmsBowerCountries(): array
+    {
+        $cached = Cache::get('hero_catalog.countries.sv3');
+        if (is_array($cached) && $cached !== []) {
+            return $cached;
+        }
+
+        $raw = $this->provider->getCountries('sv3');
+        $json = $this->decodeApiJson($raw);
+        $countries = is_array($json) ? $this->parseCountryMap($json, config('smsbower_countries', [])) : [];
+
+        if ($countries === []) {
+            $countries = SmsBowerCountries::catalog();
+        }
+
+        if ($countries !== []) {
+            Cache::put('hero_catalog.countries.sv3', $countries, 3600);
+        }
+
+        return $countries;
+    }
+
+    /**
+     * @param  array<string, mixed>  $json
+     * @param  array<string, string>  $nameFallback
+     * @return list<array{id: string, name: string}>
+     */
+    protected function parseCountryMap(array $json, array $nameFallback = []): array
+    {
         $countries = [];
 
         foreach ($json as $id => $item) {
+            $idStr = (string) $id;
+
             if (is_array($item)) {
-                $name = $item['eng'] ?? $item['name'] ?? $item['rus'] ?? (string) $id;
+                $name = $item['eng'] ?? $item['name'] ?? $item['rus'] ?? $nameFallback[$idStr] ?? $idStr;
             } else {
                 $name = (string) $item;
             }
 
+            if (isset($nameFallback[$idStr]) && ($name === $idStr || strlen((string) $name) < 3)) {
+                $name = $nameFallback[$idStr];
+            }
+
             $countries[] = [
-                'id' => (string) $id,
-                'name' => $name,
+                'id' => $idStr,
+                'name' => (string) $name,
             ];
         }
 
         usort($countries, fn ($a, $b) => strcasecmp($a['name'], $b['name']));
 
         return $countries;
-    }
-
-    /**
-     * Countries that have stock for a given service (SMS Bower: getPrices?service=).
-     *
-     * @return list<array{id: string, name: string, available: int, usd: float}>
-     */
-    public function countriesForService(string $providerKey, string $service): array
-    {
-        $cacheKey = 'hero_catalog.countries.'.$providerKey.'.'.$service;
-
-        return Cache::remember($cacheKey, 300, function () use ($providerKey, $service) {
-            return $this->fetchCountriesForService($providerKey, $service);
-        });
     }
 
     public function services(string $providerKey): array
@@ -113,57 +140,6 @@ class HeroCatalogService
         }
 
         return $services;
-    }
-
-    /**
-     * @return list<array{id: string, name: string, available: int, usd: float}>
-     */
-    protected function fetchCountriesForService(string $providerKey, string $service): array
-    {
-        $raw = $this->provider->getPrices($providerKey, $service, null);
-        $json = $this->decodeApiJson($raw);
-
-        if (!is_array($json)) {
-            return [];
-        }
-
-        $nameMap = $providerKey === 'sv3'
-            ? config('smsbower_countries', [])
-            : [];
-
-        $countries = [];
-
-        foreach ($json as $countryId => $block) {
-            if (!is_array($block)) {
-                continue;
-            }
-
-            $entry = $block[$service] ?? null;
-            if (!is_array($entry) && isset($block['cost'])) {
-                $entry = $block;
-            }
-
-            if (!is_array($entry)) {
-                continue;
-            }
-
-            $usd = (float) ($entry['cost'] ?? $entry['price'] ?? $entry['retail_price'] ?? 0);
-            if ($usd <= 0) {
-                continue;
-            }
-
-            $id = (string) $countryId;
-            $countries[] = [
-                'id' => $id,
-                'name' => (string) ($nameMap[$id] ?? 'Country '.$id),
-                'available' => (int) ($entry['count'] ?? $entry['quantity'] ?? $entry['phones'] ?? 0),
-                'usd' => $usd,
-            ];
-        }
-
-        usort($countries, fn ($a, $b) => strcasecmp($a['name'], $b['name']));
-
-        return $countries;
     }
 
     /**

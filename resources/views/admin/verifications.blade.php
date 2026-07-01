@@ -14,7 +14,7 @@
                         <th>User</th>
                         <th>Order ID</th>
                         <th>Country</th>
-                        <th>Type</th>
+                        <th>Provider</th>
                         <th>Service</th>
                         <th>Phone</th>
                         <th>SMS</th>
@@ -31,7 +31,7 @@
                         <td><code class="small">{{ $data->order_id }}</code></td>
                         <td>{{ $data->country ?? '—' }}</td>
                         <td>@include('admin.partials.verification-type', ['type' => $data->type])</td>
-                        <td>{{ $data->service ?? '—' }}</td>
+                        <td><code class="small">{{ $data->service ?? '—' }}</code></td>
                         <td><code class="small">{{ $data->phone }}</code></td>
                         <td class="small">{{ $data->sms ? \Illuminate\Support\Str::limit($data->sms, 40) : '—' }}</td>
                         <td>NGN {{ number_format($data->cost ?? 0, 2) }}</td>
