@@ -173,12 +173,12 @@
                         <span class="pc-micon">
                             <img src="{{ static_asset('assets/images/world.svg') }}" height="20" width="20">
                         </span>
-                            <span class="pc-mtext">SMS Verification</span>
+                            <span class="pc-mtext">Server 1</span>
                         </a>
                     </li>
-                    <li class="pc-item"><a href="usa2" class="pc-link"><span class="pc-micon"><i class="ti ti-phone"></i></span><span class="pc-mtext">USA Server 2</span></a></li>
-                    <li class="pc-item"><a href="world-sv2" class="pc-link"><span class="pc-micon"><i class="ti ti-world"></i></span><span class="pc-mtext">World Hero</span></a></li>
-                    <li class="pc-item"><a href="world-sv3" class="pc-link"><span class="pc-micon"><i class="ti ti-world"></i></span><span class="pc-mtext">World SV3</span></a></li>
+                    <li class="pc-item"><a href="usa2" class="pc-link"><span class="pc-micon"><i class="ti ti-phone"></i></span><span class="pc-mtext">Server 2</span></a></li>
+                    <li class="pc-item"><a href="world-sv2" class="pc-link"><span class="pc-micon"><i class="ti ti-world"></i></span><span class="pc-mtext">Server 3</span></a></li>
+                    <li class="pc-item"><a href="world-sv3" class="pc-link"><span class="pc-micon"><i class="ti ti-world"></i></span><span class="pc-mtext">Server 4</span></a></li>
                     <li class="pc-item pc-caption"><label>VTU & API</label></li>
                     <li class="pc-item"><a href="vas/airtime" class="pc-link"><span class="pc-micon"><i class="ti ti-device-mobile"></i></span><span class="pc-mtext">Airtime / Data</span></a></li>
                     <li class="pc-item"><a href="api-docs" class="pc-link"><span class="pc-micon"><i class="ti ti-code"></i></span><span class="pc-mtext">API Docs</span></a></li>

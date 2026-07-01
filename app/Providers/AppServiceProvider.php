@@ -63,6 +63,20 @@ class AppServiceProvider extends ServiceProvider
                 return app(AppConfigService::class)->getBool($key, $default);
             }
         }
+
+        if (!function_exists('get_world_countries')) {
+            function get_world_countries(): mixed
+            {
+                return \App\Support\LegacyHelpers::getWorldCountries();
+            }
+        }
+
+        if (!function_exists('get_world_services')) {
+            function get_world_services(): mixed
+            {
+                return \App\Support\LegacyHelpers::getWorldServices();
+            }
+        }
     }
 
     protected function loadLegacyHelpers(): void

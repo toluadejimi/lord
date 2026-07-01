@@ -92,7 +92,7 @@
                             
                                 <a style="font-size: 12px;" href="/cworld"
                                    class="btn btn-dark w-200 mt-1">
-                                    🌎 SMS Verification
+                                    🌎 Server 1
 
                                 </a>
 

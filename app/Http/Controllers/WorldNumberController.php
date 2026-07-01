@@ -7,6 +7,7 @@ use App\Models\Setting;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Verification;
+use App\Support\LegacyHelpers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,8 +17,8 @@ class WorldNumberController extends Controller
     public function home(request $request)
     {
 
-        $countries = get_world_countries();
-        $services = get_world_services();
+        $countries = LegacyHelpers::getWorldCountries();
+        $services = LegacyHelpers::getWorldServices();
 
         $verification = Verification::where('user_id', Auth::id())->get();
 
@@ -101,8 +102,8 @@ class WorldNumberController extends Controller
             $data['count_id'] = $request->selectedID;
             $data['serv'] = $request->serviceID;
             $data['verification'] = $verification;
-            $countries = get_world_countries();
-            $services = get_world_services();
+            $countries = LegacyHelpers::getWorldCountries();
+            $services = LegacyHelpers::getWorldServices();
             $data['services'] = $services;
             $data['countries'] = $countries;
             $data['rate'] = $rate;

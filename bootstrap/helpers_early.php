@@ -64,3 +64,31 @@ if (!function_exists('app_config_bool')) {
         return app(\App\Services\AppConfigService::class)->getBool($key, $default);
     }
 }
+
+if (!function_exists('get_s_countries')) {
+    function get_s_countries(): array
+    {
+        return \App\Support\LegacyHelpers::getSCountries();
+    }
+}
+
+if (!function_exists('get_s_product_cost')) {
+    function get_s_product_cost(string $operator, string $country, string $product): float|int
+    {
+        return \App\Support\LegacyHelpers::getSProductCost($operator, $country, $product);
+    }
+}
+
+if (!function_exists('get_world_countries')) {
+    function get_world_countries(): mixed
+    {
+        return \App\Support\LegacyHelpers::getWorldCountries();
+    }
+}
+
+if (!function_exists('get_world_services')) {
+    function get_world_services(): mixed
+    {
+        return \App\Support\LegacyHelpers::getWorldServices();
+    }
+}
