@@ -70,7 +70,9 @@ class AdminController extends Controller
 
             if($role == 5){
                 $message = "SMS LORD - Admin Just logged in";
-                send_notification($message);
+                if (function_exists('send_notification')) {
+                    \send_notification($message);
+                }
                 return redirect('admin/dashboard');
 
             }else{
@@ -265,7 +267,9 @@ class AdminController extends Controller
             return back()->with('error', 'Wallet Debited Successfully');
             $email = User::where('id', $request->id)->first()->email;
             $message = "SMSLORD Wallet has been debited by admin | $email | $request->amount | on SMSLORD";
-            send_notification($message);
+            if (function_exists('send_notification')) {
+                \send_notification($message);
+            }
 
         }
 
@@ -393,7 +397,9 @@ class AdminController extends Controller
 
 
        $message = $email . "| Manual Payment  Approved |  NGN " . number_format($request->amount) . " | on SMSLORD";
-       send_notification2($message);
+       if (function_exists('send_notification2')) {
+           \send_notification2($message);
+       }
 
 
 

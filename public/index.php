@@ -33,6 +33,16 @@ if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php'))
 
 require __DIR__.'/../vendor/autoload.php';
 
+foreach ([
+    __DIR__.'/../app/Http/Helpers/helpers.php',
+    __DIR__.'/../app/helpers.php',
+] as $helpersFile) {
+    if (is_file($helpersFile)) {
+        require_once $helpersFile;
+        break;
+    }
+}
+
 /*
 |--------------------------------------------------------------------------
 | Run The Application
