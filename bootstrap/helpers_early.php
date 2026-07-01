@@ -68,43 +68,166 @@ if (!function_exists('app_config_bool')) {
 if (!function_exists('get_s_countries')) {
     function get_s_countries(): array
     {
-        if (class_exists(\App\Support\LegacyHelpers::class)) {
-            return \App\Support\LegacyHelpers::getSCountries();
+        if (!function_exists('app_config')) {
+            return [];
         }
 
-        return [];
+        $token = app_config('SIMTOKEN');
+        if (!$token) {
+            return [];
+        }
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, 'https://5sim.net/v1/guest/countries');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Authorization: Bearer '.$token,
+            'Accept: application/json',
+        ]);
+
+        $var = curl_exec($ch);
+        curl_close($ch);
+        $inputArray = json_decode($var, true);
+
+        if (!is_array($inputArray)) {
+            return [];
+        }
+
+        $result = [];
+        foreach ($inputArray as $key => $value) {
+            $result[$key] = $value['text_en'];
+        }
+
+        return $result;
     }
 }
 
 if (!function_exists('get_s_product_cost')) {
     function get_s_product_cost(string $operator, string $country, string $product): float|int
     {
-        if (class_exists(\App\Support\LegacyHelpers::class)) {
-            return \App\Support\LegacyHelpers::getSProductCost($operator, $country, $product);
+        if (!function_exists('app_config')) {
+            return 0;
         }
 
-        return 0;
+        $token = app_config('SIMTOKEN');
+        if (!$token) {
+            return 0;
+        }
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, 'https://5sim.net/v1/guest/products/'.$country.'/'.$operator);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Authorization: Bearer '.$token,
+            'Accept: application/json',
+        ]);
+
+        $var = curl_exec($ch);
+        curl_close($ch);
+        $var = json_decode($var);
+
+        if (is_object($var)) {
+            $data = json_decode(json_encode($var), true);
+        } else {
+            $data = [];
+        }
+
+        $filteredData = array_filter($data, function ($key) use ($product) {
+            return stripos($key, $product) !== false;
+        }, ARRAY_FILTER_USE_KEY);
+
+        if ($filteredData === []) {
+            return 0;
+        }
+
+        $prices = [];
+        foreach ($filteredData as $item) {
+            if (isset($item['Price'])) {
+                $prices[] = $item['Price'];
+            }
+        }
+
+        if ($prices === []) {
+            return 0;
+        }
+
+        $sRate = \App\Models\Setting::where('id', 3)->first();
+        if (!$sRate) {
+            return 0;
+        }
+
+        return ($sRate->rate * $prices[0]) + $sRate->margin;
     }
 }
 
 if (!function_exists('get_world_countries')) {
     function get_world_countries(): mixed
     {
-        if (class_exists(\App\Support\LegacyHelpers::class)) {
-            return \App\Support\LegacyHelpers::getWorldCountries();
+        if (!function_exists('app_config')) {
+            return null;
         }
 
-        return null;
+        $key = app_config('WKEY');
+        if (!$key) {
+            return null;
+        }
+
+        $curl = curl_init();
+        curl_setopt_array($curl, [
+            CURLOPT_URL => "https://api.smspool.net/country/retrieve_all?key=$key",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_HTTPHEADER => [
+                'Content-Type: application/json',
+                'Accept: application/json',
+            ],
+        ]);
+
+        $var = curl_exec($curl);
+        curl_close($curl);
+
+        return json_decode($var);
     }
 }
 
 if (!function_exists('get_world_services')) {
     function get_world_services(): mixed
     {
-        if (class_exists(\App\Support\LegacyHelpers::class)) {
-            return \App\Support\LegacyHelpers::getWorldServices();
+        if (!function_exists('app_config')) {
+            return null;
         }
 
-        return null;
+        $key = app_config('WKEY');
+        if (!$key) {
+            return null;
+        }
+
+        $curl = curl_init();
+        curl_setopt_array($curl, [
+            CURLOPT_URL => "https://api.smspool.net/service/retrieve_all?key=$key",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_HTTPHEADER => [
+                'Content-Type: application/json',
+                'Accept: application/json',
+            ],
+        ]);
+
+        $var = curl_exec($curl);
+        curl_close($curl);
+
+        return json_decode($var);
     }
 }
