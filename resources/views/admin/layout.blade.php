@@ -3,10 +3,10 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="{{ asset('concept/assets/vendor/bootstrap/css/bootstrap.min.css') }}">
-    <link href="{{ asset('concept/assets/vendor/fonts/circular-std/style.css') }}" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('concept/assets/libs/css/style.css') }}">
-    <link rel="stylesheet" href="{{ asset('concept/assets/vendor/fonts/fontawesome/css/fontawesome-all.css') }}">
+    <link rel="stylesheet" href="{{ static_asset('concept/assets/vendor/bootstrap/css/bootstrap.min.css') }}">
+    <link href="{{ static_asset('concept/assets/vendor/fonts/circular-std/style.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ static_asset('concept/assets/libs/css/style.css') }}">
+    <link rel="stylesheet" href="{{ static_asset('concept/assets/vendor/fonts/fontawesome/css/fontawesome-all.css') }}">
     <title>@yield('title', 'Admin') — SMSLORD</title>
     <style>
         :root {
@@ -80,8 +80,8 @@
     </div>
 </div>
 
-<script src="{{ asset('concept/assets/vendor/jquery/jquery-3.3.1.min.js') }}"></script>
-<script src="{{ asset('concept/assets/vendor/bootstrap/js/bootstrap.bundle.js') }}"></script>
+<script src="{{ static_asset('concept/assets/vendor/jquery/jquery-3.3.1.min.js') }}"></script>
+<script src="{{ static_asset('concept/assets/vendor/bootstrap/js/bootstrap.bundle.js') }}"></script>
 @stack('scripts')
 </body>
 </html>

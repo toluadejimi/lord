@@ -9,18 +9,18 @@
     <meta name="keywords"
           content="SMS LORD VERIFICATION">
     <meta name="author" content="Phoenixcoded"><!-- [Favicon] icon -->
-    <link rel="icon" href="{{ asset('assets/images/favicon.svg') }}" type="image/x-icon"><!-- [Font] Family -->
-    <link rel="stylesheet" href="{{ asset('assets/fonts/inter/inter.css') }}" id="main-font-link">
+    <link rel="icon" href="{{ static_asset('assets/images/favicon.svg') }}" type="image/x-icon"><!-- [Font] Family -->
+    <link rel="stylesheet" href="{{ static_asset('assets/fonts/inter/inter.css') }}" id="main-font-link">
     <!-- [Tabler Icons] https://tablericons.com -->
-    <link rel="stylesheet" href="{{ asset('assets/fonts/tabler-icons.min.css') }}">
+    <link rel="stylesheet" href="{{ static_asset('assets/fonts/tabler-icons.min.css') }}">
     <!-- [Feather Icons] https://feathericons.com -->
-    <link rel="stylesheet" href="{{ asset('assets/fonts/feather.css') }}">
+    <link rel="stylesheet" href="{{ static_asset('assets/fonts/feather.css') }}">
     <!-- [Font Awesome Icons] https://fontawesome.com/icons -->
-    <link rel="stylesheet" href="{{ asset('assets/fonts/fontawesome.css') }}">
+    <link rel="stylesheet" href="{{ static_asset('assets/fonts/fontawesome.css') }}">
     <!-- [Material Icons] https://fonts.google.com/icons -->
-    <link rel="stylesheet" href="{{ asset('assets/fonts/material.css') }}"><!-- [Template CSS Files] -->
-    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}" id="main-style-link">
-    <link rel="stylesheet" href="{{ asset('assets/css/style-preset.css') }}">
+    <link rel="stylesheet" href="{{ static_asset('assets/fonts/material.css') }}"><!-- [Template CSS Files] -->
+    <link rel="stylesheet" href="{{ static_asset('assets/css/style.css') }}" id="main-style-link">
+    <link rel="stylesheet" href="{{ static_asset('assets/css/style-preset.css') }}">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet"/>
@@ -93,7 +93,7 @@
     <div class="navbar-wrapper">
         <div class="m-header">
             <a href="/" class="b-brand text-primary">
-                <img src="{{ asset('assets/images/logo.svg') }}">
+                <img src="{{ static_asset('assets/images/logo.svg') }}">
             </a>
         </div>
         <div class="navbar-content">
@@ -104,7 +104,7 @@
                     <div class="card-body">
 
                         <div class="d-flex align-items-center">
-                            <div class="flex-shrink-0"><img src="{{ asset('assets/images/user/avatar-1.jpg') }}"
+                            <div class="flex-shrink-0"><img src="{{ static_asset('assets/images/user/avatar-1.jpg') }}"
                                                             alt="user-image"
                                                             class="user-avtar wid-45 rounded-circle"></div>
                             <div class="flex-grow-1 ms-3 me-2"><h6 class="mb-0">{{Auth::user()->username}}</h6>
@@ -171,7 +171,7 @@
                     <li class="pc-item">
                         <a href="cworld" class="pc-link">
                         <span class="pc-micon">
-                            <img src="{{ asset('assets/images/world.svg') }}" height="20" width="20">
+                            <img src="{{ static_asset('assets/images/world.svg') }}" height="20" width="20">
                         </span>
                             <span class="pc-mtext">SMS Verification</span>
                         </a>
@@ -283,7 +283,7 @@
                     <a href="#" class="pc-head-link ms-0" id="mobile-collapse">
                         <i class="ti ti-menu-2"></i>
                     </a>
-                    <img src="{{ asset('assets/images/logo.svg') }}">
+                    <img src="{{ static_asset('assets/images/logo.svg') }}">
 
                 </li>
 
@@ -330,7 +330,7 @@
                         href="#" role="button" aria-haspopup="false"
                         data-bs-auto-close="outside" aria-expanded="false">
 
-                        <img src="{{ asset('assets/images/user/avatar-2.jpg') }}"
+                        <img src="{{ static_asset('assets/images/user/avatar-2.jpg') }}"
                              alt="user-image" class="user-avtar">
                     </a>
 
@@ -344,7 +344,7 @@
                                      style="max-height: calc(100vh - 225px)">
                                     <div class="d-flex mb-1">
                                         <div class="flex-shrink-0"><img
-                                                src="{{ asset('assets/images/user/avatar-2.jpg') }}"
+                                                src="{{ static_asset('assets/images/user/avatar-2.jpg') }}"
                                                 alt="user-image" class="user-avtar wid-35"></div>
                                         <div class="flex-grow-1 ms-3"><h6 class="mb-1">{{Auth::user()->username}} 🖖</h6>
                                             <span>{{Auth::user()->email}}</a></span>
@@ -433,12 +433,12 @@
 
 <!-- Required Js -->
 <script data-cfasync="false" src="../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
-<script src="{{ asset('assets/js/plugins/popper.min.js') }}"></script>
-<script src="{{ asset('assets/js/plugins/simplebar.min.js') }}"></script>
-<script src="{{ asset('assets/js/plugins/bootstrap.min.js') }}"></script>
-<script src="{{ asset('assets/js/fonts/custom-font.js') }}"></script>
-<script src="{{ asset('assets/js/pcoded.js') }}"></script>
-<script src="{{ asset('assets/js/plugins/feather.min.js') }}"></script>
+<script src="{{ static_asset('assets/js/plugins/popper.min.js') }}"></script>
+<script src="{{ static_asset('assets/js/plugins/simplebar.min.js') }}"></script>
+<script src="{{ static_asset('assets/js/plugins/bootstrap.min.js') }}"></script>
+<script src="{{ static_asset('assets/js/fonts/custom-font.js') }}"></script>
+<script src="{{ static_asset('assets/js/pcoded.js') }}"></script>
+<script src="{{ static_asset('assets/js/plugins/feather.min.js') }}"></script>
 <script>layout_change('false');</script>
 <script>layout_theme_contrast_change('false');</script>
 <script>change_box_container('false');</script>
@@ -554,24 +554,24 @@
                                                                                       data-bs-toggle="tooltip"
                                                                                       title="Vertical" class="active"
                                                                                       data-value="vertical"><img
-                                src="{{ asset('assets/images/customizer/caption-on.svg') }}" alt="img"
+                                src="{{ static_asset('assets/images/customizer/caption-on.svg') }}" alt="img"
                                 class="img-fluid"> </a><a
                             href="#!" data-bs-toggle="tooltip" title="Horizontal"
                             data-value="horizontal"><img
-                                src="{{ asset('assets/images/customizer/horizontal.svg') }}" alt="img"
+                                src="{{ static_asset('assets/images/customizer/horizontal.svg') }}" alt="img"
                                 class="img-fluid"> </a><a href="#!"
                                                           data-bs-toggle="tooltip"
                                                           title="Color Header"
                                                           data-value="color-header"><img
-                                src="{{ asset('assets/images/customizer/color-header.svg') }}" alt="img"
+                                src="{{ static_asset('assets/images/customizer/color-header.svg') }}" alt="img"
                                 class="img-fluid"> </a><a
                             href="#!" data-bs-toggle="tooltip" title="Compact"
-                            data-value="compact"><img src="{{ asset('assets/images/customizer/compact.svg') }}"
+                            data-value="compact"><img src="{{ static_asset('assets/images/customizer/compact.svg') }}"
                                                       alt="img"
                                                       class="img-fluid"> </a><a href="#!"
                                                                                 data-bs-toggle="tooltip" title="Tab"
                                                                                 data-value="tab"><img
-                                src="{{ asset('assets/images/customizer/tab.svg') }}" alt="img"
+                                src="{{ static_asset('assets/images/customizer/tab.svg') }}" alt="img"
                                 class="img-fluid"></a></div>
                 </li>
                 <li class="list-group-item"><h6 class="mb-1">Sidebar Caption</h6>
@@ -582,7 +582,7 @@
                                 <button class="preset-btn btn-img btn active" data-value="true"
                                         onclick="layout_caption_change('true');" data-bs-toggle="tooltip"
                                         title="Caption Show"><img
-                                        src="{{ asset('assets/images/customizer/caption-on.svg') }}"
+                                        src="{{ static_asset('assets/images/customizer/caption-on.svg') }}"
                                         alt="img" class="img-fluid"></button>
                             </div>
                         </div>
@@ -591,7 +591,7 @@
                                 <button class="preset-btn btn-img btn" data-value="false"
                                         onclick="layout_caption_change('false');" data-bs-toggle="tooltip"
                                         title="Caption Hide"><img
-                                        src="{{ asset('assets/images/customizer/caption-off.svg') }}"
+                                        src="{{ static_asset('assets/images/customizer/caption-off.svg') }}"
                                         alt="img" class="img-fluid"></button>
                             </div>
                         </div>
@@ -605,7 +605,7 @@
                                 <div class="d-grid">
                                     <button class="preset-btn btn-img btn active" data-value="false"
                                             onclick="layout_rtl_change('false');" data-bs-toggle="tooltip" title="LTR">
-                                        <img src="{{ asset('assets/images/customizer/ltr.svg') }}" alt="img"
+                                        <img src="{{ static_asset('assets/images/customizer/ltr.svg') }}" alt="img"
                                              class="img-fluid">
                                     </button>
                                 </div>
@@ -614,7 +614,7 @@
                                 <div class="d-grid">
                                     <button class="preset-btn btn-img btn" data-value="true"
                                             onclick="layout_rtl_change('true');" data-bs-toggle="tooltip" title="RTL">
-                                        <img src="{{ asset('assets/images/customizer/rtl.svg') }}" alt="img"
+                                        <img src="{{ static_asset('assets/images/customizer/rtl.svg') }}" alt="img"
                                              class="img-fluid">
                                     </button>
                                 </div>
@@ -631,7 +631,7 @@
                                     <button class="preset-btn btn-img btn active" data-value="false"
                                             onclick="change_box_container('false')" data-bs-toggle="tooltip"
                                             title="Full Width"><img
-                                            src="{{ asset('assets/images/customizer/full.svg') }}" alt="img"
+                                            src="{{ static_asset('assets/images/customizer/full.svg') }}" alt="img"
                                             class="img-fluid"></button>
                                 </div>
                             </div>
@@ -640,7 +640,7 @@
                                     <button class="preset-btn btn-img btn" data-value="true"
                                             onclick="change_box_container('true')" data-bs-toggle="tooltip"
                                             title="Fixed Width"><img
-                                            src="{{ asset('assets/images/customizer/fixed.svg') }}"
+                                            src="{{ static_asset('assets/images/customizer/fixed.svg') }}"
                                             alt="img" class="img-fluid"></button>
                                 </div>
                             </div>

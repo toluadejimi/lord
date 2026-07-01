@@ -7,6 +7,34 @@ use App\Services\AppConfigService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+function deployed_from_project_root(): bool
+{
+    if (!is_file(base_path('index.php'))) {
+        return false;
+    }
+
+    $docRoot = realpath($_SERVER['DOCUMENT_ROOT'] ?? '') ?: '';
+    $projectRoot = realpath(base_path()) ?: '';
+    $publicRoot = realpath(public_path()) ?: '';
+
+    if ($docRoot !== '' && $projectRoot !== '' && $docRoot === $projectRoot) {
+        return true;
+    }
+
+    return $publicRoot !== '' && $docRoot !== '' && $docRoot !== $publicRoot;
+}
+
+function static_asset(string $path): string
+{
+    $path = ltrim($path, '/');
+
+    if (deployed_from_project_root()) {
+        $path = 'public/'.$path;
+    }
+
+    return asset($path);
+}
+
 function app_config(string $key, ?string $default = null): ?string
 {
     return app(AppConfigService::class)->get($key, $default);

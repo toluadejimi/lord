@@ -6,11 +6,11 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="{{ asset('concept/assets/vendor/bootstrap/css/bootstrap.min.css') }}">
-    <link href="{{ asset('concept/assets/vendor/fonts/circular-std/style.css') }}" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('concept/assets/libs/css/style.css') }}">
-    <link rel="stylesheet" href="{{ asset('concept/assets/vendor/fonts/fontawesome/css/fontawesome-all.css') }}">
-    <link rel="stylesheet" href="{{ asset('concept/assets/vendor/fonts/material-design-iconic-font/css/materialdesignicons.min.css') }}">
+    <link rel="stylesheet" href="{{ static_asset('concept/assets/vendor/bootstrap/css/bootstrap.min.css') }}">
+    <link href="{{ static_asset('concept/assets/vendor/fonts/circular-std/style.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ static_asset('concept/assets/libs/css/style.css') }}">
+    <link rel="stylesheet" href="{{ static_asset('concept/assets/vendor/fonts/fontawesome/css/fontawesome-all.css') }}">
+    <link rel="stylesheet" href="{{ static_asset('concept/assets/vendor/fonts/material-design-iconic-font/css/materialdesignicons.min.css') }}">
     <title>Manual Payment — SMSLORD Admin</title>
     <style>
         :root {
@@ -165,7 +165,7 @@
                                                 </td>
                                                 <td>
                                                     @if($data->receipt ?? null)
-                                                        <a href="{{ asset('upload/receipt/' . $data->receipt) }}" target="_blank" rel="noopener">View receipt</a>
+                                                        <a href="{{ static_asset('upload/receipt/' . $data->receipt) }}" target="_blank" rel="noopener">View receipt</a>
                                                     @else
                                                         —
                                                     @endif
@@ -246,9 +246,9 @@
     </div>
 </div>
 
-<script src="{{ asset('concept/assets/vendor/jquery/jquery-3.3.1.min.js') }}"></script>
-<script src="{{ asset('concept/assets/vendor/bootstrap/js/bootstrap.bundle.js') }}"></script>
-<script src="{{ asset('concept/assets/vendor/slimscroll/jquery.slimscroll.js') }}"></script>
-<script src="{{ asset('concept/assets/libs/js/main-js.js') }}"></script>
+<script src="{{ static_asset('concept/assets/vendor/jquery/jquery-3.3.1.min.js') }}"></script>
+<script src="{{ static_asset('concept/assets/vendor/bootstrap/js/bootstrap.bundle.js') }}"></script>
+<script src="{{ static_asset('concept/assets/vendor/slimscroll/jquery.slimscroll.js') }}"></script>
+<script src="{{ static_asset('concept/assets/libs/js/main-js.js') }}"></script>
 </body>
 </html>
