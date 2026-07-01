@@ -5,15 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Admin Login — SMSLORD</title>
     <link rel="stylesheet" href="{{ asset('concept/assets/vendor/bootstrap/css/bootstrap.min.css') }}">
-    <link href="{{ asset('concept/assets/vendor/fonts/circular-std/style.css') }}" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('concept/assets/libs/css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('concept/assets/vendor/fonts/fontawesome/css/fontawesome-all.css') }}">
     <style>
         :root {
             --admin-primary: #4f46e5;
             --admin-primary-dark: #4338ca;
-            --admin-bg: #f8fafc;
-            --admin-card-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+            --admin-card-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         }
         html, body {
             height: 100%;
@@ -64,16 +61,41 @@
         .admin-login-card .card-body {
             padding: 2rem 2rem 2.5rem;
         }
+        .admin-login-wrapper .alert {
+            border-radius: 12px;
+            border: none;
+            padding: 0.875rem 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.9375rem;
+            font-weight: 500;
+        }
+        .admin-login-wrapper .alert-danger {
+            background: #fef2f2;
+            color: #b91c1c;
+        }
+        .admin-login-wrapper .alert-success {
+            background: #ecfdf5;
+            color: #047857;
+        }
+        .admin-login-wrapper .alert ul {
+            margin-bottom: 0;
+            padding-left: 1.25rem;
+        }
         .admin-login-card .form-group {
             margin-bottom: 1.25rem;
         }
         .admin-login-card .form-control {
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
             border-radius: 12px;
             border: 1px solid #e2e8f0;
             padding: 0.875rem 1rem;
             font-size: 1rem;
+            background: #fff;
         }
         .admin-login-card .form-control:focus {
+            outline: none;
             border-color: var(--admin-primary);
             box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
         }
@@ -81,25 +103,21 @@
             color: #94a3b8;
         }
         .admin-login-card .btn-primary {
+            display: block;
+            width: 100%;
             background: linear-gradient(135deg, var(--admin-primary) 0%, var(--admin-primary-dark) 100%);
             border: none;
             border-radius: 12px;
             padding: 0.875rem 1.5rem;
             font-size: 1rem;
             font-weight: 600;
+            color: #fff;
+            cursor: pointer;
             margin-top: 0.5rem;
         }
         .admin-login-card .btn-primary:hover {
             background: linear-gradient(135deg, var(--admin-primary-dark) 0%, #3730a3 100%);
             box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.4);
-        }
-        .admin-login-card .alert {
-            border-radius: 12px;
-            border: none;
-        }
-        .admin-login-card .alert ul {
-            margin-bottom: 0;
-            padding-left: 1.25rem;
         }
         .admin-login-footer {
             text-align: center;
@@ -156,8 +174,5 @@
             <a href="{{ url('/') }}">← Back to site</a>
         </div>
     </div>
-
-    <script src="{{ asset('concept/assets/vendor/jquery/jquery-3.3.1.min.js') }}"></script>
-    <script src="{{ asset('concept/assets/vendor/bootstrap/js/bootstrap.bundle.js') }}"></script>
 </body>
 </html>

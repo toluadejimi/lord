@@ -31,5 +31,20 @@ class AppServiceProvider extends ServiceProvider
     {
         Paginator::useBootstrap();
 
+        $this->configureAssetUrlForDocumentRoot();
+    }
+
+    protected function configureAssetUrlForDocumentRoot(): void
+    {
+        if (config('app.asset_url')) {
+            return;
+        }
+
+        $docRoot = realpath($_SERVER['DOCUMENT_ROOT'] ?? '') ?: '';
+        $projectRoot = realpath(base_path()) ?: '';
+
+        if ($docRoot !== '' && $docRoot === $projectRoot) {
+            config(['app.asset_url' => rtrim(config('app.url'), '/').'/public']);
+        }
     }
 }
