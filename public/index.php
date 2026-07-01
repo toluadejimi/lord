@@ -5,76 +5,57 @@ use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));
 
-/*
-|--------------------------------------------------------------------------
-| Check If The Application Is Under Maintenance
-|--------------------------------------------------------------------------
-|
-| If the application is in maintenance / demo mode via the "down" command
-| we will load this file so that any pre-rendered content can be shown
-| instead of starting the framework, which could cause an exception.
-|
-*/
-
 if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php')) {
     require $maintenance;
 }
 
-/*
-|--------------------------------------------------------------------------
-| Register The Auto Loader
-|--------------------------------------------------------------------------
-|
-| Composer provides a convenient, automatically generated class loader for
-| this application. We just need to utilize it! We'll simply require it
-| into the script here so we don't need to manually load our classes.
-|
-*/
+$root = dirname(__DIR__);
 
-$appHelpers = __DIR__.'/../app/helpers.php';
-if (is_file($appHelpers)) {
-    require_once $appHelpers;
-}
-
-$bootstrapHelpers = __DIR__.'/../bootstrap/helpers_bootstrap.php';
-if (is_file($bootstrapHelpers)) {
-    require_once $bootstrapHelpers;
-}
-
-$earlyHelpers = __DIR__.'/../bootstrap/helpers_early.php';
-$needsEarlyFile = !is_file($earlyHelpers) || @filesize($earlyHelpers) < 100;
-if ($needsEarlyFile) {
-    $bootstrapDir = __DIR__.'/../bootstrap';
-    if (!is_dir($bootstrapDir)) {
-        @mkdir($bootstrapDir, 0775, true);
+foreach ([
+    $root.'/smslord_bootstrap.php',
+    $root.'/app/helpers.php',
+    $root.'/bootstrap/helpers_bootstrap.php',
+    $root.'/bootstrap/helpers_early.php',
+] as $helperFile) {
+    if (is_file($helperFile) && @filesize($helperFile) > 50) {
+        require_once $helperFile;
+        if (function_exists('static_asset')) {
+            break;
+        }
     }
-    if (is_file($bootstrapHelpers)) {
-        @copy($bootstrapHelpers, $earlyHelpers);
-    } elseif (!is_file($earlyHelpers)) {
-        @file_put_contents($earlyHelpers, "<?php\n");
+}
+
+if (!function_exists('static_asset')) {
+    function deployed_from_project_root(): bool
+    {
+        $docRoot = realpath($_SERVER['DOCUMENT_ROOT'] ?? '') ?: '';
+        $projectRoot = realpath(dirname(__DIR__)) ?: '';
+
+        return $docRoot !== '' && $projectRoot !== '' && $docRoot === $projectRoot;
+    }
+
+    function static_asset(string $path): string
+    {
+        $path = ltrim($path, '/');
+        if (deployed_from_project_root()) {
+            $path = 'public/'.$path;
+        }
+        if (function_exists('asset')) {
+            return asset($path);
+        }
+        $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+        $host = $_SERVER['HTTP_HOST'] ?? '';
+        $root = $host !== '' ? $scheme.'://'.$host : '';
+
+        return $root === '' ? '/'.$path : $root.'/'.$path;
     }
 }
 
 require __DIR__.'/../vendor/autoload.php';
 
-if (is_file(__DIR__.'/../bootstrap/helpers_early.php')) {
-    require_once __DIR__.'/../bootstrap/helpers_early.php';
+if (is_file($root.'/bootstrap/helpers_legacy.php')) {
+    require_once $root.'/bootstrap/helpers_legacy.php';
 }
-
-if (is_file(__DIR__.'/../bootstrap/helpers_legacy.php')) {
-    require_once __DIR__.'/../bootstrap/helpers_legacy.php';
-}
-
-/*
-|--------------------------------------------------------------------------
-| Run The Application
-|--------------------------------------------------------------------------
-|
-| Once we have the application, we can handle the incoming request using
-| the application's HTTP kernel. Then, we will send the response back
-| to this client's browser, allowing them to enjoy our application.
-|
-*/
 
 $app = require_once __DIR__.'/../bootstrap/app.php';
 

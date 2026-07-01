@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Services\AppConfigService;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
 
@@ -10,12 +9,7 @@ class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        $appHelpers = app_path('helpers.php');
-        if (is_file($appHelpers)) {
-            require_once $appHelpers;
-        }
-
-        $this->loadLegacyHelpers();
+        $this->loadProjectHelpers();
     }
 
     public function boot(): void
@@ -23,21 +17,18 @@ class AppServiceProvider extends ServiceProvider
         Paginator::useBootstrap();
     }
 
-    protected function loadLegacyHelpers(): void
+    protected function loadProjectHelpers(): void
     {
-        $bootstrap = base_path('bootstrap/helpers_bootstrap.php');
-        if (is_file($bootstrap)) {
-            require_once $bootstrap;
-        }
-
-        $early = base_path('bootstrap/helpers_early.php');
-        if (is_file($early)) {
-            require_once $early;
-        }
-
-        $legacy = base_path('bootstrap/helpers_legacy.php');
-        if (is_file($legacy)) {
-            require_once $legacy;
+        foreach ([
+            base_path('smslord_bootstrap.php'),
+            app_path('helpers.php'),
+            base_path('bootstrap/helpers_bootstrap.php'),
+            base_path('bootstrap/helpers_early.php'),
+            base_path('bootstrap/helpers_legacy.php'),
+        ] as $helperFile) {
+            if (is_file($helperFile)) {
+                require_once $helperFile;
+            }
         }
     }
 }
