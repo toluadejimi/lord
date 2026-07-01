@@ -126,4 +126,35 @@ class LegacyHelpers
 
         return json_decode($var);
     }
+
+    public static function sendAdminNotification(string $message): void
+    {
+        if (function_exists('send_notification2')) {
+            \send_notification2($message);
+
+            return;
+        }
+
+        $config = app(AppConfigService::class);
+        $token = (string) ($config->get('TELEGRAM_BOT_TOKEN_2', '') ?: $config->get('TELEGRAM_BOT_TOKEN', ''));
+        $chatId = (string) ($config->get('TELEGRAM_CHAT_ID_2', '') ?: $config->get('TELEGRAM_ADMIN_CHAT_ID', ''));
+
+        if ($token === '' || $chatId === '' || $message === '') {
+            return;
+        }
+
+        $curl = curl_init();
+        curl_setopt_array($curl, [
+            CURLOPT_URL => "https://api.telegram.org/bot{$token}/sendMessage",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT => 10,
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => [
+                'chat_id' => $chatId,
+                'text' => $message,
+            ],
+        ]);
+        curl_exec($curl);
+        curl_close($curl);
+    }
 }

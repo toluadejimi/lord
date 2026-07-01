@@ -10,7 +10,6 @@ use App\Models\SoldLog;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Verification;
-use App\Services\TelegramNotifier;
 use App\Support\LegacyHelpers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -397,7 +396,7 @@ class HomeController extends Controller
 
 
             $message = Auth::user()->email . "| wants to fund |  NGN " . number_format($request->amount) . " | with ref | $ref |  on SMSLORD";
-            TelegramNotifier::sendSecondary($message);
+            LegacyHelpers::sendAdminNotification($message);
 
 
             return Redirect::to($url);
@@ -430,7 +429,7 @@ class HomeController extends Controller
 
 
             $message = Auth::user()->email . "| wants to fund Manually |  NGN " . number_format($request->amount) . " | with ref | $ref |  on SMSLORD";
-            TelegramNotifier::sendSecondary($message);
+            LegacyHelpers::sendAdminNotification($message);
 
 
             $data['account_details'] = AccountDetail::where('id', 1)->first();
@@ -466,7 +465,7 @@ class HomeController extends Controller
 
 
         $message = Auth::user()->email . "| submitted payment receipt |  NGN " . number_format($request->amount) . " | on SMSLORD";
-        TelegramNotifier::sendSecondary($message);
+        LegacyHelpers::sendAdminNotification($message);
 
 
         return view('confirm-pay');
