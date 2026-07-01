@@ -1,3 +1,4 @@
+<script>
 document.querySelectorAll('.phone-input').forEach(function (input) {
     input.addEventListener('input', function () {
         input.value = input.value.replace(/\D/g, '').slice(0, 11);
@@ -29,3 +30,4 @@ if (vasForm) {
         }
     });
 }
+</script>

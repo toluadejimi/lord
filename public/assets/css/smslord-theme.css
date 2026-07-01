@@ -1,0 +1,233 @@
+/* SMSLORD — compact header & modern footer */
+
+/* Override color-header layout (legacy localStorage) */
+[data-pc-layout="color-header"] {
+    background: var(--bs-body-bg, #f8f9fa) !important;
+}
+
+[data-pc-layout="color-header"] .pc-container {
+    padding-top: 72px !important;
+}
+
+[data-pc-layout="color-header"] .pc-container .page-header {
+    margin-top: 0 !important;
+}
+
+/* Slim top bar */
+.pc-header {
+    min-height: 56px !important;
+    height: 56px;
+    background: rgba(255, 255, 255, 0.92) !important;
+    border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.pc-header .header-wrapper {
+    padding: 0 1.25rem;
+    align-items: center;
+    min-height: 56px;
+}
+
+.pc-header .pc-head-link {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+}
+
+.pc-header .pc-head-link:hover {
+    background: rgba(99, 102, 241, 0.08);
+}
+
+.pc-header .user-avtar {
+    width: 34px;
+    height: 34px;
+}
+
+.pc-header .ms-auto > ul {
+    align-items: center;
+    gap: 0.15rem;
+}
+
+.pc-header .pc-mob-drp img {
+    height: 28px;
+    margin-left: 0.5rem;
+}
+
+/* Header wallet pill */
+.smslord-header-wallet {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.85rem;
+    margin-right: 0.5rem;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #eef2ff, #f5f3ff);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    color: #3730a3;
+    text-decoration: none;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    transition: background 0.15s, box-shadow 0.15s;
+}
+
+.smslord-header-wallet:hover {
+    color: #312e81;
+    background: #e0e7ff;
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.15);
+}
+
+.smslord-header-wallet .wallet-amount {
+    font-weight: 700;
+}
+
+.smslord-header-wallet i {
+    font-size: 1rem;
+    opacity: 0.85;
+}
+
+/* Hide theme customizer gear */
+.pct-c-btn,
+#offcanvas_pc_layout {
+    display: none !important;
+}
+
+/* Modern footer */
+.smslord-footer {
+    margin-top: 56px !important;
+    padding: 0;
+    background: #0f172a;
+    color: #94a3b8;
+    border-top: none;
+}
+
+.smslord-footer .footer-wrapper {
+    padding: 0;
+    max-width: none;
+}
+
+.smslord-footer .footer-inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 2rem 2.5rem 1.5rem;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+}
+
+@media (min-width: 768px) {
+    .smslord-footer .footer-inner {
+        grid-template-columns: 1.4fr 2fr 1fr;
+        align-items: start;
+    }
+}
+
+.smslord-footer .footer-logo {
+    font-size: 1.125rem;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -0.02em;
+}
+
+.smslord-footer .footer-logo span {
+    color: #a78bfa;
+}
+
+.smslord-footer .footer-tagline {
+    margin: 0.35rem 0 0;
+    font-size: 0.8125rem;
+    color: #64748b;
+    max-width: 220px;
+}
+
+.smslord-footer .footer-nav {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem 1.5rem;
+}
+
+@media (min-width: 576px) {
+    .smslord-footer .footer-nav {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.smslord-footer .footer-nav a {
+    color: #cbd5e1;
+    text-decoration: none;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    transition: color 0.15s;
+}
+
+.smslord-footer .footer-nav a:hover {
+    color: #fff;
+}
+
+.smslord-footer .footer-social {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+
+.smslord-footer .footer-social a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #cbd5e1;
+    text-decoration: none;
+    font-size: 0.8125rem;
+    font-weight: 500;
+}
+
+.smslord-footer .footer-social a:hover {
+    color: #38bdf8;
+}
+
+.smslord-footer .footer-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 2.5rem;
+    font-size: 0.75rem;
+    color: #64748b;
+}
+
+.smslord-footer .footer-bottom a {
+    color: #94a3b8;
+    text-decoration: none;
+}
+
+.smslord-footer .footer-bottom a:hover {
+    color: #e2e8f0;
+}
+
+@media (max-width: 1024px) {
+    .smslord-footer {
+        margin-left: 0;
+    }
+
+    .smslord-footer .footer-inner,
+    .smslord-footer .footer-bottom {
+        padding-left: 1.25rem;
+        padding-right: 1.25rem;
+    }
+}
+
+[data-pc-theme="dark"] .pc-header {
+    background: rgba(15, 23, 42, 0.92) !important;
+    border-bottom-color: rgba(148, 163, 184, 0.12);
+}
+
+[data-pc-theme="dark"] .smslord-header-wallet {
+    background: rgba(99, 102, 241, 0.15);
+    border-color: rgba(129, 140, 248, 0.25);
+    color: #c7d2fe;
+}
+
+[data-pc-theme="dark"] .smslord-header-wallet:hover {
+    background: rgba(99, 102, 241, 0.25);
+    color: #e0e7ff;
+}

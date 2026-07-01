@@ -48,6 +48,7 @@
         @yield('vas-body')
     </div>
 </div>
-@stack('vas-scripts')
+@push('page-scripts')
 @include('vas.partials.form-js')
+@endpush
 @endsection

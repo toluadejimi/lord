@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="{{ static_asset('assets/fonts/material.css') }}"><!-- [Template CSS Files] -->
     <link rel="stylesheet" href="{{ static_asset('assets/css/style.css') }}" id="main-style-link">
     <link rel="stylesheet" href="{{ static_asset('assets/css/style-preset.css') }}">
+    <link rel="stylesheet" href="{{ static_asset('assets/css/smslord-theme.css') }}">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet"/>
@@ -313,7 +314,15 @@
             </ul>
         </div><!-- [Mobile Media Block end] -->
         <div class="ms-auto">
-            <ul class="list-unstyled">
+            <ul class="list-unstyled align-items-center">
+                @auth
+                <li class="pc-h-item d-none d-md-inline-block">
+                    <a href="{{ url('fund-wallet') }}" class="smslord-header-wallet">
+                        <i class="ti ti-wallet"></i>
+                        <span class="wallet-amount">₦{{ number_format((float) Auth::user()->wallet, 2) }}</span>
+                    </a>
+                </li>
+                @endauth
                 <li class="dropdown pc-h-item">
                     <a class="pc-head-link dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown" href="#"
                        role="button" aria-haspopup="false" aria-expanded="false">
@@ -448,9 +457,41 @@
 
 @yield('content')
 
+@stack('page-scripts')
 
-<footer class="pc-footer">
-    <p class="d-flex justify-content-center">2024 SMSLORD</p>
+<footer class="pc-footer smslord-footer">
+    <div class="footer-wrapper">
+        <div class="footer-inner">
+            <div>
+                <div class="footer-logo">sms<span>LORD</span></div>
+                <p class="footer-tagline">Virtual numbers for SMS verification, bills &amp; VTU in one place.</p>
+            </div>
+            <nav class="footer-nav" aria-label="Footer navigation">
+                <a href="{{ url('cworld') }}">Dashboard</a>
+                <a href="{{ url('fund-wallet') }}">Fund Wallet</a>
+                <a href="{{ url('vas') }}">Bills &amp; VTU</a>
+                <a href="{{ url('orders') }}">My Verifications</a>
+                <a href="{{ url('api-docs') }}">API Docs</a>
+                <a href="{{ url('world-sv3') }}">Server 4</a>
+            </nav>
+            <div class="footer-social">
+                <a href="https://t.me/smslordcare" target="_blank" rel="noopener">
+                    <i class="fab fa-telegram"></i> Telegram Support
+                </a>
+                <a href="https://loggsplug.online" target="_blank" rel="noopener">
+                    <i class="ti ti-shopping-bag"></i> Buy Social Account
+                </a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>&copy; {{ date('Y') }} SMSLORD. All rights reserved.</span>
+            <span>
+                <a href="{{ url('policy') }}">Privacy</a>
+                &middot;
+                <a href="https://t.me/smslordcare" target="_blank" rel="noopener">Help</a>
+            </span>
+        </div>
+    </div>
 </footer>
 
 
@@ -462,13 +503,18 @@
 <script src="{{ static_asset('assets/js/fonts/custom-font.js') }}"></script>
 <script src="{{ static_asset('assets/js/pcoded.js') }}"></script>
 <script src="{{ static_asset('assets/js/plugins/feather.min.js') }}"></script>
-<script>layout_change('false');</script>
+<script>layout_change('light');</script>
 <script>layout_theme_contrast_change('false');</script>
 <script>change_box_container('false');</script>
 <script>layout_caption_change('true');</script>
 <script>layout_rtl_change('false');</script>
-<script>preset_change('preset-4');</script>
-<script>main_layout_change('vertical');</script>
+<script>preset_change('preset-1');</script>
+<script>
+    localStorage.setItem('layout', 'vertical');
+    if (typeof main_layout_change === 'function') {
+        main_layout_change('vertical');
+    }
+</script>
 <div class="pct-c-btn"><a href="#" data-bs-toggle="offcanvas"
                           data-bs-target="#offcanvas_pc_layout"><i class="ph-duotone ph-gear-six"></i></a></div>
 <div class="offcanvas border-0 pct-offcanvas offcanvas-end" tabindex="-1" id="offcanvas_pc_layout">
@@ -679,8 +725,15 @@
         </div>
     </div>
 </div>
-<script>preset_change('preset-4');</script>
-<script>main_layout_change('vertical');</script>
+<script>
+    if (typeof preset_change === 'function') {
+        preset_change('preset-1');
+    }
+    if (typeof main_layout_change === 'function') {
+        localStorage.setItem('layout', 'vertical');
+        main_layout_change('vertical');
+    }
+</script>
 
 
 
@@ -754,14 +807,6 @@
         }
     });
 </script>
-
-
-<script>function changebrand(presetColor) {
-        removeClassByPrefix(document.querySelector('body'), 'preset-');
-        document.querySelector('body').classList.add(presetColor);
-    }
-
-    localStorage.setItem('layout', 'color-header');</script>
 </body>
 <!-- [Body] end -->
 </html>
