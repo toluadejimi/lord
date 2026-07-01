@@ -41,6 +41,10 @@ $app->singleton(
     App\Exceptions\Handler::class
 );
 
+if (is_file(__DIR__.'/helpers_bootstrap.php')) {
+    require_once __DIR__.'/helpers_bootstrap.php';
+}
+
 if (is_file(__DIR__.'/helpers_early.php')) {
     require_once __DIR__.'/helpers_early.php';
 }

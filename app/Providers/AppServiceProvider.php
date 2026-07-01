@@ -53,6 +53,11 @@ class AppServiceProvider extends ServiceProvider
 
     protected function loadLegacyHelpers(): void
     {
+        $bootstrap = base_path('bootstrap/helpers_bootstrap.php');
+        if (is_file($bootstrap)) {
+            require_once $bootstrap;
+        }
+
         $early = base_path('bootstrap/helpers_early.php');
         if (is_file($early)) {
             require_once $early;

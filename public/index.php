@@ -31,13 +31,23 @@ if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php'))
 |
 */
 
+$bootstrapHelpers = __DIR__.'/../bootstrap/helpers_bootstrap.php';
+if (is_file($bootstrapHelpers)) {
+    require_once $bootstrapHelpers;
+}
+
 $earlyHelpers = __DIR__.'/../bootstrap/helpers_early.php';
-if (!is_file($earlyHelpers)) {
+$needsEarlyFile = !is_file($earlyHelpers) || @filesize($earlyHelpers) < 100;
+if ($needsEarlyFile) {
     $bootstrapDir = __DIR__.'/../bootstrap';
     if (!is_dir($bootstrapDir)) {
         @mkdir($bootstrapDir, 0775, true);
     }
-    @file_put_contents($earlyHelpers, "<?php\n");
+    if (is_file($bootstrapHelpers)) {
+        @copy($bootstrapHelpers, $earlyHelpers);
+    } elseif (!is_file($earlyHelpers)) {
+        @file_put_contents($earlyHelpers, "<?php\n");
+    }
 }
 
 require __DIR__.'/../vendor/autoload.php';

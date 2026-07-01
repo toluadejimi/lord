@@ -35,14 +35,25 @@ if (file_exists($maintenance = __DIR__.'/storage/framework/maintenance.php')) {
 |
 */
 
-// Shared hosting: older vendor autoload may require this file before it exists.
+// Shared hosting: load layout + notification helpers before Composer autoload.
+$bootstrapHelpers = __DIR__.'/bootstrap/helpers_bootstrap.php';
+if (is_file($bootstrapHelpers)) {
+    require_once $bootstrapHelpers;
+}
+
+// Older vendor autoload may still require this path to exist.
 $earlyHelpers = __DIR__.'/bootstrap/helpers_early.php';
-if (!is_file($earlyHelpers)) {
+$needsEarlyFile = !is_file($earlyHelpers) || @filesize($earlyHelpers) < 100;
+if ($needsEarlyFile) {
     $bootstrapDir = __DIR__.'/bootstrap';
     if (!is_dir($bootstrapDir)) {
         @mkdir($bootstrapDir, 0775, true);
     }
-    @file_put_contents($earlyHelpers, "<?php\n");
+    if (is_file($bootstrapHelpers)) {
+        @copy($bootstrapHelpers, $earlyHelpers);
+    } elseif (!is_file($earlyHelpers)) {
+        @file_put_contents($earlyHelpers, "<?php\n");
+    }
 }
 
 require __DIR__.'/vendor/autoload.php';
