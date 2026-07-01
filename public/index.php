@@ -31,6 +31,15 @@ if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php'))
 |
 */
 
+$earlyHelpers = __DIR__.'/../bootstrap/helpers_early.php';
+if (!is_file($earlyHelpers)) {
+    $bootstrapDir = __DIR__.'/../bootstrap';
+    if (!is_dir($bootstrapDir)) {
+        @mkdir($bootstrapDir, 0775, true);
+    }
+    @file_put_contents($earlyHelpers, "<?php\n");
+}
+
 require __DIR__.'/../vendor/autoload.php';
 
 if (is_file(__DIR__.'/../bootstrap/helpers_early.php')) {
