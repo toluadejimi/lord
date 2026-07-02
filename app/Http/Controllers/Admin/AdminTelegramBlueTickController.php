@@ -63,13 +63,10 @@ class AdminTelegramBlueTickController extends Controller
             $this->config->set($key, $value !== null && $value !== '' ? (string) $value : '');
         }
 
-        $setting = Setting::find(7);
-        if ($setting) {
-            $setting->update([
-                'rate' => (float) $request->input('rate', 0),
-                'margin' => (float) $request->input('margin', 0),
-            ]);
-        }
+        Setting::where('id', 7)->update([
+            'rate' => (float) $request->input('rate', 0),
+            'margin' => (float) $request->input('margin', 0),
+        ]);
 
         $this->config->flushCache();
 
