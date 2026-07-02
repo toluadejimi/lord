@@ -69,9 +69,11 @@
     </li>
     <li class="pc-item">
         <a href="{{ route('telegram-blue-tick.index') }}" class="pc-link pc-link-modern pc-link-premium {{ request()->is('telegram-blue-tick', 'telegram-blue-tick/*') ? 'active' : '' }}">
-            <span class="pc-micon pc-micon-telegram"><i class="fab fa-telegram"></i></span>
+            <span class="pc-micon pc-micon-telegram">
+                <i class="fab fa-telegram"></i>
+                <span class="nav-float-badge" aria-label="New feature">NEW</span>
+            </span>
             <span class="pc-mtext">Telegram Blue Tick</span>
-            <span class="nav-chip nav-chip-new">New</span>
         </a>
     </li>
     @endif

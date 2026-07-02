@@ -383,11 +383,48 @@ body[data-pc-theme="light"] {
     justify-content: center;
     flex-shrink: 0;
     box-shadow: 0 4px 12px rgba(0, 136, 204, 0.35);
+    position: relative;
+    overflow: visible;
 }
 
 .pc-micon-telegram i {
     color: #fff !important;
     font-size: 1.1rem;
+}
+
+.nav-float-badge {
+    position: absolute;
+    top: -7px;
+    right: -10px;
+    z-index: 3;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2rem;
+    padding: 0.18rem 0.38rem;
+    border-radius: 5px;
+    background: linear-gradient(180deg, #ef4444 0%, #dc2626 100%);
+    color: #fff;
+    font-size: 0.58rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    line-height: 1;
+    text-transform: uppercase;
+    border: 2px solid #fff;
+    box-shadow: 0 3px 10px rgba(220, 38, 38, 0.55);
+    animation: nav-badge-float 2.2s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes nav-badge-float {
+    0%, 100% {
+        transform: translateY(0) scale(1);
+        box-shadow: 0 3px 10px rgba(220, 38, 38, 0.5);
+    }
+    50% {
+        transform: translateY(-4px) scale(1.04);
+        box-shadow: 0 6px 14px rgba(220, 38, 38, 0.65);
+    }
 }
 
 .nav-server-badge {
@@ -453,18 +490,6 @@ body[data-pc-theme="light"] {
     line-height: 1.2;
 }
 
-.nav-chip-new {
-    background: linear-gradient(135deg, #0088cc, #54c7f5);
-    color: #fff;
-    box-shadow: 0 2px 8px rgba(0, 136, 204, 0.4);
-    animation: nav-chip-pulse 2.5s ease-in-out infinite;
-}
-
-@keyframes nav-chip-pulse {
-    0%, 100% { box-shadow: 0 2px 8px rgba(0, 136, 204, 0.35); }
-    50% { box-shadow: 0 2px 14px rgba(0, 136, 204, 0.55); }
-}
-
 .nav-chip-external {
     background: #f1f5f9;
     color: #64748b;
@@ -516,4 +541,9 @@ body[data-pc-theme="light"] {
 [data-pc-theme="dark"] .pc-link-premium {
     border-color: rgba(34, 158, 217, 0.2);
     background: rgba(0, 136, 204, 0.08);
+}
+
+[data-pc-theme="dark"] .nav-float-badge {
+    border-color: #1b232d;
+    box-shadow: 0 3px 12px rgba(220, 38, 38, 0.7);
 }
