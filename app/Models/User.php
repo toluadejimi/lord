@@ -69,4 +69,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo('App\Models\ManualPayment');
     }
+
+    public function telegramPremiumOrders()
+    {
+        return $this->hasMany(TelegramPremiumOrder::class);
+    }
 }

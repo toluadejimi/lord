@@ -21,6 +21,7 @@ Route::post('hero-sms-webhook', [WebhookController::class, 'hero']);
 Route::post('world-sv3-webhook', [WebhookController::class, 'sv3']);
 Route::post('w-webhook', [WebhookController::class, 'worldLegacy']);
 Route::post('webhooks/sprintpay', [WebhookController::class, 'sprintPay']);
+Route::post('webhooks/istar', [WebhookController::class, 'iStar']);
 
 // Legacy wallet API
 Route::any('e_fund', [ProductController::class, 'e_fund']);

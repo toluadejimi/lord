@@ -91,6 +91,18 @@ return [
                 'vtu_electricity_enabled' => ['label' => 'Electricity Enabled', 'type' => 'boolean', 'env' => null, 'default' => '1'],
             ],
         ],
+        'telegram_blue_tick' => [
+            'label' => 'Telegram Blue Tick (iStar Premium)',
+            'keys' => [
+                'provider_telegram_blue_tick_enabled' => ['label' => 'Module Enabled', 'type' => 'boolean', 'env' => null, 'default' => '0'],
+                'ISTAR_API_KEY' => ['label' => 'iStar API Key', 'type' => 'password', 'env' => 'ISTAR_API_KEY'],
+                'ISTAR_API_BASE' => ['label' => 'API Base URL', 'type' => 'text', 'env' => 'ISTAR_API_BASE', 'default' => 'https://v1.fragmentapi.com/api/v1/partner'],
+                'ISTAR_WEBHOOK_SECRET' => ['label' => 'Webhook HMAC Secret', 'type' => 'password', 'env' => 'ISTAR_WEBHOOK_SECRET'],
+                'telegram_premium_price_3' => ['label' => 'Fixed price 3 mo (NGN)', 'type' => 'text', 'env' => null],
+                'telegram_premium_price_6' => ['label' => 'Fixed price 6 mo (NGN)', 'type' => 'text', 'env' => null],
+                'telegram_premium_price_12' => ['label' => 'Fixed price 12 mo (NGN)', 'type' => 'text', 'env' => null],
+            ],
+        ],
         'site' => [
             'label' => 'Sitewide',
             'keys' => [
@@ -108,6 +120,7 @@ return [
         4 => ['name' => 'usa2', 'label' => 'Server 2 — Unlimited Portal'],
         5 => ['name' => 'hero', 'label' => 'Server 3 — HeroSMS'],
         6 => ['name' => 'sv3', 'label' => 'Server 4 — SMS Bower'],
+        7 => ['name' => 'telegram_premium', 'label' => 'Telegram Blue Tick'],
     ],
 
     'verification_types' => [

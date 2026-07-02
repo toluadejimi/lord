@@ -39,6 +39,11 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link {{ ($adminActive ?? '') === 'telegram-blue-tick' ? 'active' : '' }}" href="{{ url('admin/telegram-blue-tick') }}">
+                            <i class="fab fa-telegram"></i> Telegram Blue Tick
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link {{ ($adminActive ?? '') === 'settings' ? 'active' : '' }}" href="{{ url('admin/settings') }}">
                             <i class="fas fa-cog"></i> Platform Settings
                         </a>

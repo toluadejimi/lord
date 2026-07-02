@@ -211,6 +211,15 @@
                         @endif
                     @endforeach
                     @endif
+                    @php $tbtOn = app(\App\Services\AppConfigService::class)->getBool('provider_telegram_blue_tick_enabled', false); @endphp
+                    @if($tbtOn)
+                    <li class="pc-item">
+                        <a href="{{ route('telegram-blue-tick.index') }}" class="pc-link {{ request()->is('telegram-blue-tick', 'telegram-blue-tick/*') ? 'active' : '' }}">
+                            <span class="pc-micon"><i class="fab fa-telegram"></i></span>
+                            <span class="pc-mtext">Telegram Blue Tick</span>
+                        </a>
+                    </li>
+                    @endif
                     <li class="pc-item"><a href="{{ url('api-docs') }}" class="pc-link"><span class="pc-micon"><i class="ti ti-code"></i></span><span class="pc-mtext">API Docs</span></a></li>
 
 

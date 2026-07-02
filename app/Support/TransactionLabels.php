@@ -87,7 +87,8 @@ class TransactionLabels
                     ->orWhere('ref_id', 'like', 'AIR-%')
                     ->orWhere('ref_id', 'like', 'DATA-%')
                     ->orWhere('ref_id', 'like', 'TV-%')
-                    ->orWhere('ref_id', 'like', 'PWR-%');
+                    ->orWhere('ref_id', 'like', 'PWR-%')
+                    ->orWhere('ref_id', 'like', 'TG-BT-%');
             }),
             self::FILTER_API => $query->where(function (Builder $q) {
                 $q->where('ref_id', 'like', 'VERF%')
@@ -104,7 +105,7 @@ class TransactionLabels
 
     protected static function refMatchesVtu(string $ref): bool
     {
-        foreach (['AIR-', 'DATA-', 'TV-', 'PWR-'] as $prefix) {
+        foreach (['AIR-', 'DATA-', 'TV-', 'PWR-', 'TG-BT-'] as $prefix) {
             if (str_starts_with($ref, $prefix)) {
                 return true;
             }

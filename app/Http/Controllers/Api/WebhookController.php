@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\TelegramPremiumOrder;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Verification;
 use App\Services\AppConfigService;
+use App\Services\TelegramPremiumOrderService;
 use App\Services\VerificationOrderService;
 use App\Services\WalletFundingService;
 use App\Services\WalletService;
@@ -21,6 +23,7 @@ class WebhookController extends Controller
         protected WebhookDispatchService $webhooks,
         protected WalletService $wallet,
         protected WalletFundingService $funding,
+        protected TelegramPremiumOrderService $telegramPremium,
     ) {}
 
     protected function verifyInbound(Request $request): bool
@@ -132,5 +135,44 @@ class WebhookController extends Controller
             'ref_id' => $txn->ref_id,
             'amount' => (float) $txn->amount,
         ]);
+    }
+
+    public function iStar(Request $request)
+    {
+        $secret = $this->config->get('ISTAR_WEBHOOK_SECRET');
+        if ($secret) {
+            $body = $request->getContent();
+            $signature = $request->header('X-iStar-Signature') ?? '';
+            $expected = hash_hmac('sha256', $body, $secret);
+            if (!hash_equals($expected, $signature)) {
+                return response()->json(['success' => false], 401);
+            }
+        }
+
+        $eventType = $request->input('event_type') ?? $request->header('X-iStar-Event');
+        $orderPayload = $request->input('order', []);
+        $istarOrderId = (string) ($orderPayload['id'] ?? $request->input('order_id') ?? '');
+
+        if ($istarOrderId === '') {
+            return response()->json(['success' => false, 'message' => 'Missing order id'], 422);
+        }
+
+        $order = TelegramPremiumOrder::where('istar_order_id', $istarOrderId)->first();
+        if (!$order) {
+            return response()->json(['success' => true, 'message' => 'Order not tracked']);
+        }
+
+        if ($eventType === 'order.completed') {
+            $txHash = $request->input('tx_hash')
+                ?? ($orderPayload['payload']['tx_hash'] ?? null);
+            $this->telegramPremium->markCompleted($order, $txHash ? (string) $txHash : null);
+        } elseif ($eventType === 'order.failed') {
+            $reason = (string) ($request->input('error')
+                ?? $orderPayload['payload']['reason']
+                ?? 'Order failed at provider');
+            $this->telegramPremium->markFailed($order, $reason, true);
+        }
+
+        return response()->json(['success' => true]);
     }
 }

@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AdminMaintenanceController;
 use App\Http\Controllers\Admin\AdminServicesController;
 use App\Http\Controllers\Admin\AdminSettingsController;
+use App\Http\Controllers\Admin\AdminTelegramBlueTickController;
 use App\Http\Controllers\Admin\AdminVtuController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ApiDocsController;
@@ -12,6 +13,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SimController;
 use App\Http\Controllers\Usa2Controller;
 use App\Http\Controllers\VerificationOrderController;
+use App\Http\Controllers\TelegramBlueTickController;
 use App\Http\Controllers\VtuController;
 use App\Http\Controllers\WalletTransactionController;
 use App\Http\Controllers\WorldHeroController;
@@ -208,6 +210,12 @@ Route::get('change-password',  [HomeController::class,'change_password']);
     Route::get('vas/catalog/data-variations', [VtuController::class, 'catalogDataVariations'])->name('vas.catalog.data');
     Route::get('vas/catalog/cable-plans', [VtuController::class, 'catalogCablePlans'])->name('vas.catalog.cable');
     Route::get('vas/catalog/electricity-variations', [VtuController::class, 'catalogElectricityVariations'])->name('vas.catalog.electricity');
+
+    Route::get('telegram-blue-tick', [TelegramBlueTickController::class, 'index'])->name('telegram-blue-tick.index');
+    Route::get('telegram-blue-tick/orders', [TelegramBlueTickController::class, 'orders'])->name('telegram-blue-tick.orders');
+    Route::post('telegram-blue-tick/search', [TelegramBlueTickController::class, 'searchRecipient'])->name('telegram-blue-tick.search');
+    Route::post('telegram-blue-tick/purchase', [TelegramBlueTickController::class, 'purchase'])->name('telegram-blue-tick.purchase');
+
     Route::post('assistant/command', [AssistantController::class, 'command']);
 
 });
@@ -253,6 +261,9 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('vtu', [AdminVtuController::class, 'index']);
     Route::post('vtu', [AdminVtuController::class, 'update']);
     Route::post('vtu/fetch-categories', [AdminVtuController::class, 'fetchCategories']);
+    Route::get('telegram-blue-tick', [AdminTelegramBlueTickController::class, 'index']);
+    Route::post('telegram-blue-tick', [AdminTelegramBlueTickController::class, 'update']);
+    Route::post('telegram-blue-tick/fetch-packages', [AdminTelegramBlueTickController::class, 'fetchPackages']);
     Route::get('settings', [AdminSettingsController::class, 'index']);
     Route::post('settings/keys', [AdminSettingsController::class, 'updateKeys']);
     Route::post('settings/notification', [AdminSettingsController::class, 'updateNotification']);
