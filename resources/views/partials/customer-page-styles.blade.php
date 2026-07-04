@@ -57,7 +57,11 @@
     }
 }
 
-.cp-hero__main { flex: 1 1 220px; min-width: 0; }
+.cp-hero__main { flex: 0 1 auto; min-width: 0; }
+
+@media (min-width: 768px) {
+    .cp-hero__main { flex: 1 1 220px; }
+}
 
 .cp-hero__badge {
     display: inline-flex;
@@ -291,17 +295,34 @@
     .cp-page .pc-content { padding: 0.85rem !important; }
 
     .cp-hero {
-        padding: 1rem 1.1rem;
+        padding: 0.9rem 1rem;
         border-radius: 14px;
+        gap: 0.65rem;
+    }
+
+    .cp-hero__main {
+        flex: 0 0 auto;
+    }
+
+    .cp-hero__badge {
+        margin-bottom: 0.35rem;
     }
 
     .cp-hero h1, .cp-hero h2 {
         font-size: 1.15rem !important;
+        margin-bottom: 0.15rem !important;
+    }
+
+    .cp-hero__subtitle {
+        font-size: 0.8125rem;
+        line-height: 1.35;
     }
 
     .cp-wallet-card {
         width: 100%;
         min-width: 0;
+        padding: 0.75rem 0.85rem;
+        margin-top: 0;
     }
 
     .cp-wallet-card__amount {
