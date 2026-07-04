@@ -1,28 +1,6 @@
-{{-- Shared VAS styles --}}
+{{-- VAS-specific styles (hero/wallet/subnav use shared cp-* partials) --}}
 <style>
-.vas-page { --vas-accent: #6366f1; --vas-accent-2: #8b5cf6; }
-.vas-hero {
-    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 55%, #a855f7 100%);
-    border-radius: 16px; color: #fff; padding: 1.25rem 1.5rem; margin-bottom: 1.25rem;
-    box-shadow: 0 10px 30px rgba(79, 70, 229, .25);
-}
-.vas-hero h2 { color: #fff; margin-bottom: .25rem; font-weight: 700; }
-.vas-hero .vas-back { color: rgba(255,255,255,.85); text-decoration: none; font-size: .8125rem; }
-.vas-hero .vas-back:hover { color: #fff; }
-.vas-wallet-pill {
-    background: rgba(255,255,255,.15); backdrop-filter: blur(6px);
-    border-radius: 12px; padding: .65rem 1rem; text-align: right;
-}
-.vas-subnav {
-    display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 1.25rem;
-    padding: .35rem; background: #f1f5f9; border-radius: 999px; width: fit-content; max-width: 100%;
-}
-.vas-subnav a {
-    padding: .45rem 1rem; border-radius: 999px; text-decoration: none;
-    color: #475569; font-size: .875rem; font-weight: 600; transition: .15s;
-}
-.vas-subnav a:hover { color: #1e293b; background: rgba(255,255,255,.6); }
-.vas-subnav a.active { background: #fff; color: var(--vas-accent); box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+.vas-page { --vas-accent: #6366f1; --vas-accent-2: #8b5cf6; --cp-accent: #6366f1; }
 .vas-card {
     border: 0; border-radius: 16px; box-shadow: 0 4px 24px rgba(15, 23, 42, .06);
     overflow: hidden;
@@ -68,8 +46,9 @@
 .vas-submit {
     border: 0; border-radius: 12px; padding: .85rem 1rem; font-weight: 700;
     background: linear-gradient(135deg, #4f46e5, #7c3aed); box-shadow: 0 8px 20px rgba(79,70,229,.3);
+    color: #fff;
 }
-.vas-submit:hover:not(:disabled) { filter: brightness(1.05); }
+.vas-submit:hover:not(:disabled) { filter: brightness(1.05); color: #fff; }
 .vas-submit:disabled { opacity: .55; box-shadow: none; }
 .bundle-card {
     cursor: pointer; border: 1px solid #e2e8f0; border-radius: 12px;

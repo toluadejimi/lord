@@ -1,26 +1,18 @@
 @extends('layout.main')
 @section('content')
+@include('partials.customer-page-styles')
 <style>
-.fund-page { --fund-accent: #4f46e5; }
-.fund-hero {
-    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 55%, #a855f7 100%);
-    border-radius: 16px; color: #fff; padding: 1.25rem 1.5rem; margin-bottom: 1.25rem;
-    box-shadow: 0 10px 30px rgba(79, 70, 229, .25);
-}
-.fund-card {
-    border: 0; border-radius: 16px; box-shadow: 0 4px 24px rgba(15, 23, 42, .06);
-}
 .fund-card .form-control, .fund-card .form-select {
     border-radius: 10px; border-color: #e2e8f0; padding: .65rem .85rem;
 }
 .fund-card .form-control:focus, .fund-card .form-select:focus {
-    border-color: var(--fund-accent); box-shadow: 0 0 0 3px rgba(99, 102, 241, .15);
+    border-color: var(--cp-accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--cp-accent) 18%, transparent);
 }
 .fund-submit {
     border: 0; border-radius: 12px; padding: .85rem 1rem; font-weight: 700;
-    background: linear-gradient(135deg, #4f46e5, #7c3aed); box-shadow: 0 8px 20px rgba(79,70,229,.3);
+    background: var(--cp-hero-bg); box-shadow: 0 8px 20px var(--cp-hero-shadow); color: #fff;
 }
-.fund-submit:hover { filter: brightness(1.05); }
+.fund-submit:hover { filter: brightness(1.05); color: #fff; }
 .fund-table th { font-size: .75rem; text-transform: uppercase; letter-spacing: .04em; color: #64748b; }
 .fund-table td { font-size: .875rem; vertical-align: middle; }
 .fund-badge { font-size: .7rem; font-weight: 700; padding: .3rem .55rem; border-radius: 999px; }
@@ -29,17 +21,18 @@
 </style>
 
 <div class="pc-container">
-    <div class="pc-content p-4 fund-page">
-        <div class="fund-hero d-flex flex-wrap justify-content-between align-items-start gap-3">
-            <div>
-                <h2 class="h4 mb-1"><i class="ti ti-wallet me-1 opacity-75"></i> Fund Wallet</h2>
-                <p class="mb-0 small opacity-90">Add money instantly via card or bank transfer</p>
+    <div class="pc-content p-4 cp-page fund-page">
+        <div class="cp-hero">
+            <div class="cp-hero__main">
+                <h2 class="h4"><i class="ti ti-wallet me-1 opacity-75"></i> Fund Wallet</h2>
+                <p class="cp-hero__subtitle">Add money instantly via card or bank transfer. Minimum ₦2,000 per top-up.</p>
             </div>
-            <div class="text-end">
-                <div class="small opacity-75">Current balance</div>
-                <div class="h4 mb-0 fw-bold">₦{{ number_format((float) Auth::user()->wallet, 2) }}</div>
-                <a href="{{ route('wallet.transactions') }}" class="small text-white text-decoration-underline opacity-90">View all transactions</a>
-            </div>
+            @include('partials.customer-wallet-card', [
+                'showFund' => false,
+                'label' => 'Current balance',
+                'secondaryUrl' => route('wallet.transactions'),
+                'secondaryLabel' => 'All transactions',
+            ])
         </div>
 
         @if ($errors->any())
@@ -56,7 +49,7 @@
 
         <div class="row g-4">
             <div class="col-lg-5">
-                <div class="card fund-card h-100">
+                <div class="card cp-card fund-card h-100">
                     <div class="card-body p-4">
                         <h5 class="mb-3">Add funds</h5>
                         <form action="{{ url('fund-now') }}" method="POST">
@@ -78,8 +71,8 @@
                                 </select>
                             </div>
 
-                            <button type="submit" class="btn btn-primary fund-submit w-100 text-white">
-                                Continue to payment
+                            <button type="submit" class="btn fund-submit w-100">
+                                <i class="ti ti-credit-card me-1"></i> Continue to payment
                             </button>
                         </form>
                     </div>
@@ -87,7 +80,7 @@
             </div>
 
             <div class="col-lg-7">
-                <div class="card fund-card h-100">
+                <div class="card cp-card fund-card h-100">
                     <div class="card-body p-4">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h5 class="mb-0">Recent funding attempts</h5>

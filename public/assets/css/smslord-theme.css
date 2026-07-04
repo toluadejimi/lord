@@ -120,7 +120,7 @@ button.pc-head-link {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.35rem 0.85rem;
+    padding: 0.4rem 0.9rem;
     margin-right: 0.5rem;
     border-radius: 999px;
     background: linear-gradient(135deg, #eef2ff, #f5f3ff);
@@ -129,22 +129,42 @@ button.pc-head-link {
     text-decoration: none;
     font-size: 0.8125rem;
     font-weight: 600;
-    transition: background 0.15s, box-shadow 0.15s;
+    transition: background 0.15s, box-shadow 0.15s, transform 0.15s;
 }
 
 .smslord-header-wallet:hover {
     color: #312e81;
     background: #e0e7ff;
-    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.15);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.18);
+    transform: translateY(-1px);
+}
+
+.smslord-header-wallet .wallet-icon-wrap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.65rem;
+    height: 1.65rem;
+    border-radius: 50%;
+    background: rgba(99, 102, 241, 0.12);
 }
 
 .smslord-header-wallet .wallet-amount {
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+.smslord-header-wallet .wallet-fund-hint {
+    font-size: 0.68rem;
     font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    opacity: 0.75;
 }
 
 .smslord-header-wallet i {
-    font-size: 1rem;
-    opacity: 0.85;
+    font-size: 0.95rem;
+    opacity: 0.9;
 }
 
 /* Hide theme customizer gear */
@@ -645,26 +665,23 @@ button.pc-head-link {
     }
 
     /* Page heroes */
-    .cw-hero,
-    .vas-hero,
-    .tbt-hero,
-    .api-hero {
+    .cp-hero,
+    .sv-hero,
+    .cw-hero {
         padding: 1rem 1.1rem !important;
         border-radius: 14px !important;
     }
 
-    .cw-hero .h4,
-    .vas-hero h2,
-    .tbt-hero h2 {
+    .cp-hero h1,
+    .cp-hero h2,
+    .sv-hero .h4,
+    .cw-hero .h4 {
         font-size: 1.15rem !important;
     }
 
-    .cw-hero .text-end,
-    .vas-wallet-pill,
-    .tbt-wallet-pill {
+    .cp-wallet-card {
         width: 100%;
-        text-align: left !important;
-        margin-top: 0.5rem;
+        min-width: 0;
     }
 
     .vas-wallet-pill,

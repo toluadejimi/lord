@@ -1,12 +1,7 @@
 @extends('layout.main')
 @section('content')
+@include('partials.customer-page-styles')
 <style>
-.tx-page { --tx-accent: #4f46e5; }
-.tx-hero {
-    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 55%, #a855f7 100%);
-    border-radius: 16px; color: #fff; padding: 1.25rem 1.5rem; margin-bottom: 1.25rem;
-    box-shadow: 0 10px 30px rgba(79, 70, 229, .25);
-}
 .tx-stat-grid { display: grid; grid-template-columns: repeat(1, 1fr); gap: .75rem; margin-bottom: 1.25rem; }
 @media (min-width: 576px) { .tx-stat-grid { grid-template-columns: repeat(3, 1fr); } }
 .tx-stat {
@@ -17,18 +12,7 @@
 .tx-stat .value { font-size: 1.25rem; font-weight: 800; margin-top: .25rem; }
 .tx-stat.credit .value { color: #059669; }
 .tx-stat.debit .value { color: #dc2626; }
-.tx-stat.wallet .value { color: #4f46e5; }
-.tx-filters {
-    display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 1rem;
-    padding: .35rem; background: #f1f5f9; border-radius: 999px; width: fit-content; max-width: 100%;
-}
-.tx-filters a {
-    padding: .45rem 1rem; border-radius: 999px; text-decoration: none;
-    color: #475569; font-size: .875rem; font-weight: 600; transition: .15s;
-}
-.tx-filters a:hover { color: #1e293b; background: rgba(255,255,255,.6); }
-.tx-filters a.active { background: #fff; color: var(--tx-accent); box-shadow: 0 2px 8px rgba(0,0,0,.06); }
-.tx-card { border: 0; border-radius: 16px; box-shadow: 0 4px 24px rgba(15, 23, 42, .06); overflow: hidden; }
+.tx-stat.wallet .value { color: var(--cp-accent); }
 .tx-table th { font-size: .75rem; text-transform: uppercase; letter-spacing: .04em; color: #64748b; white-space: nowrap; }
 .tx-table td { vertical-align: middle; font-size: .875rem; }
 .tx-ref { font-family: ui-monospace, monospace; font-size: .75rem; color: #64748b; }
@@ -45,17 +29,16 @@
 </style>
 
 <div class="pc-container">
-    <div class="pc-content p-4 tx-page">
-        <div class="tx-hero d-flex flex-wrap justify-content-between align-items-start gap-3">
-            <div>
-                <h2 class="h4 mb-1"><i class="ti ti-list-details me-1 opacity-75"></i> Wallet Transactions</h2>
-                <p class="mb-0 small opacity-90">Track every credit and debit on your account</p>
+    <div class="pc-content p-4 cp-page tx-page">
+        <div class="cp-hero">
+            <div class="cp-hero__main">
+                <h2 class="h4"><i class="ti ti-list-details me-1 opacity-75"></i> Wallet Transactions</h2>
+                <p class="cp-hero__subtitle">Track every credit and debit on your account</p>
             </div>
-            <div class="text-end">
-                <div class="small opacity-75">Current balance</div>
-                <div class="h4 mb-0 fw-bold">₦{{ number_format($stats['wallet'], 2) }}</div>
-                <a href="{{ url('fund-wallet') }}" class="small text-white text-decoration-underline opacity-90">Fund wallet</a>
-            </div>
+            @include('partials.customer-wallet-card', [
+                'wallet' => $stats['wallet'],
+                'label' => 'Current balance',
+            ])
         </div>
 
         <div class="tx-stat-grid">
@@ -73,13 +56,13 @@
             </div>
         </div>
 
-        <nav class="tx-filters" aria-label="Filter transactions">
+        <nav class="cp-subnav" aria-label="Filter transactions">
             <a href="{{ url('wallet-transactions') }}" class="{{ $filter === 'all' ? 'active' : '' }}">All</a>
             <a href="{{ url('wallet-transactions?filter=credit') }}" class="{{ $filter === 'credit' ? 'active' : '' }}">Credits</a>
             <a href="{{ url('wallet-transactions?filter=debit') }}" class="{{ $filter === 'debit' ? 'active' : '' }}">Debits</a>
         </nav>
 
-        <div class="card tx-card">
+        <div class="card cp-card">
             <div class="card-body p-0">
                 <div class="table-responsive">
                     <table class="table table-hover mb-0 tx-table">

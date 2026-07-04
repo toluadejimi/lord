@@ -1,24 +1,11 @@
 <style>
-.tbt-page { --tbt-accent: #229ed9; --tbt-accent-2: #0088cc; }
-.tbt-hero {
-    background: linear-gradient(135deg, #0088cc 0%, #229ed9 50%, #54c7f5 100%);
-    border-radius: 16px; color: #fff; padding: 1.25rem 1.5rem; margin-bottom: 1.25rem;
-    box-shadow: 0 10px 30px rgba(0, 136, 204, .28);
+.tbt-page {
+    --tbt-accent: #229ed9;
+    --tbt-accent-2: #0088cc;
+    --cp-accent: #229ed9;
+    --cp-hero-bg: linear-gradient(135deg, #0088cc 0%, #229ed9 50%, #54c7f5 100%);
+    --cp-hero-shadow: rgba(0, 136, 204, .28);
 }
-.tbt-hero h2 { color: #fff; font-weight: 700; }
-.tbt-wallet-pill {
-    background: rgba(255,255,255,.15); backdrop-filter: blur(6px);
-    border-radius: 12px; padding: .65rem 1rem; text-align: right;
-}
-.tbt-subnav {
-    display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 1.25rem;
-    padding: .35rem; background: #f1f5f9; border-radius: 999px; width: fit-content;
-}
-.tbt-subnav a {
-    padding: .45rem 1rem; border-radius: 999px; text-decoration: none;
-    color: #475569; font-size: .875rem; font-weight: 600;
-}
-.tbt-subnav a.active { background: #fff; color: var(--tbt-accent); box-shadow: 0 2px 8px rgba(0,0,0,.06); }
 .tbt-card { border: 0; border-radius: 16px; box-shadow: 0 4px 24px rgba(15, 23, 42, .06); }
 .tbt-package {
     border: 2px solid #e2e8f0; border-radius: 16px; padding: 1.25rem; cursor: pointer;

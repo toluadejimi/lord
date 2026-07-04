@@ -190,15 +190,18 @@
             <ul class="list-unstyled align-items-center">
                 @auth
                 <li class="pc-h-item d-md-none">
-                    <a href="{{ url('fund-wallet') }}" class="smslord-header-wallet smslord-header-wallet--compact">
-                        <i class="ti ti-wallet"></i>
+                    <a href="{{ url('fund-wallet') }}" class="smslord-header-wallet smslord-header-wallet--compact" title="Fund wallet">
+                        <span class="wallet-icon-wrap"><i class="ti ti-wallet"></i></span>
                         <span class="wallet-amount">₦{{ number_format((float) Auth::user()->wallet, 0) }}</span>
                     </a>
                 </li>
                 <li class="pc-h-item d-none d-md-inline-block">
-                    <a href="{{ url('fund-wallet') }}" class="smslord-header-wallet">
-                        <i class="ti ti-wallet"></i>
-                        <span class="wallet-amount">₦{{ number_format((float) Auth::user()->wallet, 2) }}</span>
+                    <a href="{{ url('fund-wallet') }}" class="smslord-header-wallet" title="Fund wallet">
+                        <span class="wallet-icon-wrap"><i class="ti ti-wallet"></i></span>
+                        <span>
+                            <span class="wallet-fund-hint d-block">Wallet</span>
+                            <span class="wallet-amount">₦{{ number_format((float) Auth::user()->wallet, 2) }}</span>
+                        </span>
                     </a>
                 </li>
                 @endauth

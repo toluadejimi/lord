@@ -1,4 +1,5 @@
 {{-- Shared server verification UI (Servers 1–4) — include once per page --}}
+@include('partials.customer-page-styles')
 <style>
 .sv-page {
     --sv-accent: #4f46e5;
@@ -8,6 +9,10 @@
     --sv-hero-shadow: rgba(79, 70, 229, .25);
     --sv-price-bg: #f5f3ff;
     --sv-price-border: #c4b5fd;
+    --cp-accent: var(--sv-accent);
+    --cp-accent-soft: var(--sv-accent-soft);
+    --cp-hero-bg: var(--sv-hero-bg);
+    --cp-hero-shadow: var(--sv-hero-shadow);
 }
 
 .sv-page.sv-theme-2 {
@@ -18,6 +23,10 @@
     --sv-hero-shadow: rgba(234, 88, 12, .28);
     --sv-price-bg: #fff7ed;
     --sv-price-border: #fdba74;
+    --cp-accent: var(--sv-accent);
+    --cp-accent-soft: var(--sv-accent-soft);
+    --cp-hero-bg: var(--sv-hero-bg);
+    --cp-hero-shadow: var(--sv-hero-shadow);
 }
 
 .sv-page.sv-theme-3 {
@@ -28,6 +37,10 @@
     --sv-hero-shadow: rgba(8, 145, 178, .28);
     --sv-price-bg: #ecfeff;
     --sv-price-border: #67e8f9;
+    --cp-accent: var(--sv-accent);
+    --cp-accent-soft: var(--sv-accent-soft);
+    --cp-hero-bg: var(--sv-hero-bg);
+    --cp-hero-shadow: var(--sv-hero-shadow);
 }
 
 .sv-page.sv-theme-4 {
@@ -38,44 +51,15 @@
     --sv-hero-shadow: rgba(5, 150, 105, .28);
     --sv-price-bg: #ecfdf5;
     --sv-price-border: #6ee7b7;
+    --cp-accent: var(--sv-accent);
+    --cp-accent-soft: var(--sv-accent-soft);
+    --cp-hero-bg: var(--sv-hero-bg);
+    --cp-hero-shadow: var(--sv-hero-shadow);
 }
 
-.sv-hero {
-    background: var(--sv-hero-bg);
-    border-radius: 16px;
-    color: #fff;
-    padding: 1.25rem 1.5rem;
-    margin-bottom: 1.25rem;
-    box-shadow: 0 10px 30px var(--sv-hero-shadow);
-}
+.sv-hero { /* alias — styles from .cp-hero */ }
 
-.sv-server-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: .4rem;
-    background: rgba(255,255,255,.15);
-    border: 1px solid rgba(255,255,255,.28);
-    border-radius: 999px;
-    padding: .32rem .8rem;
-    font-size: .78rem;
-    font-weight: 700;
-    letter-spacing: .02em;
-}
-
-.sv-server-pill .sv-num {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 1.35rem;
-    height: 1.35rem;
-    border-radius: 50%;
-    background: rgba(255,255,255,.22);
-    font-size: .7rem;
-}
-
-.sv-wallet-block {
-    text-align: right;
-}
+.sv-server-pill { /* alias — styles from .cp-hero__badge */ }
 
 .sv-card {
     border: 0;
@@ -257,40 +241,14 @@
     padding: 1.75rem 1rem;
 }
 
-/* Orders panel — mobile cards */
+/* Orders panel — mobile cards (styles in customer-page-styles) */
 .vo-panel.sv-orders-panel {
     border-radius: 16px;
     box-shadow: 0 4px 24px rgba(15, 23, 42, .06);
 }
 
-.vo-panel .vo-table thead th {
-    font-size: .68rem;
-    text-transform: uppercase;
-    letter-spacing: .04em;
-    color: #64748b;
-    background: #f8fafc;
-}
-
 @media (max-width: 767px) {
     .sv-page .pc-content { padding: 0.85rem !important; }
-
-    .sv-hero {
-        padding: 1rem 1.1rem;
-        border-radius: 14px;
-    }
-
-    .sv-hero .h4, .sv-hero h2 {
-        font-size: 1.15rem !important;
-    }
-
-    .sv-wallet-block {
-        width: 100%;
-        text-align: left !important;
-        margin-top: .5rem;
-        background: rgba(255,255,255,.12);
-        border-radius: 12px;
-        padding: .65rem .85rem;
-    }
 
     .sv-card .card-body { padding: 1rem !important; }
 
@@ -300,60 +258,6 @@
         position: sticky;
         bottom: .5rem;
         z-index: 10;
-    }
-
-    /* Orders: card layout on mobile */
-    .vo-panel .table-responsive { border: 0; }
-
-    .vo-panel .vo-table thead { display: none; }
-
-    .vo-panel .vo-table tbody tr {
-        display: block;
-        margin: 0 .85rem .75rem;
-        padding: .85rem 1rem;
-        border: 1px solid #e2e8f0;
-        border-radius: 14px;
-        background: #fff;
-        box-shadow: 0 2px 8px rgba(15, 23, 42, .04);
-    }
-
-    .vo-panel .vo-table tbody td {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: .35rem 0 !important;
-        border: 0 !important;
-        font-size: .82rem;
-    }
-
-    .vo-panel .vo-table tbody td::before {
-        content: attr(data-label);
-        font-weight: 600;
-        color: #64748b;
-        font-size: .72rem;
-        text-transform: uppercase;
-        letter-spacing: .03em;
-        margin-right: .75rem;
-        flex-shrink: 0;
-    }
-
-    .vo-panel .vo-table tbody td.text-end {
-        justify-content: flex-end;
-        padding-top: .5rem !important;
-        border-top: 1px dashed #e2e8f0 !important;
-        margin-top: .35rem;
-    }
-
-    .vo-panel .vo-table tbody td.text-end::before { display: none; }
-
-    .vo-panel .vo-cancel-btn {
-        width: 100%;
-        margin-top: .25rem;
-    }
-
-    .vo-panel .px-4.pt-4 {
-        padding-left: 1rem !important;
-        padding-right: 1rem !important;
     }
 }
 </style>
