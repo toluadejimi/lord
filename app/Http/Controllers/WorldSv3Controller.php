@@ -72,6 +72,11 @@ class WorldSv3Controller extends Controller
         return 'Server 4';
     }
 
+    protected function heroServerNumber(): int
+    {
+        return 4;
+    }
+
     protected function heroCatalogRoutePrefix(): string
     {
         return 'world-sv3';

@@ -22,6 +22,8 @@ trait ManagesHeroStyleVerification
 
     abstract protected function heroServerLabel(): string;
 
+    abstract protected function heroServerNumber(): int;
+
     abstract protected function heroCatalogRoutePrefix(): string;
 
     abstract protected function heroOrderUrl(): string;
@@ -36,6 +38,18 @@ trait ManagesHeroStyleVerification
     protected function heroPickerFlow(): string
     {
         return 'country-first';
+    }
+
+    protected function heroServerTitle(): string
+    {
+        return 'International SMS Verification';
+    }
+
+    protected function heroServerSubtitle(): string
+    {
+        return $this->heroPickerFlow() === 'service-first'
+            ? 'Pick a service, choose a country, confirm price, then rent a number.'
+            : 'Search a country, pick a service, confirm price, then rent a number.';
     }
 
     public function heroIndex(
@@ -53,6 +67,10 @@ trait ManagesHeroStyleVerification
 
         return view('verification.hero-server', [
             'serverLabel' => $this->heroServerLabel(),
+            'serverNum' => $this->heroServerNumber(),
+            'serverTheme' => $this->heroServerNumber(),
+            'serverTitle' => $this->heroServerTitle(),
+            'serverSubtitle' => $this->heroServerSubtitle(),
             'catalogPrefix' => $this->heroCatalogRoutePrefix(),
             'pickerFlow' => $this->heroPickerFlow(),
             'countriesUrl' => url($this->heroCatalogRoutePrefix().'/catalog/countries'),

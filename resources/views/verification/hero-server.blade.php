@@ -1,70 +1,81 @@
 @extends('layout.main')
 @section('content')
+@include('partials.server-page-styles')
 @php
     $serviceFirst = ($pickerFlow ?? 'country-first') === 'service-first';
 @endphp
 <div class="pc-container">
-    <div class="pc-content p-4">
-        @if(session('message'))<div class="alert alert-success">{{ session('message') }}</div>@endif
-        @if(session('error'))<div class="alert alert-danger">{{ session('error') }}</div>@endif
+    <div class="pc-content p-4 sv-page sv-theme-{{ $serverTheme ?? $serverNum ?? 3 }}">
+        @if(session('message'))<div class="alert alert-success border-0 shadow-sm">{{ session('message') }}</div>@endif
+        @if(session('error'))<div class="alert alert-danger border-0 shadow-sm">{{ session('error') }}</div>@endif
 
-        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
-            <div>
-                <h2 class="mb-1">{{ $serverLabel }}</h2>
-                <p class="text-muted mb-0 small">
-                    @if($serviceFirst)
-                        Pick a service, choose a country, confirm price, then rent a number.
-                    @else
-                        Search a country, pick a service, confirm price, then rent a number.
-                    @endif
-                </p>
-            </div>
-            <div class="text-end">
-                <div class="text-muted small">Wallet</div>
-                <div class="h5 mb-0">₦{{ number_format($wallet, 2) }}</div>
-            </div>
-        </div>
+        @include('partials.server-hero', [
+            'serverNum' => $serverNum ?? 3,
+            'title' => $serverTitle ?? 'International SMS Verification',
+            'subtitle' => $serverSubtitle ?? 'Search a country, pick a service, and rent a number.',
+            'wallet' => $wallet,
+        ])
 
         <div class="row g-4">
             <div class="col-lg-7">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-body p-4">
+                <div class="card sv-card h-100">
+                    <div class="card-body">
                         @if($serviceFirst)
-                        <div class="step-block mb-4" id="service-step">
-                            <div class="step-label">Step 1 — Service</div>
-                            <input type="text" class="form-control" id="service-search" placeholder="Search services…" autocomplete="off">
-                            <div id="service-results" class="list-group mt-2 hero-picker-list"></div>
-                            <div id="service-selected" class="selected-pill mt-2 d-none"></div>
+                        <div class="mb-4" id="service-step">
+                            <div class="sv-step">Step 1 — Service</div>
+                            <div class="sv-field sv-field--solo mb-2">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="ti ti-apps"></i></span>
+                                    <input type="text" class="form-control" id="service-search" placeholder="Search services…" autocomplete="off">
+                                </div>
+                            </div>
+                            <div id="service-results" class="list-group sv-picker-list mb-2"></div>
+                            <div id="service-selected" class="sv-selected-pill d-none"></div>
                             <div id="service-error" class="text-danger small mt-2 d-none"></div>
                         </div>
 
-                        <div class="step-block mb-4" id="country-step" style="display:none;">
-                            <div class="step-label">Step 2 — Country</div>
-                            <input type="text" class="form-control" id="country-search" placeholder="Search countries…" autocomplete="off">
-                            <div id="country-results" class="list-group mt-2 hero-picker-list"></div>
-                            <div id="country-selected" class="selected-pill mt-2 d-none"></div>
-                            <div id="country-loading" class="text-muted small mt-2 d-none">Loading countries for this service…</div>
+                        <div class="mb-4" id="country-step" style="display:none;">
+                            <div class="sv-step">Step 2 — Country</div>
+                            <div class="sv-field sv-field--solo mb-2">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="ti ti-world"></i></span>
+                                    <input type="text" class="form-control" id="country-search" placeholder="Search countries…" autocomplete="off">
+                                </div>
+                            </div>
+                            <div id="country-results" class="list-group sv-picker-list mb-2"></div>
+                            <div id="country-selected" class="sv-selected-pill d-none"></div>
+                            <div id="country-loading" class="text-muted small mt-2 d-none">Loading countries…</div>
                         </div>
                         @else
-                        <div class="step-block mb-4" id="country-step">
-                            <div class="step-label">Step 1 — Country</div>
-                            <input type="text" class="form-control" id="country-search" placeholder="Search countries…" autocomplete="off">
-                            <div id="country-results" class="list-group mt-2 hero-picker-list"></div>
-                            <div id="country-selected" class="selected-pill mt-2 d-none"></div>
+                        <div class="mb-4" id="country-step">
+                            <div class="sv-step">Step 1 — Country</div>
+                            <div class="sv-field sv-field--solo mb-2">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="ti ti-world"></i></span>
+                                    <input type="text" class="form-control" id="country-search" placeholder="Search countries…" autocomplete="off">
+                                </div>
+                            </div>
+                            <div id="country-results" class="list-group sv-picker-list mb-2"></div>
+                            <div id="country-selected" class="sv-selected-pill d-none"></div>
                         </div>
 
-                        <div class="step-block mb-4" id="service-step" style="display:none;">
-                            <div class="step-label">Step 2 — Service</div>
-                            <input type="text" class="form-control" id="service-search" placeholder="Search services…" autocomplete="off">
-                            <div id="service-results" class="list-group mt-2 hero-picker-list"></div>
-                            <div id="service-selected" class="selected-pill mt-2 d-none"></div>
+                        <div class="mb-4" id="service-step" style="display:none;">
+                            <div class="sv-step">Step 2 — Service</div>
+                            <div class="sv-field sv-field--solo mb-2">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="ti ti-apps"></i></span>
+                                    <input type="text" class="form-control" id="service-search" placeholder="Search services…" autocomplete="off">
+                                </div>
+                            </div>
+                            <div id="service-results" class="list-group sv-picker-list mb-2"></div>
+                            <div id="service-selected" class="sv-selected-pill d-none"></div>
                             <div id="service-error" class="text-danger small mt-2 d-none"></div>
                         </div>
                         @endif
 
-                        <div class="step-block mb-4" id="price-step" style="display:none;">
-                            <div class="step-label">Step 3 — Price</div>
-                            <div id="price-box" class="price-box text-center py-4">
+                        <div class="mb-4" id="price-step" style="display:none;">
+                            <div class="sv-step">Step 3 — Price</div>
+                            <div id="price-box" class="sv-price-box text-center">
                                 <div class="text-muted">Checking availability…</div>
                             </div>
                         </div>
@@ -73,8 +84,8 @@
                             @csrf
                             <input type="hidden" name="country" id="input-country">
                             <input type="hidden" name="service" id="input-service">
-                            <button type="submit" class="btn btn-primary btn-lg w-100" id="buy-btn" disabled>
-                                Buy number
+                            <button type="submit" class="btn sv-btn-rent w-100" id="buy-btn" disabled>
+                                Rent number
                             </button>
                         </form>
                     </div>
@@ -86,21 +97,12 @@
                     'verifications' => $verifications,
                     'panelTitle' => 'Recent orders',
                     'panelId' => 'hero-orders-panel',
+                    'ordersPanelClass' => 'sv-orders-panel',
                 ])
             </div>
         </div>
     </div>
 </div>
-
-<style>
-.step-label { font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: #6366f1; margin-bottom: .5rem; }
-.hero-picker-list { max-height: 220px; overflow-y: auto; border-radius: 8px; }
-.hero-picker-list .list-group-item { cursor: pointer; }
-.hero-picker-list .list-group-item:hover { background: #f8f9ff; }
-.selected-pill { display: inline-block; padding: .35rem .75rem; background: #eef2ff; border-radius: 999px; font-size: .875rem; }
-.price-box { background: #f8fafc; border-radius: 12px; border: 1px dashed #cbd5e1; }
-.price-box .amount { font-size: 1.75rem; font-weight: 700; color: #4f46e5; }
-</style>
 
 <script>
 (function () {
@@ -140,9 +142,9 @@
         items.slice(0, 80).forEach(function (item) {
             const el = document.createElement('button');
             el.type = 'button';
-            el.className = 'list-group-item list-group-item-action';
-            const suffix = item.available ? ' (' + item.available + ')' : '';
-            el.textContent = item.name + suffix;
+            el.className = 'list-group-item list-group-item-action d-flex justify-content-between align-items-center';
+            const suffix = item.available ? '<span class="badge bg-light text-dark">' + item.available + '</span>' : '';
+            el.innerHTML = '<span>' + item.name + '</span>' + suffix;
             el.addEventListener('click', function () { onPick(item); });
             container.appendChild(el);
         });
@@ -166,7 +168,7 @@
     function selectService(item) {
         selectedService = item;
         serviceSelected.classList.remove('d-none');
-        serviceSelected.textContent = 'Selected: ' + item.name;
+        serviceSelected.textContent = '✓ ' + item.name;
         serviceResults.innerHTML = '';
         serviceSearch.value = item.name;
         inputService.value = item.code;
@@ -186,7 +188,7 @@
     function selectCountry(item) {
         selectedCountry = item;
         countrySelected.classList.remove('d-none');
-        countrySelected.textContent = 'Selected: ' + item.name;
+        countrySelected.textContent = '✓ ' + item.name;
         countryResults.innerHTML = '';
         countrySearch.value = item.name;
         inputCountry.value = item.id;
@@ -205,18 +207,14 @@
     }
 
     function loadCountries() {
-        if (countryLoading) {
-            countryLoading.classList.remove('d-none');
-        }
+        if (countryLoading) countryLoading.classList.remove('d-none');
         countryResults.innerHTML = '<div class="list-group-item text-muted small">Loading countries…</div>';
 
         fetch(countriesUrl)
             .then(function (r) { return r.json(); })
             .then(function (data) {
                 countries = data.countries || [];
-                if (countryLoading) {
-                    countryLoading.classList.add('d-none');
-                }
+                if (countryLoading) countryLoading.classList.add('d-none');
                 if (!countries.length) {
                     countryResults.innerHTML = '<div class="list-group-item text-muted small">No countries available.</div>';
                     return;
@@ -224,9 +222,7 @@
                 renderList(countryResults, countries, selectCountry, 'No matches');
             })
             .catch(function () {
-                if (countryLoading) {
-                    countryLoading.classList.add('d-none');
-                }
+                if (countryLoading) countryLoading.classList.add('d-none');
                 countryResults.innerHTML = '<div class="list-group-item text-danger small">Could not load countries.</div>';
             });
     }
@@ -236,7 +232,7 @@
         priceStep.style.display = '';
         orderForm.style.display = 'none';
         buyBtn.disabled = true;
-        priceBox.innerHTML = '<div class="text-muted">Checking availability…</div>';
+        priceBox.innerHTML = '<div class="text-muted"><span class="spinner-border spinner-border-sm me-2"></span>Checking availability…</div>';
 
         const url = new URL(priceUrl);
         url.searchParams.set('country', selectedCountry.id);
@@ -246,7 +242,7 @@
             .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
             .then(function (res) {
                 if (!res.ok) {
-                    priceBox.innerHTML = '<div class="text-danger">' + (res.data.message || 'Not available') + '</div>';
+                    priceBox.innerHTML = '<div class="text-danger small">' + (res.data.message || 'Not available') + '</div>';
                     return;
                 }
                 const d = res.data;
@@ -257,10 +253,10 @@
                 inputService.value = selectedService.code;
                 orderForm.style.display = '';
                 buyBtn.disabled = false;
-                buyBtn.textContent = 'Buy number — ₦' + Number(d.ngn).toLocaleString('en-NG', {minimumFractionDigits: 2});
+                buyBtn.textContent = 'Rent number — ₦' + Number(d.ngn).toLocaleString('en-NG', {minimumFractionDigits: 2});
             })
             .catch(function () {
-                priceBox.innerHTML = '<div class="text-danger">Could not load price. Try again.</div>';
+                priceBox.innerHTML = '<div class="text-danger small">Could not load price. Try again.</div>';
             });
     }
 
@@ -290,11 +286,17 @@
         countrySearch.addEventListener('input', function () {
             renderList(countryResults, filterItems(countries, countrySearch.value), selectCountry, 'No matches');
         });
+        countrySearch.addEventListener('focus', function () {
+            if (countries.length) renderList(countryResults, filterItems(countries, countrySearch.value), selectCountry, 'No matches');
+        });
     }
 
     if (serviceSearch) {
         serviceSearch.addEventListener('input', function () {
             renderList(serviceResults, filterItems(services, serviceSearch.value), selectService, 'No matches');
+        });
+        serviceSearch.addEventListener('focus', function () {
+            if (services.length) renderList(serviceResults, filterItems(services, serviceSearch.value), selectService, 'No matches');
         });
     }
 

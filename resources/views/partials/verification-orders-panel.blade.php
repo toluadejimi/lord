@@ -3,7 +3,7 @@
     $panelId = $panelId ?? 'verification-orders-panel';
 @endphp
 
-<div class="vo-panel card border-0 shadow-sm" id="{{ $panelId }}">
+<div class="vo-panel card border-0 shadow-sm {{ $ordersPanelClass ?? '' }}" id="{{ $panelId }}">
     <div class="card-body p-0">
         @if(!empty($panelTitle))
             <div class="px-4 pt-4 pb-2 d-flex justify-content-between align-items-center">
@@ -43,19 +43,19 @@
                             @endphp
                             <tr data-vo-row="{{ $v->id }}" data-vo-status="{{ $status }}">
                                 @if($showServer)
-                                    <td>
+                                    <td data-label="Server">
                                         <span class="badge bg-{{ \App\Support\VerificationLabels::customerServerBadgeClass((int) $v->type) }} vo-server-badge">
                                             {{ \App\Support\VerificationLabels::customerServerLabel((int) $v->type) }}
                                         </span>
                                     </td>
                                 @endif
-                                <td class="text-truncate" style="max-width:110px;" title="{{ $v->service }}">{{ $v->service }}</td>
-                                <td>
+                                <td class="text-truncate" style="max-width:110px;" title="{{ $v->service }}" data-label="Service">{{ $v->service }}</td>
+                                <td data-label="Number">
                                     <button type="button" class="btn btn-link btn-sm p-0 font-monospace vo-copy" data-copy="{{ $v->phone }}" title="Copy number">
                                         {{ $v->phone }}
                                     </button>
                                 </td>
-                                <td class="vo-sms-cell" data-vo-sms="{{ $v->id }}">
+                                <td class="vo-sms-cell" data-vo-sms="{{ $v->id }}" data-label="OTP">
                                     @if($v->sms)
                                         <span class="font-monospace fw-semibold text-success">{{ $v->sms }}</span>
                                         <button type="button" class="btn btn-link btn-sm p-0 ms-1 vo-copy" data-copy="{{ $v->sms }}" title="Copy code"><i class="ti ti-copy"></i></button>
@@ -65,8 +65,8 @@
                                         <span class="text-muted">—</span>
                                     @endif
                                 </td>
-                                <td class="small text-nowrap">₦{{ number_format((float) $v->cost, 2) }}</td>
-                                <td data-vo-status-cell="{{ $v->id }}">
+                                <td class="small text-nowrap" data-label="Price">₦{{ number_format((float) $v->cost, 2) }}</td>
+                                <td data-vo-status-cell="{{ $v->id }}" data-label="Status">
                                     @if($isPending)
                                         <span class="vo-badge vo-badge-pending">Pending</span>
                                     @elseif($isDone)
@@ -77,7 +77,7 @@
                                         <span class="vo-badge vo-badge-muted">{{ $status }}</span>
                                     @endif
                                 </td>
-                                <td class="text-end text-nowrap">
+                                <td class="text-end text-nowrap" data-label="">
                                     @if($isPending)
                                         <button type="button" class="btn btn-outline-danger btn-sm vo-cancel-btn" data-vo-cancel="{{ $v->id }}">
                                             Cancel & refund

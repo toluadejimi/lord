@@ -72,6 +72,11 @@ class WorldHeroController extends Controller
         return 'Server 3';
     }
 
+    protected function heroServerNumber(): int
+    {
+        return 3;
+    }
+
     protected function heroCatalogRoutePrefix(): string
     {
         return 'world-sv2';

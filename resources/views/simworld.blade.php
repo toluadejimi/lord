@@ -1,88 +1,13 @@
 @extends('layout.main')
 @section('content')
-<style>
-.cw-page { --cw-accent: #4f46e5; }
-.cw-hero {
-    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 55%, #a855f7 100%);
-    border-radius: 16px; color: #fff; padding: 1.25rem 1.5rem; margin-bottom: 1.25rem;
-    box-shadow: 0 10px 30px rgba(79, 70, 229, .25);
-}
-.cw-card {
-    border: 0; border-radius: 16px; box-shadow: 0 4px 24px rgba(15, 23, 42, .06);
-}
-.cw-card .form-control {
-    border-radius: 10px; border-color: #e2e8f0; padding: .7rem .9rem;
-}
-.cw-card .form-control:focus {
-    border-color: var(--cw-accent); box-shadow: 0 0 0 3px rgba(99, 102, 241, .15);
-}
-.cw-step {
-    font-size: .7rem; font-weight: 700; text-transform: uppercase;
-    letter-spacing: .06em; color: var(--cw-accent); margin-bottom: .5rem;
-}
-.cw-search-results {
-    max-height: 240px; overflow-y: auto; position: absolute; width: 100%;
-    z-index: 1050; border-radius: 10px; box-shadow: 0 12px 32px rgba(15,23,42,.12);
-    -webkit-overflow-scrolling: touch;
-}
-@media (max-width: 1024px) {
-    .cw-page .pc-content { padding: 0.85rem !important; }
-    .cw-wallet-block {
-        background: rgba(255,255,255,.12);
-        border-radius: 12px;
-        padding: 0.65rem 0.85rem;
-    }
-}
-.cw-search-results .list-group-item {
-    cursor: pointer; border-color: #f1f5f9; padding: .65rem .9rem;
-}
-.cw-search-results .list-group-item:hover { background: #eef2ff; }
-.cw-service-card {
-    border: 1px solid #e2e8f0; border-radius: 14px; padding: 1rem 1.1rem;
-    margin-bottom: .75rem; cursor: pointer; transition: .15s ease;
-    background: #fff;
-}
-.cw-service-card:hover {
-    border-color: #a5b4fc; box-shadow: 0 8px 24px rgba(79,70,229,.1);
-    transform: translateY(-1px);
-}
-.cw-service-card .svc-name { font-weight: 700; color: #0f172a; font-size: .95rem; }
-.cw-service-card .svc-price { font-weight: 800; color: #059669; font-size: 1rem; }
-.cw-service-card .svc-meta { font-size: .8rem; color: #64748b; }
-.cw-operator-title {
-    font-size: .75rem; font-weight: 700; text-transform: uppercase;
-    letter-spacing: .05em; color: #94a3b8; margin: 1.25rem 0 .5rem;
-}
-.cw-server-pill {
-    display: inline-flex; align-items: center; gap: .35rem;
-    background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.25);
-    border-radius: 999px; padding: .3rem .75rem; font-size: .8rem; font-weight: 600;
-}
-.cw-orders-card .table th {
-    font-size: .7rem; text-transform: uppercase; letter-spacing: .04em; color: #64748b;
-}
-.cw-orders-card .table td { font-size: .85rem; vertical-align: middle; }
-.cw-badge-pending { background: #fef3c7; color: #b45309; font-size: .7rem; font-weight: 700; padding: .25rem .5rem; border-radius: 999px; }
-.cw-badge-done { background: #d1fae5; color: #047857; font-size: .7rem; font-weight: 700; padding: .25rem .5rem; border-radius: 999px; }
-.cw-empty { text-align: center; color: #94a3b8; padding: 2rem 1rem; }
-#responseData:empty + .cw-empty-hint { display: block; }
-.cw-empty-hint { display: none; color: #94a3b8; font-size: .875rem; text-align: center; padding: 1.5rem; }
-</style>
-
+@include('partials.server-page-styles')
 <div class="pc-container">
-    <div class="pc-content p-4 cw-page">
-        <div class="cw-hero d-flex flex-column flex-sm-row flex-wrap justify-content-between align-items-start gap-3">
-            <div class="flex-grow-1">
-                <span class="cw-server-pill mb-2"><i class="ti ti-world"></i> Server 1</span>
-                <h2 class="h4 mb-1">SMS Verification</h2>
-                <p class="mb-0 small opacity-90">Search a country, pick a service, and rent a number instantly</p>
-            </div>
-            <div class="cw-wallet-block text-sm-end w-100 w-sm-auto">
-                <div class="small opacity-75">Wallet balance</div>
-                <div class="h4 mb-0 fw-bold">₦{{ number_format((float) Auth::user()->wallet, 2) }}</div>
-                <a href="{{ url('fund-wallet') }}" class="small text-white text-decoration-underline opacity-90">Fund wallet</a>
-            </div>
-        </div>
+    <div class="pc-content p-4 sv-page sv-theme-1">
+        @include('partials.server-hero', [
+            'serverNum' => 1,
+            'title' => 'SMS Verification',
+            'subtitle' => 'Search a country, pick a service, and rent a number instantly',
+        ])
 
         @if ($errors->any())
             <div class="alert alert-danger border-0 shadow-sm">
@@ -101,30 +26,34 @@
 
         <div class="row g-4">
             <div class="col-lg-7">
-                <div class="card cw-card h-100">
-                    <div class="card-body p-4">
-                        <div class="cw-step">Step 1 — Country</div>
+                <div class="card sv-card h-100">
+                    <div class="card-body">
+                        <div class="sv-step">Step 1 — Country</div>
                         <div class="form-group position-relative mb-3">
-                            <div class="input-group">
-                                <span class="input-group-text bg-white border-end-0"><i class="ti ti-search text-muted"></i></span>
-                                <input type="text" class="form-control border-start-0 ps-0" id="countrySearch"
-                                    placeholder="Search for a country…" autocomplete="off">
+                            <div class="sv-field sv-field--solo">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="ti ti-search"></i></span>
+                                    <input type="text" class="form-control" id="countrySearch"
+                                        placeholder="Search for a country…" autocomplete="off">
+                                </div>
                             </div>
-                            <ul class="list-group cw-search-results mt-1" id="countryList" style="display:none;"></ul>
+                            <ul class="list-group sv-search-dropdown" id="countryList" style="display:none;"></ul>
                         </div>
 
                         <div id="filterSearch" style="display:none;">
-                            <div class="cw-step">Step 2 — Service</div>
-                            <div class="input-group mb-3">
-                                <span class="input-group-text bg-white border-end-0"><i class="ti ti-filter text-muted"></i></span>
-                                <input type="text" id="filterSearchInput" class="form-control border-start-0 ps-0"
-                                    placeholder="Filter services…" autocomplete="off">
+                            <div class="sv-step">Step 2 — Service</div>
+                            <div class="sv-field sv-field--solo mb-3">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="ti ti-filter"></i></span>
+                                    <input type="text" id="filterSearchInput" class="form-control"
+                                        placeholder="Filter services…" autocomplete="off">
+                                </div>
                             </div>
                         </div>
 
                         <div id="responseData"></div>
-                        <p class="cw-empty-hint mb-0">
-                            <i class="ti ti-map-pin d-block mb-2" style="font-size:1.75rem;"></i>
+                        <p class="sv-empty-hint mb-0" id="emptyHint">
+                            <i class="ti ti-map-pin d-block mb-2" style="font-size:1.75rem;opacity:.5;"></i>
                             Select a country above to see available services and prices
                         </p>
                     </div>
@@ -137,6 +66,7 @@
                     'panelTitle' => 'Recent orders',
                     'panelLink' => url('orders'),
                     'panelId' => 'simworld-orders-panel',
+                    'ordersPanelClass' => 'sv-orders-panel',
                 ])
             </div>
         </div>
@@ -157,7 +87,7 @@ function renderCountryList(searchValue) {
 
     for (var key in countries) {
         if (!searchValue || countries[key].toLowerCase().includes(searchValue) || key.toLowerCase().includes(searchValue)) {
-            matchedCountries += '<li class="list-group-item" data-country="' + key + '">' + countries[key] + '</li>';
+            matchedCountries += '<li class="list-group-item list-group-item-action" data-country="' + key + '">' + countries[key] + '</li>';
             count++;
             if (!searchValue && count >= 30) break;
         }
@@ -197,6 +127,7 @@ $(document).ready(function () {
         var country = $(this).data('country');
         $('#countrySearch').val($(this).text());
         $('#countryList').hide();
+        $('#emptyHint').hide();
         $('#responseData').html('<div class="text-center text-muted py-4"><span class="spinner-border spinner-border-sm me-2"></span>Loading services…</div>');
 
         $.ajax({
@@ -216,22 +147,22 @@ $(document).ready(function () {
     function generateCards(data) {
         var output = '';
         for (var key in data) {
-            output += '<div class="cw-operator-title">' + key.toUpperCase() + '</div>';
+            output += '<div class="sv-operator-title">' + key.toUpperCase() + '</div>';
             for (var providerId in data[key]) {
                 for (var provider in data[key][providerId]) {
                     var providerData = data[key][providerId][provider];
                     var cost = providerData.cost * rate + margin;
                     var formatted = cost.toLocaleString('en-US', { style: 'currency', currency: 'NGN' });
 
-                    output += '<div class="cw-service-card operator-card" data-country="' + key + '" data-operator="' + provider + '" data-product="' + providerId + '" data-count="' + providerData.count + '" data-usd-cost="' + providerData.cost + '">' +
+                    output += '<div class="sv-service-card operator-card" data-country="' + key + '" data-operator="' + provider + '" data-product="' + providerId + '" data-count="' + providerData.count + '" data-usd-cost="' + providerData.cost + '">' +
                         '<div class="d-flex justify-content-between align-items-start gap-2">' +
                         '<div><div class="svc-name">' + providerId + '</div><div class="svc-meta mt-1">' + provider + ' · ' + providerData.count + ' available</div></div>' +
-                        '<div class="text-end"><div class="svc-price">' + formatted + '</div><div class="svc-meta"><i class="ti ti-shopping-cart"></i> Rent</div></div>' +
+                        '<div class="text-end"><div class="svc-price">' + formatted + '</div><div class="svc-meta"><i class="ti ti-shopping-cart"></i> Tap to rent</div></div>' +
                         '</div></div>';
                 }
             }
         }
-        return output || '<p class="text-muted small text-center py-3">No services found for this country.</p>';
+        return output || '<p class="sv-empty-hint">No services found for this country.</p>';
     }
 
     $('#filterSearchInput').on('input', function () {

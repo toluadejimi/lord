@@ -1,5 +1,6 @@
 @extends('layout.main')
 @section('content')
+@include('partials.server-page-styles')
 @php
     $serviceList = [];
     if (is_object($services)) {
@@ -12,40 +13,38 @@
     }
 @endphp
 <div class="pc-container">
-    <div class="pc-content p-4">
+    <div class="pc-content p-4 sv-page sv-theme-2">
         @if(session('message'))<div class="alert alert-success border-0 shadow-sm">{{ session('message') }}</div>@endif
         @if(session('error'))<div class="alert alert-danger border-0 shadow-sm">{{ session('error') }}</div>@endif
 
-        <div class="usa2-hero d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
-            <div>
-                <span class="usa2-pill mb-2"><i class="ti ti-flag"></i> Server 2</span>
-                <h2 class="h4 mb-1 text-white">US SMS Verification</h2>
-                <p class="mb-0 small text-white opacity-90">Rent US numbers for OTP delivery. Price is confirmed before purchase.</p>
-            </div>
-            <div class="text-end text-white">
-                <div class="small opacity-75">Wallet</div>
-                <div class="h4 mb-0 fw-bold">₦{{ number_format((float) Auth::user()->wallet, 2) }}</div>
-                <a href="{{ url('fund-wallet') }}" class="small text-white text-decoration-underline opacity-90">Fund wallet</a>
-            </div>
-        </div>
+        @include('partials.server-hero', [
+            'serverNum' => 2,
+            'title' => 'US SMS Verification',
+            'subtitle' => 'Rent US numbers for OTP delivery. Price is confirmed before purchase.',
+        ])
 
         <div class="row g-4">
             <div class="col-lg-7">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-body p-4">
-                        <div class="step-label">Step 1 — Service</div>
-                        <input type="text" class="form-control mb-2" id="service-search" placeholder="Search services (e.g. whatsapp, google)…" autocomplete="off">
-                        <div id="service-results" class="list-group usa2-picker-list mb-3"></div>
-                        <div id="service-selected" class="selected-pill d-none mb-3"></div>
+                <div class="card sv-card h-100">
+                    <div class="card-body">
+                        <div class="sv-step">Step 1 — Service</div>
+                        <div class="sv-field sv-field--solo mb-2">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="ti ti-search"></i></span>
+                                <input type="text" class="form-control" id="service-search" placeholder="Search services (whatsapp, google…)…" autocomplete="off">
+                            </div>
+                        </div>
+                        <div id="service-results" class="list-group sv-picker-list mb-3"></div>
+                        <div id="service-selected" class="sv-selected-pill d-none mb-3"></div>
 
                         <div id="options-step" style="display:none;">
-                            <div class="step-label">Step 2 — Options (optional)</div>
+                            <div class="sv-step">Step 2 — Options (optional)</div>
                             <div class="row g-2 mb-3">
-                                <div class="col-md-6">
+                                <div class="col-sm-6">
                                     <label class="form-label small text-muted mb-1">Area code</label>
                                     <input type="text" class="form-control" id="area-code" placeholder="e.g. 212">
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-sm-6">
                                     <label class="form-label small text-muted mb-1">Carrier</label>
                                     <input type="text" class="form-control" id="carrier" placeholder="Optional">
                                 </div>
@@ -53,8 +52,8 @@
                         </div>
 
                         <div id="price-step" style="display:none;">
-                            <div class="step-label">Step 3 — Price</div>
-                            <div id="price-box" class="price-box text-center py-4 mb-3">
+                            <div class="sv-step">Step 3 — Price</div>
+                            <div id="price-box" class="sv-price-box text-center mb-3">
                                 <div class="text-muted">Checking price…</div>
                             </div>
                         </div>
@@ -65,7 +64,7 @@
                             <input type="hidden" name="api_cost" id="input-api-cost">
                             <input type="hidden" name="area_code" id="input-area-code">
                             <input type="hidden" name="carrier" id="input-carrier">
-                            <button type="submit" class="btn btn-primary btn-lg w-100" id="buy-btn" disabled>
+                            <button type="submit" class="btn sv-btn-rent w-100" id="buy-btn" disabled>
                                 Rent US number
                             </button>
                         </form>
@@ -78,31 +77,12 @@
                     'verifications' => $verifications,
                     'panelTitle' => 'Recent orders',
                     'panelId' => 'usa2-orders-panel',
+                    'ordersPanelClass' => 'sv-orders-panel',
                 ])
             </div>
         </div>
     </div>
 </div>
-
-<style>
-.usa2-hero {
-    background: linear-gradient(135deg, #ea580c 0%, #f97316 50%, #fb923c 100%);
-    border-radius: 16px; padding: 1.25rem 1.5rem;
-    box-shadow: 0 10px 30px rgba(234, 88, 12, .25);
-}
-.usa2-pill {
-    display: inline-flex; align-items: center; gap: .35rem;
-    background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.25);
-    border-radius: 999px; padding: .3rem .75rem; font-size: .8rem; font-weight: 600; color: #fff;
-}
-.step-label { font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: #ea580c; margin-bottom: .5rem; }
-.usa2-picker-list { max-height: 260px; overflow-y: auto; border-radius: 8px; }
-.usa2-picker-list .list-group-item { cursor: pointer; }
-.usa2-picker-list .list-group-item:hover { background: #fff7ed; }
-.selected-pill { display: inline-block; padding: .35rem .75rem; background: #ffedd5; border-radius: 999px; font-size: .875rem; }
-.price-box { background: #fff7ed; border-radius: 12px; border: 1px dashed #fdba74; }
-.price-box .amount { font-size: 1.75rem; font-weight: 700; color: #ea580c; }
-</style>
 
 <script>
 (function () {
@@ -126,12 +106,8 @@
     const carrier = document.getElementById('carrier');
 
     function normalizeService(item) {
-        if (typeof item === 'string') {
-            return { id: item, name: item, usd: 1 };
-        }
-        if (Array.isArray(item)) {
-            return { id: item[0], name: item[0], usd: parseFloat(item[1]) || 1 };
-        }
+        if (typeof item === 'string') return { id: item, name: item, usd: 1 };
+        if (Array.isArray(item)) return { id: item[0], name: item[0], usd: parseFloat(item[1]) || 1 };
         const id = item.id ?? item.service ?? item.code ?? item.name ?? '';
         const name = item.name ?? item.service ?? item.label ?? id;
         const usd = parseFloat(item.price ?? item.cost ?? item.usd ?? 1) || 1;
@@ -160,7 +136,7 @@
         selected = s;
         serviceSearch.value = s.name;
         serviceResults.innerHTML = '';
-        serviceSelected.textContent = 'Selected: ' + s.name;
+        serviceSelected.textContent = '✓ ' + s.name;
         serviceSelected.classList.remove('d-none');
         optionsStep.style.display = 'block';
         priceStep.style.display = 'block';
@@ -172,7 +148,7 @@
 
     function refreshPrice() {
         if (!selected) return;
-        priceBox.innerHTML = '<div class="text-muted">Checking price…</div>';
+        priceBox.innerHTML = '<div class="text-muted"><span class="spinner-border spinner-border-sm me-2"></span>Checking price…</div>';
         buyBtn.disabled = true;
 
         const params = new URLSearchParams({
@@ -186,6 +162,7 @@
                 priceBox.innerHTML = '<div class="amount">₦' + Number(d.ngn).toLocaleString('en-NG', { minimumFractionDigits: 2 }) + '</div>' +
                     '<div class="text-muted small mt-1">Provider ~$' + Number(d.usd).toFixed(2) + ' USD</div>';
                 buyBtn.disabled = false;
+                buyBtn.textContent = 'Rent US number — ₦' + Number(d.ngn).toLocaleString('en-NG', { minimumFractionDigits: 2 });
             })
             .catch(function () {
                 priceBox.innerHTML = '<div class="text-danger small">Could not load price.</div>';
@@ -194,19 +171,13 @@
 
     serviceSearch.addEventListener('input', function () { renderServices(serviceSearch.value); });
     serviceSearch.addEventListener('focus', function () { renderServices(serviceSearch.value); });
-    areaCode.addEventListener('change', function () {
-        inputAreaCode.value = areaCode.value;
-        refreshPrice();
-    });
-    carrier.addEventListener('change', function () {
-        inputCarrier.value = carrier.value;
-        refreshPrice();
-    });
+    areaCode.addEventListener('change', function () { inputAreaCode.value = areaCode.value; refreshPrice(); });
+    carrier.addEventListener('change', function () { inputCarrier.value = carrier.value; refreshPrice(); });
 
     if (normalized.length) {
         renderServices('');
     } else {
-        serviceResults.innerHTML = '<div class="list-group-item text-muted small">No services loaded. Enter a service ID manually below.</div>';
+        serviceResults.innerHTML = '<div class="list-group-item text-muted small">No services loaded. Type a service ID below.</div>';
         orderForm.style.display = 'block';
         buyBtn.disabled = false;
         inputService.value = '';
