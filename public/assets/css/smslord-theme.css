@@ -88,6 +88,14 @@ body[data-pc-theme="light"] {
     border-radius: 10px;
 }
 
+button.pc-head-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: inherit;
+}
+
 .pc-header .pc-head-link:hover {
     background: rgba(99, 102, 241, 0.08);
 }
@@ -546,4 +554,169 @@ body[data-pc-theme="light"] {
 [data-pc-theme="dark"] .nav-float-badge {
     border-color: #1b232d;
     box-shadow: 0 3px 12px rgba(220, 38, 38, 0.7);
+}
+
+/* ——— Mobile layout ——— */
+@media (max-width: 1024px) {
+    .pc-container {
+        padding-top: 64px !important;
+    }
+
+    .pc-content {
+        padding: 1rem !important;
+    }
+
+    body.smslord-menu-open,
+    body:has(.pc-sidebar.mob-sidebar-active) {
+        overflow: hidden;
+    }
+
+    .pc-sidebar {
+        z-index: 1040 !important;
+        width: min(300px, 88vw) !important;
+        box-shadow: 8px 0 32px rgba(15, 23, 42, 0.18) !important;
+    }
+
+    .pc-sidebar .navbar-wrapper {
+        width: 100% !important;
+    }
+
+    .pc-sidebar.mob-sidebar-active {
+        left: 0 !important;
+    }
+
+    .pc-menu-overlay {
+        z-index: -1;
+        background: rgba(15, 23, 42, 0.45) !important;
+        backdrop-filter: blur(4px);
+    }
+
+    .mob-header-brand-wrap {
+        display: flex !important;
+        align-items: center;
+        gap: 0.35rem;
+    }
+
+    .mob-header-brand {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.25rem 0;
+        text-decoration: none;
+    }
+
+    .mob-header-brand img {
+        height: 26px;
+        width: auto;
+    }
+
+    .pc-header .pc-mob-drp {
+        flex: 1;
+    }
+
+    .pc-header .pc-mob-drp > ul {
+        display: flex;
+        align-items: center;
+        width: 100%;
+    }
+
+    .pc-header .header-wrapper {
+        padding: 0 0.75rem;
+    }
+
+    .smslord-header-wallet--compact {
+        padding: 0.3rem 0.6rem;
+        margin-right: 0;
+        font-size: 0.75rem;
+    }
+
+    .smslord-header-wallet--compact .wallet-amount {
+        max-width: 5.5rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .pc-navbar-modern {
+        padding: 0.5rem 0.65rem 1.25rem;
+    }
+
+    .pc-link-modern {
+        padding: 0.72rem 0.85rem !important;
+    }
+
+    /* Page heroes */
+    .cw-hero,
+    .vas-hero,
+    .tbt-hero,
+    .api-hero {
+        padding: 1rem 1.1rem !important;
+        border-radius: 14px !important;
+    }
+
+    .cw-hero .h4,
+    .vas-hero h2,
+    .tbt-hero h2 {
+        font-size: 1.15rem !important;
+    }
+
+    .cw-hero .text-end,
+    .vas-wallet-pill,
+    .tbt-wallet-pill {
+        width: 100%;
+        text-align: left !important;
+        margin-top: 0.5rem;
+    }
+
+    .vas-wallet-pill,
+    .tbt-wallet-pill {
+        text-align: left;
+        display: inline-block;
+    }
+
+    /* Tables */
+    .table-responsive {
+        border-radius: 12px;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .cw-orders-card .table,
+    .table {
+        font-size: 0.8rem;
+    }
+
+    /* Country search dropdown */
+    .cw-search-results {
+        max-height: 50vh;
+        border-radius: 12px !important;
+    }
+
+    .cw-card .card-body,
+    .vas-card .card-body,
+    .tbt-card .card-body {
+        padding: 1rem !important;
+    }
+
+    .network-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+    }
+
+    .pct-c-btn {
+        display: none !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .pc-header .user-avtar {
+        width: 30px;
+        height: 30px;
+    }
+
+    .cw-service-card {
+        padding: 0.85rem !important;
+    }
+
+    .footer-inner {
+        padding: 1.5rem 1rem !important;
+    }
 }

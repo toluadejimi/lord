@@ -22,7 +22,16 @@
 }
 .cw-search-results {
     max-height: 240px; overflow-y: auto; position: absolute; width: 100%;
-    z-index: 20; border-radius: 10px; box-shadow: 0 12px 32px rgba(15,23,42,.12);
+    z-index: 1050; border-radius: 10px; box-shadow: 0 12px 32px rgba(15,23,42,.12);
+    -webkit-overflow-scrolling: touch;
+}
+@media (max-width: 1024px) {
+    .cw-page .pc-content { padding: 0.85rem !important; }
+    .cw-wallet-block {
+        background: rgba(255,255,255,.12);
+        border-radius: 12px;
+        padding: 0.65rem 0.85rem;
+    }
 }
 .cw-search-results .list-group-item {
     cursor: pointer; border-color: #f1f5f9; padding: .65rem .9rem;
@@ -62,13 +71,13 @@
 
 <div class="pc-container">
     <div class="pc-content p-4 cw-page">
-        <div class="cw-hero d-flex flex-wrap justify-content-between align-items-start gap-3">
-            <div>
+        <div class="cw-hero d-flex flex-column flex-sm-row flex-wrap justify-content-between align-items-start gap-3">
+            <div class="flex-grow-1">
                 <span class="cw-server-pill mb-2"><i class="ti ti-world"></i> Server 1</span>
                 <h2 class="h4 mb-1">SMS Verification</h2>
                 <p class="mb-0 small opacity-90">Search a country, pick a service, and rent a number instantly</p>
             </div>
-            <div class="text-end">
+            <div class="cw-wallet-block text-sm-end w-100 w-sm-auto">
                 <div class="small opacity-75">Wallet balance</div>
                 <div class="h4 mb-0 fw-bold">₦{{ number_format((float) Auth::user()->wallet, 2) }}</div>
                 <a href="{{ url('fund-wallet') }}" class="small text-white text-decoration-underline opacity-90">Fund wallet</a>

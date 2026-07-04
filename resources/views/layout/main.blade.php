@@ -169,20 +169,18 @@
         <div class="me-auto pc-mob-drp">
             <ul class="list-unstyled"><!-- ======= Menu collapse Icon ===== -->
                 <li class="pc-h-item pc-sidebar-collapse">
-                    <a href="#" class="pc-head-link ms-0"
-                       id="sidebar-hide"><i class="ti ti-menu-2">
-
-                        </i>
-                    </a>
-
+                    <button type="button" class="pc-head-link ms-0 border-0 bg-transparent" id="sidebar-hide" aria-label="Toggle sidebar">
+                        <i class="ti ti-menu-2"></i>
+                    </button>
                 </li>
 
-                <li class="pc-h-item pc-sidebar-popup">
-                    <a href="#" class="pc-head-link ms-0" id="mobile-collapse">
+                <li class="pc-h-item pc-sidebar-popup mob-header-brand-wrap">
+                    <button type="button" class="pc-head-link ms-0 border-0 bg-transparent" id="mobile-collapse" aria-label="Open menu">
                         <i class="ti ti-menu-2"></i>
+                    </button>
+                    <a href="{{ url('cworld') }}" class="mob-header-brand" aria-label="SMSLORD home">
+                        <img src="{{ static_asset('assets/images/logo.svg') }}" alt="SMSLORD">
                     </a>
-                    <img src="{{ static_asset('assets/images/logo.svg') }}">
-
                 </li>
 
 
@@ -191,6 +189,12 @@
         <div class="ms-auto">
             <ul class="list-unstyled align-items-center">
                 @auth
+                <li class="pc-h-item d-md-none">
+                    <a href="{{ url('fund-wallet') }}" class="smslord-header-wallet smslord-header-wallet--compact">
+                        <i class="ti ti-wallet"></i>
+                        <span class="wallet-amount">₦{{ number_format((float) Auth::user()->wallet, 0) }}</span>
+                    </a>
+                </li>
                 <li class="pc-h-item d-none d-md-inline-block">
                     <a href="{{ url('fund-wallet') }}" class="smslord-header-wallet">
                         <i class="ti ti-wallet"></i>
@@ -426,12 +430,36 @@
     }
 
     document.addEventListener('click', function (e) {
+        var toggle = e.target.closest('#mobile-collapse, #sidebar-hide, [data-smslord-toggle]');
+        if (toggle) {
+            e.preventDefault();
+            return;
+        }
         var link = e.target.closest('a[href="javascript:void(0)"], a[href="#"]');
         if (!link) return;
-        if (link.getAttribute('onclick') || link.closest('.pc-h-dropdown, .pct-offcanvas, .theme-color, .theme-main-layout')) {
+        if (link.getAttribute('onclick') || link.closest('.pc-h-dropdown, .pct-offcanvas, .theme-color, .theme-main-layout, .pc-sidebar')) {
             e.preventDefault();
             cleanThemeHash();
         }
+    });
+
+    function smslordCloseMobileMenu() {
+        var sidebar = document.querySelector('.pc-sidebar');
+        if (!sidebar) return;
+        sidebar.classList.remove('mob-sidebar-active');
+        document.body.classList.remove('smslord-menu-open');
+        var overlay = sidebar.querySelector('.pc-menu-overlay');
+        if (overlay) overlay.remove();
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.pc-sidebar .pc-link-modern, .pc-sidebar .pc-link').forEach(function (link) {
+            link.addEventListener('click', function () {
+                if (window.innerWidth <= 1024) {
+                    smslordCloseMobileMenu();
+                }
+            });
+        });
     });
 })();
 </script>
