@@ -10,13 +10,17 @@ class ResellerApiDocumentation
     public static function sections(string $baseUrl): array
     {
         $baseUrl = rtrim($baseUrl, '/');
+        $s1 = VerificationLabels::customerMenuLabelForServer(1);
+        $s2 = VerificationLabels::customerMenuLabelForServer(2);
+        $s3 = VerificationLabels::customerMenuLabelForServer(3);
+        $s4 = VerificationLabels::customerMenuLabelForServer(4);
 
         return [
             'shared' => [
                 'label' => 'Shared endpoints',
                 'intro' => 'These work for every server after you rent a number. Always save the order_id from the rent response.',
                 'workflow' => [
-                    'Rent on any server-N/rent endpoint (see Server 1–4 tabs).',
+                    'Rent on any server-N/rent endpoint (see the server tabs below).',
                     'Poll POST /get-sms with {"order_id": YOUR_ID} every 10–15 seconds until status is 2.',
                     'Or configure a webhook — OTP is pushed when the SMS arrives.',
                     'Cancel with POST /cancel-sms if you no longer need the number (wallet refunded when allowed).',
@@ -30,7 +34,7 @@ class ResellerApiDocumentation
                         'order_id' => 12345,
                     ], [
                         'success' => true,
-                        'server' => 'Server 1',
+                        'server' => $s1,
                         'status' => 2,
                         'code' => '123456',
                         'full_sms' => 'Your code is 123456',
@@ -41,13 +45,13 @@ class ResellerApiDocumentation
                         'order_id' => 12345,
                     ], [
                         'success' => true,
-                        'server' => 'Server 2',
+                        'server' => $s2,
                         'message' => 'Order cancelled and wallet refunded.',
-                    ], 'Server 2 orders cannot be cancelled within 120 seconds of creation.'),
+                    ], $s2.' orders cannot be cancelled within 120 seconds of creation.'),
                 ],
             ],
             'server1' => [
-                'label' => 'Server 1 — International (5SIM)',
+                'label' => $s1,
                 'intro' => 'Browse countries, pick operator + product from the prices catalog, quote NGN cost, then rent.',
                 'workflow' => [
                     'GET server-1/countries — list country slugs (e.g. england, usa).',
@@ -88,7 +92,7 @@ class ResellerApiDocumentation
                         'usd_cost' => 0.45,
                     ], [
                         'success' => true,
-                        'server' => 'Server 1',
+                        'server' => $s1,
                         'order_id' => 12345,
                         'phone' => '447911123456',
                         'service' => 'whatsapp',
@@ -99,7 +103,7 @@ class ResellerApiDocumentation
                 ],
             ],
             'server2' => [
-                'label' => 'Server 2 — USA numbers',
+                'label' => $s2,
                 'intro' => 'US-only services. Optional area_code or carrier adds a 20% surcharge.',
                 'workflow' => [
                     'GET server-2/services — list service keys (whatsapp, google, …).',
@@ -129,7 +133,7 @@ class ResellerApiDocumentation
                         'area_code' => '212',
                     ], [
                         'success' => true,
-                        'server' => 'Server 2',
+                        'server' => $s2,
                         'order_id' => 12346,
                         'phone' => '15182315891',
                         'service' => 'whatsapp',
@@ -140,7 +144,7 @@ class ResellerApiDocumentation
                 ],
             ],
             'server3' => [
-                'label' => 'Server 3 — Global catalog',
+                'label' => $s3,
                 'intro' => 'Country + service IDs from the catalog endpoints. Price includes availability check.',
                 'workflow' => [
                     'GET server-3/countries — country id + name list.',
@@ -174,7 +178,7 @@ class ResellerApiDocumentation
                         'service' => 'wa',
                     ], [
                         'success' => true,
-                        'server' => 'Server 3',
+                        'server' => $s3,
                         'order_id' => 12347,
                         'phone' => '447700900123',
                         'service' => 'wa',
@@ -185,8 +189,8 @@ class ResellerApiDocumentation
                 ],
             ],
             'server4' => [
-                'label' => 'Server 4 — Global catalog',
-                'intro' => 'Same flow as Server 3 with a separate inventory pool.',
+                'label' => $s4,
+                'intro' => 'Same flow as '.$s3.' with a separate inventory pool.',
                 'workflow' => [
                     'GET server-4/countries — country id + name list.',
                     'GET server-4/services — service id + name list.',
@@ -219,7 +223,7 @@ class ResellerApiDocumentation
                         'service' => 'wa',
                     ], [
                         'success' => true,
-                        'server' => 'Server 4',
+                        'server' => $s4,
                         'order_id' => 12348,
                         'phone' => '447700900456',
                         'service' => 'wa',

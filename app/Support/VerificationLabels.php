@@ -38,6 +38,17 @@ class VerificationLabels
         };
     }
 
+    /** Short customer hint — never expose upstream provider names. */
+    public static function customerServerHint(int $serverNum): string
+    {
+        return match ($serverNum) {
+            1 => 'International numbers · all countries',
+            2 => 'United States numbers',
+            3, 4 => 'International numbers · global catalog',
+            default => 'SMS verification',
+        };
+    }
+
     public static function customerServerBadgeClass(int $type): string
     {
         return match ($type) {

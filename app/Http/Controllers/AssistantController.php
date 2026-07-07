@@ -30,7 +30,7 @@ class AssistantController extends Controller
         }
 
         if (str_contains($text, 'order world')) {
-            return response()->json(['reply' => 'Use /world for SMSPool, /world-sv2 for Hero, or /world-sv3 for SMS Bower.']);
+            return response()->json(['reply' => 'Use /cworld, /usa2, /world-sv2, or /world-sv3 for virtual numbers.']);
         }
 
         return response()->json(['reply' => 'Try: balance, order usa whatsapp, order world telegram, vtu airtime, contact support']);

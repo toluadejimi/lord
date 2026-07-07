@@ -116,7 +116,7 @@ trait ManagesHeroStyleVerification
             if ($this->heroProviderKey() === 'sv3') {
                 $apiKey = app(\App\Services\AppConfigService::class)->get('SMS_SERVER_WORLD_SV3_API_KEY', '');
                 if ($apiKey === '') {
-                    $message = 'Server 4 is not configured. Admin must set the SMS Bower API key.';
+                    $message = 'This server is not available right now. Please contact support.';
                 }
             }
 

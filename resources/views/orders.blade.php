@@ -55,7 +55,7 @@
                 <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
                     <div>
                         <h5 class="mb-0 fw-bold">Verification orders</h5>
-                        <p class="orders-hint mb-0 mt-1">Pending orders poll providers every few seconds. Cancel to release the number and refund your wallet.</p>
+                        <p class="orders-hint mb-0 mt-1">Pending orders check for your code every few seconds. Cancel to release the number and refund your wallet.</p>
                     </div>
                     <span class="badge bg-light text-dark border">{{ $orders->count() }} total</span>
                 </div>

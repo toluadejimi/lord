@@ -115,7 +115,7 @@
                 <span class="dash-server-num">{{ $server['server_num'] }}</span>
                 <span class="dash-sheet-option-text">
                     <span class="dash-sheet-option-name">{{ $server['menu_label'] }}</span>
-                    <span class="dash-sheet-option-hint">{{ $server['provider'] ?? 'SMS verification' }}</span>
+                    <span class="dash-sheet-option-hint">{{ \App\Support\VerificationLabels::customerServerHint((int) $server['server_num']) }}</span>
                 </span>
                 <i class="ti ti-chevron-right dash-sheet-option-arrow"></i>
             </a>
