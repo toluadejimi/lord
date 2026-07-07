@@ -578,9 +578,11 @@ button.pc-head-link {
 
 /* ——— Mobile layout ——— */
 @media (max-width: 1024px) {
-    .pc-container {
+    .pc-container,
+    [data-pc-layout="color-header"] .pc-container {
         margin-left: 0 !important;
-        padding-top: 64px !important;
+        top: 56px !important;
+        padding-top: 0 !important;
     }
 
     body {
