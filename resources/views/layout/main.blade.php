@@ -368,10 +368,14 @@
 
     var openers = document.querySelectorAll('[data-dash-open="numbers-sheet"]');
     var closers = root.querySelectorAll('[data-dash-close="numbers-sheet"]');
+    var floatNav = document.querySelector('.smslord-float-nav');
     var lastFocus = null;
 
     function openSheet() {
         lastFocus = document.activeElement;
+        if (floatNav) {
+            floatNav.classList.add('is-hidden');
+        }
         root.hidden = false;
         requestAnimationFrame(function () {
             root.classList.add('is-open');
@@ -385,6 +389,9 @@
         window.setTimeout(function () {
             if (!root.classList.contains('is-open')) {
                 root.hidden = true;
+            }
+            if (floatNav) {
+                floatNav.classList.remove('is-hidden');
             }
         }, 280);
         if (lastFocus && typeof lastFocus.focus === 'function') {
