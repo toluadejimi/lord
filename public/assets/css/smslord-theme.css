@@ -748,8 +748,8 @@ body.has-customer-float-nav.dash-sheet-open {
 }
 
 .smslord-float-nav {
-    --float-nav-active: #f97316;
-    --float-nav-inactive: #3f3f50;
+    --float-nav-active: #fff;
+    --float-nav-inactive: rgba(255, 255, 255, 0.72);
     position: fixed;
     left: 50%;
     bottom: calc(0.85rem + env(safe-area-inset-bottom, 0px));
@@ -761,10 +761,18 @@ body.has-customer-float-nav.dash-sheet-open {
     align-items: stretch;
     gap: 0;
     padding: 0.35rem 0.5rem 0.55rem;
-    background: #fff;
+    background: linear-gradient(135deg, #4f46e5 0%, #6d28d9 52%, #7c3aed 100%);
     border: none;
     border-radius: 28px;
-    box-shadow: 0 10px 40px rgba(15, 23, 42, 0.12), 0 2px 8px rgba(15, 23, 42, 0.06);
+    box-shadow: 0 12px 36px rgba(79, 70, 229, 0.38), 0 4px 12px rgba(79, 70, 229, 0.2);
+    transition: opacity 0.28s ease, transform 0.28s ease, visibility 0.28s ease;
+}
+
+body.dash-sheet-open .smslord-float-nav {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateX(-50%) translateY(1.25rem);
 }
 
 .smslord-float-nav__item {
@@ -808,7 +816,7 @@ body.has-customer-float-nav.dash-sheet-open {
 }
 
 .smslord-float-nav__item:hover:not(.is-active) {
-    color: #1e293b;
+    color: #fff;
 }
 
 .smslord-float-nav__icon {
@@ -999,13 +1007,13 @@ body.dash-sheet-open { overflow: hidden; }
 }
 
 [data-pc-theme="dark"] .smslord-float-nav {
-    background: #1e293b;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45), 0 2px 8px rgba(0, 0, 0, 0.25);
-    --float-nav-inactive: #94a3b8;
+    background: linear-gradient(135deg, #3730a3 0%, #5b21b6 52%, #6d28d9 100%);
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45), 0 4px 12px rgba(0, 0, 0, 0.25);
+    --float-nav-inactive: rgba(255, 255, 255, 0.7);
 }
 
 [data-pc-theme="dark"] .smslord-float-nav__item:hover:not(.is-active) {
-    color: #e2e8f0;
+    color: #fff;
 }
 
 [data-pc-theme="dark"] .dash-sheet {

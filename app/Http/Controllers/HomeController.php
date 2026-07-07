@@ -683,13 +683,16 @@ class HomeController extends Controller
 
     public function profile(request $request)
     {
+        $user = Auth::user();
+        $displayName = $user->username ?: explode('@', (string) $user->email)[0];
+        $initials = strtoupper(substr(preg_replace('/\s+/', '', $displayName), 0, 2) ?: 'U');
 
-
-        $user = Auth::id();
-        $orders = SoldLog::latest()->where('user_id', Auth::id())->paginate(5);
-
-
-        return view('profile', compact('user', 'orders'));
+        return view('profile', [
+            'user' => $user,
+            'displayName' => $displayName,
+            'initials' => $initials,
+            'wallet' => (float) $user->wallet,
+        ]);
     }
 
 
@@ -781,11 +784,12 @@ class HomeController extends Controller
 
     public function change_password(request $request)
     {
+        $user = Auth::user();
 
-        $user = Auth::id();
-
-
-        return view('change-password', compact('user'));
+        return view('change-password', [
+            'user' => $user,
+            'displayName' => $user->username ?: explode('@', (string) $user->email)[0],
+        ]);
     }
 
 
