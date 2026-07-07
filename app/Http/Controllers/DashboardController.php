@@ -25,10 +25,6 @@ class DashboardController extends Controller
             ->filter(fn ($svc) => $svc['enabled'])
             ->values();
 
-        $numbersUrl = $verificationServers->isNotEmpty()
-            ? url(ltrim($verificationServers->first()['user_route'], '/'))
-            : url('orders');
-
         $vtuOn = $config->getBool('provider_vtu_enabled', true);
         $tbtOn = $config->getBool('provider_telegram_blue_tick_enabled', false);
 
@@ -51,7 +47,7 @@ class DashboardController extends Controller
                 'label' => 'Numbers',
                 'icon' => 'ti-device-mobile',
                 'tone' => 'violet',
-                'url' => $numbersUrl,
+                'action' => 'numbers-sheet',
                 'enabled' => $verificationServers->isNotEmpty(),
             ],
             [
@@ -69,7 +65,7 @@ class DashboardController extends Controller
                 'enabled' => $vtuOn && $config->getBool('vtu_cable_enabled', true),
             ],
             [
-                'label' => 'Telegram',
+                'label' => 'Telegram Blue Tick',
                 'icon' => 'fab fa-telegram',
                 'tone' => 'sky',
                 'url' => route('telegram-blue-tick.index'),

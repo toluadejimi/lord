@@ -35,12 +35,21 @@
 
         <div class="dash-services-grid">
             @foreach($popularServices as $service)
+            @if(($service['action'] ?? '') === 'numbers-sheet')
+            <button type="button" class="dash-service-tile dash-tone-{{ $service['tone'] }}" data-dash-open="numbers-sheet" aria-haspopup="dialog" aria-controls="dash-numbers-sheet">
+                <span class="dash-service-icon">
+                    <i class="{{ str_contains($service['icon'], 'fa-') ? $service['icon'] : 'ti '.$service['icon'] }}"></i>
+                </span>
+                <span class="dash-service-label">{{ $service['label'] }}</span>
+            </button>
+            @else
             <a href="{{ $service['url'] }}" class="dash-service-tile dash-tone-{{ $service['tone'] }}">
                 <span class="dash-service-icon">
                     <i class="{{ str_contains($service['icon'], 'fa-') ? $service['icon'] : 'ti '.$service['icon'] }}"></i>
                 </span>
                 <span class="dash-service-label">{{ $service['label'] }}</span>
             </a>
+            @endif
             @endforeach
         </div>
 
@@ -87,4 +96,80 @@
         @endif
     </div>
 </div>
+
+@if($verificationServers->isNotEmpty())
+<div class="dash-sheet-root" id="dash-numbers-sheet-root" hidden>
+    <div class="dash-sheet-backdrop" data-dash-close="numbers-sheet" aria-hidden="true"></div>
+    <div class="dash-sheet" id="dash-numbers-sheet" role="dialog" aria-modal="true" aria-labelledby="dash-numbers-sheet-title">
+        <div class="dash-sheet-handle" aria-hidden="true"></div>
+        <div class="dash-sheet-head">
+            <h3 class="dash-sheet-title" id="dash-numbers-sheet-title">Choose a number service</h3>
+            <button type="button" class="dash-sheet-close" data-dash-close="numbers-sheet" aria-label="Close">
+                <i class="ti ti-x"></i>
+            </button>
+        </div>
+        <p class="dash-sheet-sub">Select a verification server to buy a virtual number.</p>
+        <div class="dash-sheet-list">
+            @foreach($verificationServers as $server)
+            <a href="{{ url(ltrim($server['user_route'], '/')) }}" class="dash-sheet-option">
+                <span class="dash-server-num">{{ $server['server_num'] }}</span>
+                <span class="dash-sheet-option-text">
+                    <span class="dash-sheet-option-name">{{ $server['menu_label'] }}</span>
+                    <span class="dash-sheet-option-hint">{{ $server['provider'] ?? 'SMS verification' }}</span>
+                </span>
+                <i class="ti ti-chevron-right dash-sheet-option-arrow"></i>
+            </a>
+            @endforeach
+        </div>
+    </div>
+</div>
+@endif
+
+<script>
+(function () {
+    var root = document.getElementById('dash-numbers-sheet-root');
+    if (!root) return;
+
+    var sheet = document.getElementById('dash-numbers-sheet');
+    var openers = document.querySelectorAll('[data-dash-open="numbers-sheet"]');
+    var closers = root.querySelectorAll('[data-dash-close="numbers-sheet"]');
+    var lastFocus = null;
+
+    function openSheet() {
+        lastFocus = document.activeElement;
+        root.hidden = false;
+        requestAnimationFrame(function () {
+            root.classList.add('is-open');
+        });
+        document.body.classList.add('dash-sheet-open');
+    }
+
+    function closeSheet() {
+        root.classList.remove('is-open');
+        document.body.classList.remove('dash-sheet-open');
+        window.setTimeout(function () {
+            if (!root.classList.contains('is-open')) {
+                root.hidden = true;
+            }
+        }, 280);
+        if (lastFocus && typeof lastFocus.focus === 'function') {
+            lastFocus.focus();
+        }
+    }
+
+    openers.forEach(function (btn) {
+        btn.addEventListener('click', openSheet);
+    });
+
+    closers.forEach(function (el) {
+        el.addEventListener('click', closeSheet);
+    });
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && root.classList.contains('is-open')) {
+            closeSheet();
+        }
+    });
+})();
+</script>
 @endsection
