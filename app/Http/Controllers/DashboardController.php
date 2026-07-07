@@ -54,7 +54,8 @@ class DashboardController extends Controller
                 'label' => 'Logs',
                 'icon' => 'ti-receipt',
                 'tone' => 'slate',
-                'url' => url('wallet-transactions'),
+                'url' => 'https://loggsplug.online/',
+                'external' => true,
                 'enabled' => true,
             ],
             [

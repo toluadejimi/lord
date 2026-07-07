@@ -43,7 +43,7 @@
                 <span class="dash-service-label">{{ $service['label'] }}</span>
             </button>
             @else
-            <a href="{{ $service['url'] }}" class="dash-service-tile dash-tone-{{ $service['tone'] }}">
+            <a href="{{ $service['url'] }}" class="dash-service-tile dash-tone-{{ $service['tone'] }}"@if(!empty($service['external'])) target="_blank" rel="noopener noreferrer"@endif>
                 <span class="dash-service-icon">
                     <i class="{{ str_contains($service['icon'], 'fa-') ? $service['icon'] : 'ti '.$service['icon'] }}"></i>
                 </span>

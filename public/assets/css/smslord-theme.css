@@ -752,17 +752,17 @@ body.has-customer-float-nav.dash-sheet-open {
     left: 50%;
     bottom: calc(0.65rem + env(safe-area-inset-bottom, 0px));
     transform: translateX(-50%);
-    z-index: 1045;
-    width: min(calc(100% - 1.25rem), 380px);
+    z-index: 1090;
+    width: min(calc(100% - 1rem), 440px);
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: repeat(4, 1fr);
     align-items: end;
-    gap: 0.35rem;
-    padding: 0.45rem 0.55rem;
-    background: rgba(255, 255, 255, 0.92);
+    gap: 0.2rem;
+    padding: 0.45rem 0.5rem;
+    background: rgba(255, 255, 255, 0.96);
     border: 1px solid #e2e8f0;
     border-radius: 20px;
-    box-shadow: 0 12px 40px rgba(15, 23, 42, 0.16);
+    box-shadow: 0 12px 40px rgba(15, 23, 42, 0.18);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
 }
@@ -820,10 +820,28 @@ body.has-customer-float-nav.dash-sheet-open {
 }
 
 .smslord-float-nav__label {
-    font-size: 0.62rem;
+    font-size: 0.58rem;
     font-weight: 700;
     line-height: 1.1;
     text-align: center;
+}
+
+@media (max-width: 380px) {
+    .smslord-float-nav__label {
+        font-size: 0.52rem;
+    }
+
+    .smslord-float-nav__icon {
+        width: 1.85rem;
+        height: 1.85rem;
+        font-size: 1rem;
+    }
+
+    .smslord-float-nav__icon--main {
+        width: 2.65rem;
+        height: 2.65rem;
+        font-size: 1.1rem;
+    }
 }
 
 /* ——— Numbers bottom sheet (global) ——— */
@@ -1015,13 +1033,3 @@ body.dash-sheet-open { overflow: hidden; }
 
 [data-pc-theme="dark"] .dash-sheet-option-hint { color: #94a3b8; }
 [data-pc-theme="dark"] .dash-sheet-option-arrow { color: #64748b; }
-
-@media (min-width: 1025px) {
-    body.has-customer-float-nav .pc-content {
-        padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px)) !important;
-    }
-
-    .smslord-float-nav {
-        display: none;
-    }
-}
