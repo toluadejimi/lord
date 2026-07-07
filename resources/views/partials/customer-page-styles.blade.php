@@ -277,6 +277,97 @@
     box-shadow: 0 2px 8px rgba(0,0,0,.06);
 }
 
+.cp-subnav--scroll {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.cp-subnav--scroll::-webkit-scrollbar { display: none; }
+.cp-subnav--scroll a { white-space: nowrap; flex-shrink: 0; }
+
+/* Home-style activity list */
+.cp-activity-card {
+    background: #fff;
+    border-radius: 16px;
+    border: 1px solid #eef2f7;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+    overflow: hidden;
+}
+
+.cp-activity-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.9rem 1rem;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.cp-activity-row:last-child { border-bottom: 0; }
+
+.cp-activity-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #0f172a;
+    word-break: break-word;
+}
+
+.cp-activity-meta {
+    font-size: 0.72rem;
+    color: #64748b;
+    margin-top: 0.15rem;
+    word-break: break-word;
+}
+
+.cp-activity-amount {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.cp-amount-credit { color: #059669; font-weight: 700; font-size: 0.82rem; }
+.cp-amount-debit { color: #dc2626; font-weight: 700; font-size: 0.82rem; }
+
+.cp-activity-status {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.cp-st-ok, .cp-st-success { color: #059669; }
+.cp-st-pending, .cp-st-warning { color: #d97706; }
+.cp-st-muted, .cp-st-secondary { color: #94a3b8; }
+.cp-st-danger { color: #dc2626; }
+.cp-st-info { color: #2563eb; }
+
+.cp-activity-empty {
+    text-align: center;
+    color: #64748b;
+    padding: 2.5rem 1rem;
+}
+
+[data-pc-theme="dark"] .cp-activity-card {
+    background: #1e293b;
+    border-color: #334155;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+}
+
+[data-pc-theme="dark"] .cp-activity-row { border-bottom-color: #334155; }
+[data-pc-theme="dark"] .cp-activity-title,
+[data-pc-theme="dark"] .cp-activity-amount { color: #f1f5f9; }
+[data-pc-theme="dark"] .cp-activity-meta { color: #94a3b8; }
+[data-pc-theme="dark"] .cp-subnav { background: #1e293b; }
+[data-pc-theme="dark"] .cp-subnav a { color: #94a3b8; }
+[data-pc-theme="dark"] .cp-subnav a.active {
+    background: #334155;
+    color: #c7d2fe;
+}
+
 /* Verification orders — mobile card layout */
 .vo-panel.sv-orders-panel {
     border-radius: 16px;

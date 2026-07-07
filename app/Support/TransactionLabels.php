@@ -67,6 +67,30 @@ class TransactionLabels
         };
     }
 
+    /** @return array<string, string> */
+    public static function customerFilters(): array
+    {
+        return [
+            self::FILTER_ALL => 'All',
+            'credit' => 'Credits',
+            'debit' => 'Debits',
+            'funding' => 'Funding',
+            self::FILTER_VERIFICATION => 'Numbers',
+            self::FILTER_VTU => 'Bills & VTU',
+        ];
+    }
+
+    public static function applyCustomerFilter(Builder $query, string $filter): Builder
+    {
+        return match ($filter) {
+            'credit' => $query->whereIn('type', [2, 3]),
+            'debit' => $query->whereIn('type', [1, 4]),
+            'funding' => $query->where('type', 2),
+            self::FILTER_VERIFICATION, self::FILTER_VTU, self::FILTER_API => self::applyAdminFilter($query, $filter),
+            default => $query,
+        };
+    }
+
     public static function applyAdminFilter(Builder $query, string $filter): Builder
     {
         return match ($filter) {

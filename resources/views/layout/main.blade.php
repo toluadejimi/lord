@@ -87,7 +87,7 @@
 
 </head><!-- [Head] end --><!-- [Body] Start -->
 <body data-pc-preset="preset-1" data-pc-sidebar-caption="true" data-pc-layout="vertical" data-pc-direction="ltr"
-      data-pc-theme_contrast="" data-pc-theme="light"><!-- [ Pre-loader ] start -->
+      data-pc-theme_contrast="" data-pc-theme="light" @auth class="has-customer-float-nav" @endauth><!-- [ Pre-loader ] start -->
 <div class="page-loader">
     <div class="bar"></div>
 </div><!-- [ Pre-loader ] End --><!-- [ Sidebar Menu ] start -->
@@ -342,41 +342,72 @@
 
 @stack('page-scripts')
 
-<footer class="pc-footer smslord-footer">
+@auth
+@include('partials.numbers-bottom-sheet')
+@include('partials.customer-float-nav')
+@else
+<footer class="pc-footer smslord-footer smslord-footer--guest">
     <div class="footer-wrapper">
-        <div class="footer-inner">
-            <div>
-                <div class="footer-logo">sms<span>LORD</span></div>
-                <p class="footer-tagline">Virtual numbers for SMS verification, bills &amp; VTU in one place.</p>
-            </div>
-            <nav class="footer-nav" aria-label="Footer navigation">
-                <a href="{{ route('dashboard') }}">Dashboard</a>
-                <a href="{{ url('fund-wallet') }}">Fund Wallet</a>
-                <a href="{{ url('wallet-transactions') }}">Transactions</a>
-                <a href="{{ url('vas') }}">Bills &amp; VTU</a>
-                <a href="{{ url('orders') }}">My Verifications</a>
-                <a href="{{ url('api-docs') }}">API Docs</a>
-                <a href="{{ url('world-sv3') }}">{{ \App\Support\VerificationLabels::customerMenuLabelForServer(4) }}</a>
-            </nav>
-            <div class="footer-social">
-                <a href="https://t.me/smslordcare" target="_blank" rel="noopener">
-                    <i class="fab fa-telegram"></i> Telegram Support
-                </a>
-                <a href="https://loggsplug.online" target="_blank" rel="noopener">
-                    <i class="ti ti-shopping-bag"></i> Buy Social Account
-                </a>
-            </div>
-        </div>
-        <div class="footer-bottom">
+        <div class="footer-bottom" style="border:0;padding:1rem 1.25rem;">
             <span>&copy; {{ date('Y') }} SMSLORD. All rights reserved.</span>
             <span>
                 <a href="{{ url('policy') }}">Privacy</a>
                 &middot;
-                <a href="https://t.me/smslordcare" target="_blank" rel="noopener">Help</a>
+                <a href="{{ url('login') }}">Login</a>
             </span>
         </div>
     </div>
 </footer>
+@endauth
+
+@auth
+<script>
+(function () {
+    var root = document.getElementById('dash-numbers-sheet-root');
+    if (!root) return;
+
+    var openers = document.querySelectorAll('[data-dash-open="numbers-sheet"]');
+    var closers = root.querySelectorAll('[data-dash-close="numbers-sheet"]');
+    var lastFocus = null;
+
+    function openSheet() {
+        lastFocus = document.activeElement;
+        root.hidden = false;
+        requestAnimationFrame(function () {
+            root.classList.add('is-open');
+        });
+        document.body.classList.add('dash-sheet-open');
+    }
+
+    function closeSheet() {
+        root.classList.remove('is-open');
+        document.body.classList.remove('dash-sheet-open');
+        window.setTimeout(function () {
+            if (!root.classList.contains('is-open')) {
+                root.hidden = true;
+            }
+        }, 280);
+        if (lastFocus && typeof lastFocus.focus === 'function') {
+            lastFocus.focus();
+        }
+    }
+
+    openers.forEach(function (btn) {
+        btn.addEventListener('click', openSheet);
+    });
+
+    closers.forEach(function (el) {
+        el.addEventListener('click', closeSheet);
+    });
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && root.classList.contains('is-open')) {
+            closeSheet();
+        }
+    });
+})();
+</script>
+@endauth
 
 
 <!-- Required Js -->

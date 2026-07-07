@@ -84,45 +84,34 @@
                     <div class="card-body p-4">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h5 class="mb-0">Recent funding attempts</h5>
-                            <a href="{{ route('wallet.transactions') }}" class="small">See all</a>
+                            <a href="{{ route('wallet.transactions') }}?filter=funding" class="small">See all</a>
                         </div>
 
-                        <div class="table-responsive">
-                            <table class="table table-hover mb-0 fund-table">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>Reference</th>
-                                        <th>Amount</th>
-                                        <th>Status</th>
-                                        <th>Date</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse($transaction as $data)
-                                        <tr>
-                                            <td><code class="small">{{ $data->ref_id }}</code></td>
-                                            <td class="fw-semibold">₦{{ number_format($data->amount, 2) }}</td>
-                                            <td>
-                                                @if ((int) $data->status === 1)
-                                                    <span class="fund-badge fund-badge-pending">Pending</span>
-                                                    <a href="{{ url('resolve-page?trx_ref='.$data->ref_id) }}" class="btn btn-link btn-sm p-0 ms-1">Resolve</a>
-                                                @elseif ((int) $data->status === 2)
-                                                    <span class="fund-badge fund-badge-done">Completed</span>
-                                                @else
-                                                    <span class="fund-badge fund-badge-pending">Processing</span>
-                                                @endif
-                                            </td>
-                                            <td class="text-nowrap text-muted">
-                                                {{ $data->created_at ? $data->created_at->format('d M Y, H:i') : '—' }}
-                                            </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="4" class="text-center text-muted py-4">No funding attempts yet.</td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
+                        <div class="cp-activity-card">
+                            @forelse($transaction as $data)
+                                <div class="cp-activity-row">
+                                    <div>
+                                        <div class="cp-activity-title">Wallet funding</div>
+                                        <div class="cp-activity-meta">
+                                            {{ $data->ref_id }}
+                                            · {{ $data->created_at ? $data->created_at->diffForHumans() : '—' }}
+                                        </div>
+                                    </div>
+                                    <div class="text-end">
+                                        <div class="cp-activity-amount">₦{{ number_format($data->amount, 2) }}</div>
+                                        @if ((int) $data->status === 1)
+                                            <span class="cp-activity-status cp-st-warning">Pending</span>
+                                            <a href="{{ url('resolve-page?trx_ref='.$data->ref_id) }}" class="d-block small mt-1">Resolve</a>
+                                        @elseif ((int) $data->status === 2)
+                                            <span class="cp-activity-status cp-st-success">Completed</span>
+                                        @else
+                                            <span class="cp-activity-status cp-st-warning">Processing</span>
+                                        @endif
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="cp-activity-empty">No funding attempts yet.</div>
+                            @endforelse
                         </div>
 
                         @if($transaction->hasPages())

@@ -737,3 +737,291 @@ button.pc-head-link {
         padding: 1.5rem 1rem !important;
     }
 }
+
+/* ——— Floating bottom nav (logged-in customers) ——— */
+body.has-customer-float-nav .pc-content {
+    padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px)) !important;
+}
+
+body.has-customer-float-nav.dash-sheet-open {
+    overflow: hidden;
+}
+
+.smslord-float-nav {
+    position: fixed;
+    left: 50%;
+    bottom: calc(0.65rem + env(safe-area-inset-bottom, 0px));
+    transform: translateX(-50%);
+    z-index: 1045;
+    width: min(calc(100% - 1.25rem), 380px);
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    align-items: end;
+    gap: 0.35rem;
+    padding: 0.45rem 0.55rem;
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    box-shadow: 0 12px 40px rgba(15, 23, 42, 0.16);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.smslord-float-nav__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.2rem;
+    padding: 0.4rem 0.25rem;
+    border: 0;
+    background: transparent;
+    border-radius: 14px;
+    text-decoration: none;
+    color: #64748b;
+    font: inherit;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, transform 0.15s;
+}
+
+.smslord-float-nav__item:hover,
+.smslord-float-nav__item.is-active {
+    color: #4f46e5;
+    background: #eef2ff;
+}
+
+.smslord-float-nav__item--center {
+    margin-top: -1.1rem;
+}
+
+.smslord-float-nav__icon {
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+}
+
+.smslord-float-nav__icon--main {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    color: #fff;
+    box-shadow: 0 8px 20px rgba(79, 70, 229, 0.35);
+    font-size: 1.25rem;
+}
+
+.smslord-float-nav__item--center.is-active .smslord-float-nav__icon--main,
+.smslord-float-nav__item--center:hover .smslord-float-nav__icon--main {
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+.smslord-float-nav__label {
+    font-size: 0.62rem;
+    font-weight: 700;
+    line-height: 1.1;
+    text-align: center;
+}
+
+/* ——— Numbers bottom sheet (global) ——— */
+body.dash-sheet-open { overflow: hidden; }
+
+.dash-sheet-root {
+    position: fixed;
+    inset: 0;
+    z-index: 1080;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.dash-sheet-root.is-open { pointer-events: auto; }
+
+.dash-sheet-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.45);
+    opacity: 0;
+    transition: opacity 0.28s ease;
+    backdrop-filter: blur(3px);
+}
+
+.dash-sheet-root.is-open .dash-sheet-backdrop { opacity: 1; }
+
+.dash-sheet {
+    position: relative;
+    width: min(100%, 520px);
+    max-height: min(78vh, 560px);
+    background: #fff;
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -12px 40px rgba(15, 23, 42, 0.18);
+    padding: 0.5rem 1rem 1.25rem;
+    padding-bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px));
+    transform: translateY(100%);
+    transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+    overflow: auto;
+}
+
+.dash-sheet-root.is-open .dash-sheet { transform: translateY(0); }
+
+.dash-sheet-handle {
+    width: 2.5rem;
+    height: 0.28rem;
+    border-radius: 999px;
+    background: #cbd5e1;
+    margin: 0.35rem auto 0.85rem;
+}
+
+.dash-sheet-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.35rem;
+}
+
+.dash-sheet-title {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0;
+}
+
+.dash-sheet-close {
+    width: 2rem;
+    height: 2rem;
+    border: 0;
+    border-radius: 10px;
+    background: #f1f5f9;
+    color: #64748b;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.dash-sheet-sub {
+    font-size: 0.8rem;
+    color: #64748b;
+    margin: 0 0 0.85rem;
+}
+
+.dash-sheet-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.dash-sheet-option {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.85rem 0.9rem;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    text-decoration: none;
+    color: #0f172a;
+    transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+}
+
+.dash-sheet-option:hover {
+    background: #fff;
+    border-color: #c7d2fe;
+    box-shadow: 0 6px 16px rgba(79, 70, 229, 0.1);
+    color: #0f172a;
+}
+
+.dash-sheet-option-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    min-width: 0;
+}
+
+.dash-sheet-option-name {
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.dash-sheet-option-hint {
+    font-size: 0.72rem;
+    color: #64748b;
+}
+
+.dash-sheet-option-arrow {
+    margin-left: auto;
+    color: #94a3b8;
+    flex-shrink: 0;
+}
+
+.dash-server-num {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    color: #fff;
+    font-size: 0.8rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+[data-pc-theme="dark"] .smslord-float-nav {
+    background: rgba(30, 41, 59, 0.94);
+    border-color: #334155;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+
+[data-pc-theme="dark"] .smslord-float-nav__item { color: #94a3b8; }
+[data-pc-theme="dark"] .smslord-float-nav__item:hover,
+[data-pc-theme="dark"] .smslord-float-nav__item.is-active {
+    color: #c7d2fe;
+    background: rgba(99, 102, 241, 0.15);
+}
+
+[data-pc-theme="dark"] .dash-sheet {
+    background: #1e293b;
+    box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.45);
+}
+
+[data-pc-theme="dark"] .dash-sheet-handle { background: #475569; }
+[data-pc-theme="dark"] .dash-sheet-title { color: #f1f5f9; }
+[data-pc-theme="dark"] .dash-sheet-sub { color: #94a3b8; }
+
+[data-pc-theme="dark"] .dash-sheet-close {
+    background: #334155;
+    color: #cbd5e1;
+}
+
+[data-pc-theme="dark"] .dash-sheet-option {
+    background: #0f172a;
+    border-color: #334155;
+    color: #f1f5f9;
+}
+
+[data-pc-theme="dark"] .dash-sheet-option:hover {
+    background: #131c2e;
+    border-color: #6366f1;
+    color: #f1f5f9;
+}
+
+[data-pc-theme="dark"] .dash-sheet-option-hint { color: #94a3b8; }
+[data-pc-theme="dark"] .dash-sheet-option-arrow { color: #64748b; }
+
+@media (min-width: 1025px) {
+    body.has-customer-float-nav .pc-content {
+        padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px)) !important;
+    }
+
+    .smslord-float-nav {
+        display: none;
+    }
+}
