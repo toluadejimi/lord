@@ -119,6 +119,13 @@
         </a>
     </li>
     <li class="pc-item">
+        <a href="https://t.me/smslorddotcom" class="pc-link pc-link-modern" target="_blank" rel="noopener">
+            <span class="pc-micon pc-micon-soft"><i class="fab fa-telegram"></i></span>
+            <span class="pc-mtext">Telegram Channel</span>
+            <span class="nav-chip nav-chip-external"><i class="ti ti-external-link"></i></span>
+        </a>
+    </li>
+    <li class="pc-item">
         <a href="https://t.me/smslordcare" class="pc-link pc-link-modern" target="_blank" rel="noopener">
             <span class="pc-micon pc-micon-soft"><i class="fab fa-telegram"></i></span>
             <span class="pc-mtext">Telegram Support</span>
