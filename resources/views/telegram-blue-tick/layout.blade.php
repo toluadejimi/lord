@@ -31,4 +31,5 @@
         @yield('tbt-body')
     </div>
 </div>
+@stack('page-scripts')
 @endsection

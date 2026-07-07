@@ -38,10 +38,7 @@ class IStarClient
             throw new \RuntimeException($this->extractError($response));
         }
 
-        $data = $response->json();
-        if (!is_array($data)) {
-            return [];
-        }
+        $data = $this->unwrapList($response->json());
 
         $packages = [];
         foreach ($data as $item) {
@@ -50,7 +47,7 @@ class IStarClient
             }
             $packages[] = [
                 'months' => (int) $item['months'],
-                'usd_value' => (float) ($item['usd_value'] ?? 0),
+                'usd_value' => (float) ($item['usd_value'] ?? $item['usd'] ?? $item['amount'] ?? 0),
                 'ton_value' => isset($item['ton_value']) ? (float) $item['ton_value'] : null,
             ];
         }
@@ -58,6 +55,25 @@ class IStarClient
         usort($packages, fn ($a, $b) => $a['months'] <=> $b['months']);
 
         return $packages;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function walletBalance(): array
+    {
+        $response = $this->request('get', '/wallet/balance');
+
+        if (!$response->successful()) {
+            throw new \RuntimeException($this->extractError($response));
+        }
+
+        $data = $response->json();
+        if (!is_array($data)) {
+            throw new \RuntimeException('Invalid wallet balance response from iStar.');
+        }
+
+        return $data;
     }
 
     /**
@@ -77,9 +93,17 @@ class IStarClient
         }
 
         $data = $response->json();
-        if (!is_array($data) || !($data['success'] ?? false)) {
+        if (!is_array($data) || !($data['success'] ?? true)) {
             throw new \RuntimeException('Recipient not found or invalid for Premium gift.');
         }
+
+        $hash = (string) ($data['recipient_hash'] ?? $data['recipient'] ?? '');
+        if ($hash === '') {
+            throw new \RuntimeException('Recipient could not be verified. Try another username.');
+        }
+
+        $data['recipient_hash'] = $hash;
+        $data['recipient'] = $hash;
 
         return $data;
     }
@@ -157,12 +181,48 @@ class IStarClient
     {
         $json = $response->json();
         if (is_array($json)) {
-            $message = $json['message'] ?? $json['error'] ?? $json['detail'] ?? null;
-            if (is_string($message) && $message !== '') {
-                return $message;
+            foreach (['message', 'error', 'detail', 'msg'] as $key) {
+                $message = $json[$key] ?? null;
+                if (is_string($message) && $message !== '') {
+                    return $message;
+                }
+            }
+
+            if (isset($json['errors']) && is_array($json['errors'])) {
+                $first = collect($json['errors'])->flatten()->first();
+                if (is_string($first) && $first !== '') {
+                    return $first;
+                }
             }
         }
 
+        $body = trim($response->body());
+        if ($body !== '' && strlen($body) < 300) {
+            return $body;
+        }
+
         return 'iStar API request failed (HTTP '.$response->status().').';
+    }
+
+    /**
+     * @return list<array<string, mixed>>
+     */
+    protected function unwrapList(mixed $data): array
+    {
+        if (!is_array($data)) {
+            return [];
+        }
+
+        if (array_is_list($data)) {
+            return $data;
+        }
+
+        foreach (['data', 'packages', 'items', 'results'] as $key) {
+            if (isset($data[$key]) && is_array($data[$key])) {
+                return array_is_list($data[$key]) ? $data[$key] : [];
+            }
+        }
+
+        return [];
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Setting;
 use App\Models\TelegramPremiumOrder;
 use App\Models\User;
 use App\Services\TelegramPremium\IStarClient;
@@ -22,6 +23,21 @@ class TelegramPremiumOrderService
         return $this->config->getBool('provider_telegram_blue_tick_enabled', false);
     }
 
+    public function pricingConfigured(): bool
+    {
+        foreach (config('telegram_premium.valid_months', [3, 6, 12]) as $months) {
+            $fixed = $this->config->get('telegram_premium_price_'.$months);
+            if ($fixed !== null && $fixed !== '' && (float) $fixed > 0) {
+                return true;
+            }
+        }
+
+        $setting = Setting::find(7);
+        $rate = (float) ($setting->rate ?? 0);
+
+        return $rate > 0;
+    }
+
     /**
      * @return list<array{months: int, label: string, usd: float, price_ngn: float}>
      */
@@ -38,11 +54,15 @@ class TelegramPremiumOrderService
                 continue;
             }
             $usd = (float) $pkg['usd_value'];
+            $priceNgn = $this->ngnPriceForMonths($months, $usd);
+            if ($priceNgn <= 0) {
+                continue;
+            }
             $rows[] = [
                 'months' => $months,
                 'label' => $labels[$months] ?? ($months.' months'),
                 'usd' => $usd,
-                'price_ngn' => $this->ngnPriceForMonths($months, $usd),
+                'price_ngn' => $priceNgn,
             ];
         }
 
@@ -78,6 +98,10 @@ class TelegramPremiumOrderService
 
         try {
             $recipient = $this->istar->searchPremiumRecipient($username, $months);
+
+            if (!empty($recipient['myself'])) {
+                return ['success' => false, 'message' => 'You cannot gift Premium to your own account.'];
+            }
 
             return ['success' => true, 'recipient' => $recipient];
         } catch (\Throwable $e) {

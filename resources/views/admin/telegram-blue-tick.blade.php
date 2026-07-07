@@ -7,6 +7,8 @@
 @section('content')
 @if(!$configured)
 <div class="alert alert-warning">Set your <strong>ISTAR_API_KEY</strong> below and enable the module for customers to see Telegram Blue Tick.</div>
+@elseif(!$pricingConfigured)
+<div class="alert alert-warning">API key is set, but <strong>customer pricing is not configured</strong>. Set the rate (₦ per $1) or fixed NGN prices below — otherwise customers will see no packages.</div>
 @endif
 
 <form method="post" action="{{ url('admin/telegram-blue-tick/fetch-packages') }}" class="mb-3">

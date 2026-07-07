@@ -26,7 +26,6 @@
                         <div class="tbt-package" data-months="{{ $pkg['months'] }}" data-price="{{ $pkg['price_ngn'] }}">
                             <div class="months mb-1">{{ $pkg['label'] }}</div>
                             <div class="price">₦{{ number_format($pkg['price_ngn'], 2) }}</div>
-                            <div class="small text-muted mt-1">≈ ${{ number_format($pkg['usd'], 2) }} USD</div>
                         </div>
                     </div>
                     @endforeach
@@ -143,6 +142,15 @@
         });
     });
 
+    function firstError(data) {
+        if (data && data.message) return data.message;
+        if (data && data.errors) {
+            var k = Object.keys(data.errors)[0];
+            if (k && data.errors[k] && data.errors[k][0]) return data.errors[k][0];
+        }
+        return 'Request failed. Please try again.';
+    }
+
     document.getElementById('tbt-lookup')?.addEventListener('click', function () {
         var username = document.getElementById('tbt-username').value.trim().replace(/^@/, '');
         if (!username || !selectedMonths) return;
@@ -150,15 +158,18 @@
         this.disabled = true;
         this.textContent = 'Checking…';
 
+        var body = new FormData();
+        body.append('username', username);
+        body.append('months', String(selectedMonths));
+        body.append('_token', csrf);
+
         fetch(lookupUrl, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
                 'Accept': 'application/json',
-                'X-CSRF-TOKEN': csrf,
                 'X-Requested-With': 'XMLHttpRequest'
             },
-            body: JSON.stringify({ username: username, months: selectedMonths })
+            body: body
         })
             .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
             .then(function (res) {
@@ -166,12 +177,17 @@
                 document.getElementById('tbt-lookup').textContent = 'Verify recipient';
                 if (!res.ok || !res.data.success) {
                     resetRecipient();
-                    setError(res.data.message || 'Could not verify recipient.');
+                    setError(firstError(res.data));
                     return;
                 }
                 var rec = res.data.recipient || {};
-                recipientHash = rec.recipient || '';
+                recipientHash = rec.recipient_hash || rec.recipient || '';
                 recipientName = rec.name || username;
+                if (!recipientHash) {
+                    resetRecipient();
+                    setError('Recipient could not be verified. Try another username.');
+                    return;
+                }
                 document.getElementById('tbt-recipient-box').classList.remove('d-none');
                 document.getElementById('tbt-recipient-name').textContent = recipientName;
                 document.getElementById('tbt-recipient-username').textContent = username;

@@ -25,6 +25,7 @@ class AdminTelegramBlueTickController extends Controller
         return view('admin.telegram-blue-tick', [
             'moduleEnabled' => $this->config->getBool('provider_telegram_blue_tick_enabled', false),
             'configured' => $this->istar->configured(),
+            'pricingConfigured' => $this->orders->pricingConfigured(),
             'apiKeyMasked' => $this->maskOrEmpty($this->config->get('ISTAR_API_KEY')),
             'apiBase' => $this->config->get('ISTAR_API_BASE', 'https://v1.fragmentapi.com/api/v1/partner'),
             'webhookSecretMasked' => $this->maskOrEmpty($this->config->get('ISTAR_WEBHOOK_SECRET')),
@@ -78,9 +79,18 @@ class AdminTelegramBlueTickController extends Controller
         try {
             $packages = $this->istar->premiumPackages();
             $display = $this->orders->packagesForDisplay();
+            $wallet = $this->istar->walletBalance();
+
+            $message = 'Packages fetched from iStar.';
+            if ($display === []) {
+                $message .= ' Warning: no customer prices — set rate/margin or fixed NGN prices.';
+            }
+            if (isset($wallet['balance'])) {
+                $message .= ' Provider TON balance: '.number_format((float) $wallet['balance'], 2).'.';
+            }
 
             return back()
-                ->with('message', 'Packages fetched from iStar. Customer prices use rate/margin or fixed NGN overrides.')
+                ->with('message', $message)
                 ->with('remotePackages', $packages)
                 ->with('displayPackages', $display);
         } catch (\Throwable $e) {

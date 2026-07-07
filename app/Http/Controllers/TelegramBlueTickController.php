@@ -6,6 +6,7 @@ use App\Services\TelegramPremium\IStarClient;
 use App\Services\TelegramPremiumOrderService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class TelegramBlueTickController extends Controller
 {
@@ -23,14 +24,20 @@ class TelegramBlueTickController extends Controller
         $packages = [];
         $loadError = null;
 
-        try {
-            if ($this->istar->configured()) {
+        if (!$this->istar->configured()) {
+            $loadError = 'Service is being configured. Please check back soon.';
+        } elseif (!$this->orders->pricingConfigured()) {
+            $loadError = 'Pricing is not configured yet. Please contact support.';
+        } else {
+            try {
                 $packages = $this->orders->packagesForDisplay();
-            } else {
-                $loadError = 'Service is being configured. Please check back soon.';
+                if ($packages === []) {
+                    $loadError = 'No packages available from the provider. Admin should verify the iStar API key and pricing.';
+                }
+            } catch (\Throwable $e) {
+                Log::warning('Telegram Blue Tick packages failed', ['error' => $e->getMessage()]);
+                $loadError = 'Could not load packages: '.$e->getMessage();
             }
-        } catch (\Throwable $e) {
-            $loadError = 'Could not load packages. Please try again later.';
         }
 
         return view('telegram-blue-tick.index', [
