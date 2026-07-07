@@ -579,7 +579,12 @@ button.pc-head-link {
 /* ——— Mobile layout ——— */
 @media (max-width: 1024px) {
     .pc-container {
+        margin-left: 0 !important;
         padding-top: 64px !important;
+    }
+
+    body {
+        overflow-x: hidden;
     }
 
     .pc-content {
@@ -594,6 +599,7 @@ button.pc-head-link {
     .pc-sidebar {
         z-index: 1040 !important;
         width: min(300px, 88vw) !important;
+        left: calc(-1 * min(300px, 88vw)) !important;
         box-shadow: 8px 0 32px rgba(15, 23, 42, 0.18) !important;
     }
 
