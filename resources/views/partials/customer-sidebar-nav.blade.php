@@ -2,6 +2,24 @@
     $navCfg = app(\App\Services\AppConfigService::class);
     $vtuMasterOn = $navCfg->getBool('provider_vtu_enabled', true);
     $tbtOn = $navCfg->getBool('provider_telegram_blue_tick_enabled', false);
+
+    $verificationServers = collect(config('platform.admin_service_groups', []))
+        ->filter(fn ($svc) => !empty($svc['user_route']) && !empty($svc['enabled_key']))
+        ->map(function ($svc, $slug) use ($navCfg) {
+            $enabled = $navCfg->getBool(
+                $svc['enabled_key'],
+                (bool) ($svc['enabled_default'] ?? false)
+            );
+
+            return array_merge($svc, [
+                'slug' => $slug,
+                'enabled' => $enabled,
+            ]);
+        })
+        ->filter(fn ($svc) => $svc['enabled'])
+        ->values();
+
+    $anyVerificationServerOn = $verificationServers->isNotEmpty();
 @endphp
 <ul class="pc-navbar pc-navbar-modern">
     {{-- Home --}}
@@ -28,39 +46,25 @@
     </li>
 
     {{-- Verification --}}
+    @if($anyVerificationServerOn)
     <li class="pc-item pc-caption pc-caption-modern">
         <label>Verification</label>
     </li>
+    @foreach($verificationServers as $server)
     <li class="pc-item">
-        <a href="{{ url('cworld') }}" class="pc-link pc-link-modern {{ request()->is('cworld', 'cworld/*') ? 'active' : '' }}">
-            <span class="pc-micon"><span class="nav-server-badge">1</span></span>
-            <span class="pc-mtext">Server 1</span>
+        <a href="{{ url(ltrim($server['user_route'], '/')) }}" class="pc-link pc-link-modern {{ request()->is(...($server['nav_match'] ?? [])) ? 'active' : '' }}">
+            <span class="pc-micon"><span class="nav-server-badge">{{ $server['server_num'] ?? '?' }}</span></span>
+            <span class="pc-mtext">{{ $server['menu_label'] ?? ('Server '.($server['server_num'] ?? '')) }}</span>
         </a>
     </li>
-    <li class="pc-item">
-        <a href="{{ url('usa2') }}" class="pc-link pc-link-modern {{ request()->is('usa2', 'usa2/*') ? 'active' : '' }}">
-            <span class="pc-micon"><span class="nav-server-badge">2</span></span>
-            <span class="pc-mtext">Server 2</span>
-        </a>
-    </li>
-    <li class="pc-item">
-        <a href="{{ url('world-sv2') }}" class="pc-link pc-link-modern {{ request()->is('world-sv2', 'world-sv2/*') ? 'active' : '' }}">
-            <span class="pc-micon"><span class="nav-server-badge">3</span></span>
-            <span class="pc-mtext">Server 3</span>
-        </a>
-    </li>
-    <li class="pc-item">
-        <a href="{{ url('world-sv3') }}" class="pc-link pc-link-modern {{ request()->is('world-sv3', 'world-sv3/*') ? 'active' : '' }}">
-            <span class="pc-micon"><span class="nav-server-badge">4</span></span>
-            <span class="pc-mtext">Server 4</span>
-        </a>
-    </li>
+    @endforeach
     <li class="pc-item">
         <a href="{{ url('orders') }}" class="pc-link pc-link-modern {{ request()->is('orders', 'verification*') ? 'active' : '' }}">
             <span class="pc-micon pc-micon-soft"><i class="ti ti-messages"></i></span>
             <span class="pc-mtext">My Verifications</span>
         </a>
     </li>
+    @endif
 
     {{-- Premium --}}
     @if($tbtOn)

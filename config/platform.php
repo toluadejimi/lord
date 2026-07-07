@@ -142,6 +142,10 @@ return [
             'menu_label' => 'Server 1',
             'provider' => '5SIM',
             'user_route' => '/cworld',
+            'enabled_key' => 'provider_sim_enabled',
+            'enabled_default' => true,
+            'server_num' => 1,
+            'nav_match' => ['cworld', 'cworld/*'],
             'description' => 'All-countries SMS verification panel (user menu: Server 1).',
         ],
         'usa2' => [
@@ -150,6 +154,10 @@ return [
             'menu_label' => 'Server 2',
             'provider' => 'Unlimited Portal',
             'user_route' => '/usa2',
+            'enabled_key' => 'provider_usa2_enabled',
+            'enabled_default' => false,
+            'server_num' => 2,
+            'nav_match' => ['usa2', 'usa2/*'],
             'description' => 'US number rentals via Unlimited Portal (user menu: Server 2).',
         ],
         'hero' => [
@@ -158,6 +166,10 @@ return [
             'menu_label' => 'Server 3',
             'provider' => 'HeroSMS',
             'user_route' => '/world-sv2',
+            'enabled_key' => 'provider_hero_enabled',
+            'enabled_default' => false,
+            'server_num' => 3,
+            'nav_match' => ['world-sv2', 'world-sv2/*'],
             'description' => 'International verification via HeroSMS (user menu: Server 3).',
         ],
         'sv3' => [
@@ -166,6 +178,10 @@ return [
             'menu_label' => 'Server 4',
             'provider' => 'SMS Bower',
             'user_route' => '/world-sv3',
+            'enabled_key' => 'provider_sv3_enabled',
+            'enabled_default' => false,
+            'server_num' => 4,
+            'nav_match' => ['world-sv3', 'world-sv3/*'],
             'description' => 'International verification via SMS Bower (user menu: Server 4).',
         ],
         'smspool' => [

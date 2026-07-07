@@ -1,6 +1,18 @@
 @extends('layout.main')
 @section('content')
 @include('partials.customer-page-styles')
+@php
+    $navCfg = app(\App\Services\AppConfigService::class);
+    $verificationServers = collect(config('platform.admin_service_groups', []))
+        ->filter(fn ($svc) => !empty($svc['user_route']) && !empty($svc['enabled_key']))
+        ->map(function ($svc) use ($navCfg) {
+            return array_merge($svc, [
+                'enabled' => $navCfg->getBool($svc['enabled_key'], (bool) ($svc['enabled_default'] ?? false)),
+            ]);
+        })
+        ->filter(fn ($svc) => $svc['enabled'])
+        ->values();
+@endphp
 <style>
 .orders-page .cp-subnav { margin-bottom: 0; }
 .orders-hint { font-size: .8rem; color: #64748b; }
@@ -11,13 +23,14 @@
         <div class="cp-hero">
             <div class="cp-hero__main">
                 <h1 class="h4">My verifications</h1>
-                <p class="cp-hero__subtitle">All SMS orders across Server 1–4. OTP codes update automatically — no refresh needed.</p>
+                <p class="cp-hero__subtitle">All SMS orders across enabled servers. OTP codes update automatically — no refresh needed.</p>
+                @if($verificationServers->isNotEmpty())
                 <nav class="cp-hero-nav" aria-label="Verification servers">
-                    <a href="{{ url('cworld') }}"><i class="ti ti-world"></i> Server 1</a>
-                    <a href="{{ url('usa2') }}"><i class="ti ti-flag"></i> Server 2</a>
-                    <a href="{{ url('world-sv2') }}"><i class="ti ti-globe"></i> Server 3</a>
-                    <a href="{{ url('world-sv3') }}"><i class="ti ti-planet"></i> Server 4</a>
+                    @foreach($verificationServers as $server)
+                    <a href="{{ url(ltrim($server['user_route'], '/')) }}"><i class="ti ti-world"></i> {{ $server['menu_label'] ?? ('Server '.($server['server_num'] ?? '')) }}</a>
+                    @endforeach
                 </nav>
+                @endif
             </div>
             @include('partials.customer-wallet-card', [
                 'secondaryUrl' => url('wallet-transactions'),
