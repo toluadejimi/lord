@@ -12,6 +12,7 @@ use App\Models\MainItem;
 use App\Models\Transaction;
 use App\Support\TransactionLabels;
 use App\Models\Verification;
+use App\Services\VerificationOrderService;
 use Illuminate\Http\Request;
 use App\Models\AccountDetail;
 use App\Models\ManualPayment;
@@ -181,6 +182,18 @@ class AdminController extends Controller
         $verifications = Verification::with('user')->latest()->paginate(25);
 
         return view('admin.verifications', compact('verifications'));
+    }
+
+    public function cancelVerification(int $id, VerificationOrderService $orders)
+    {
+        if (!$this->isAdmin()) {
+            return redirect('/admin')->with('error', 'You do not have permission');
+        }
+
+        $verification = Verification::with('user')->findOrFail($id);
+        $result = $orders->adminCancelAndRefund($verification);
+
+        return back()->with($result['success'] ? 'message' : 'error', $result['message']);
     }
 
     protected function isAdmin(): bool

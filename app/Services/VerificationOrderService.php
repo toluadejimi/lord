@@ -61,6 +61,48 @@ class VerificationOrderService
         return ['success' => true, 'message' => 'Order cancelled and wallet refunded.'];
     }
 
+    /**
+     * Admin cancel: attempt provider cancel, then always refund pending orders.
+     *
+     * @return array{success: bool, message: string}
+     */
+    public function adminCancelAndRefund(Verification $verification): array
+    {
+        $status = (int) $verification->status;
+
+        if ($status === 2) {
+            return ['success' => false, 'message' => 'Completed verifications cannot be cancelled.'];
+        }
+
+        if ($status === 99) {
+            return ['success' => false, 'message' => 'Order is already cancelled and refunded.'];
+        }
+
+        if ($status !== 1) {
+            return ['success' => false, 'message' => 'Only pending orders can be cancelled.'];
+        }
+
+        $user = User::find($verification->user_id);
+        if (!$user) {
+            return ['success' => false, 'message' => 'Customer account not found.'];
+        }
+
+        $providerCancelled = $this->cancelAtProvider($verification);
+
+        $ref = 'REFUND-ADM-'.$verification->id.'-'.Str::upper(Str::random(6));
+        $this->wallet->refund($user, (float) $verification->cost, $ref);
+        $verification->update(['status' => 99]);
+
+        if ($providerCancelled) {
+            return ['success' => true, 'message' => 'Order cancelled at provider and ₦'.number_format((float) $verification->cost, 2).' refunded to '.$user->username.'.'];
+        }
+
+        return [
+            'success' => true,
+            'message' => '₦'.number_format((float) $verification->cost, 2).' refunded to '.$user->username.'. Provider cancel was not confirmed — check the number at the provider if needed.',
+        ];
+    }
+
     protected function cancelAtProvider(Verification $verification): bool
     {
         return match ((int) $verification->type) {

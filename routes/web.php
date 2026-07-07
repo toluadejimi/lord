@@ -256,6 +256,7 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('dashboard',  [AdminController::class,'admin_dashboard']);
     Route::get('transactions', [AdminController::class, 'transactions']);
     Route::get('verifications', [AdminController::class, 'verifications']);
+    Route::post('verifications/{id}/cancel', [AdminController::class, 'cancelVerification'])->whereNumber('id');
     Route::get('services', [AdminServicesController::class, 'index']);
     Route::post('services', [AdminServicesController::class, 'update']);
     Route::get('vtu', [AdminVtuController::class, 'index']);
