@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\AdminVtuController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ApiDocsController;
 use App\Http\Controllers\AssistantController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SimController;
@@ -123,6 +124,8 @@ Route::any('get-smscode',  [HomeController::class,'get_smscode']);
 Route::group(['middleware' => ['auth', 'user']], function () {
 
 
+
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('cworld',  [SimController::class,'index']);
     Route::get('cworld/countries',  [SimController::class,'countriesJson']);

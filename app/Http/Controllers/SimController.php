@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\Verification;
 use App\Services\SimWorldCatalogService;
 use App\Services\AppConfigService;
+use App\Support\VerificationLabels;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,7 +20,7 @@ class SimController extends Controller
     public function index(request $request)
     {
         if (!app(AppConfigService::class)->getBool('provider_sim_enabled', true)) {
-            return redirect('/')->with('error', 'Server 1 is not available right now.');
+            return redirect('/')->with('error', VerificationLabels::customerMenuLabelForServer(1).' is not available right now.');
         }
 
         $countries = SimWorldCatalogService::countries();

@@ -4,6 +4,13 @@ namespace App\Support;
 
 class VerificationLabels
 {
+    public static function customerMenuLabelForServer(int $serverNum): string
+    {
+        $labels = config('platform.customer_server_menu_labels', []);
+
+        return $labels[$serverNum] ?? ('Server '.$serverNum);
+    }
+
     public static function providerName(int $type): string
     {
         return match ($type) {
@@ -22,10 +29,10 @@ class VerificationLabels
     public static function customerServerLabel(int $type): string
     {
         return match ($type) {
-            1, 3 => 'Server 1',
-            4 => 'Server 2',
-            9 => 'Server 3',
-            10 => 'Server 4',
+            1, 3 => self::customerMenuLabelForServer(1),
+            4 => self::customerMenuLabelForServer(2),
+            9 => self::customerMenuLabelForServer(3),
+            10 => self::customerMenuLabelForServer(4),
             2, 8 => 'World SMS',
             default => 'Verification',
         };

@@ -178,7 +178,7 @@
                     <button type="button" class="pc-head-link ms-0 border-0 bg-transparent" id="mobile-collapse" aria-label="Open menu">
                         <i class="ti ti-menu-2"></i>
                     </button>
-                    <a href="{{ url('cworld') }}" class="mob-header-brand" aria-label="SMSLORD home">
+                    <a href="{{ route('dashboard') }}" class="mob-header-brand" aria-label="SMSLORD home">
                         <img src="{{ static_asset('assets/images/logo.svg') }}" alt="SMSLORD">
                     </a>
                 </li>
@@ -350,13 +350,13 @@
                 <p class="footer-tagline">Virtual numbers for SMS verification, bills &amp; VTU in one place.</p>
             </div>
             <nav class="footer-nav" aria-label="Footer navigation">
-                <a href="{{ url('cworld') }}">Dashboard</a>
+                <a href="{{ route('dashboard') }}">Dashboard</a>
                 <a href="{{ url('fund-wallet') }}">Fund Wallet</a>
                 <a href="{{ url('wallet-transactions') }}">Transactions</a>
                 <a href="{{ url('vas') }}">Bills &amp; VTU</a>
                 <a href="{{ url('orders') }}">My Verifications</a>
                 <a href="{{ url('api-docs') }}">API Docs</a>
-                <a href="{{ url('world-sv3') }}">Server 4</a>
+                <a href="{{ url('world-sv3') }}">{{ \App\Support\VerificationLabels::customerMenuLabelForServer(4) }}</a>
             </nav>
             <div class="footer-social">
                 <a href="https://t.me/smslordcare" target="_blank" rel="noopener">

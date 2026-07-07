@@ -133,20 +133,28 @@ return [
         'sv3' => 10,
     ],
 
+  /** Customer menu / order labels keyed by server number (1–4). */
+    'customer_server_menu_labels' => [
+        1 => 'All Countries Number 1',
+        2 => 'Server 2',
+        3 => 'All Countries Number 2',
+        4 => 'All Countries Number 3',
+    ],
+
     'admin_settings_groups' => ['sprintpay', 'security', 'telegram', 'site'],
 
     'admin_service_groups' => [
         'sim' => [
             'setting_id' => 3,
             'icon' => 'fa-globe',
-            'menu_label' => 'Server 1',
+            'menu_label' => 'All Countries Number 1',
             'provider' => '5SIM',
             'user_route' => '/cworld',
             'enabled_key' => 'provider_sim_enabled',
             'enabled_default' => true,
             'server_num' => 1,
             'nav_match' => ['cworld', 'cworld/*'],
-            'description' => 'All-countries SMS verification panel (user menu: Server 1).',
+            'description' => 'All-countries SMS verification (user menu: All Countries Number 1).',
         ],
         'usa2' => [
             'setting_id' => 4,
@@ -163,26 +171,26 @@ return [
         'hero' => [
             'setting_id' => 5,
             'icon' => 'fa-server',
-            'menu_label' => 'Server 3',
+            'menu_label' => 'All Countries Number 2',
             'provider' => 'HeroSMS',
             'user_route' => '/world-sv2',
             'enabled_key' => 'provider_hero_enabled',
             'enabled_default' => false,
             'server_num' => 3,
             'nav_match' => ['world-sv2', 'world-sv2/*'],
-            'description' => 'International verification via HeroSMS (user menu: Server 3).',
+            'description' => 'International verification via HeroSMS (user menu: All Countries Number 2).',
         ],
         'sv3' => [
             'setting_id' => 6,
             'icon' => 'fa-layer-group',
-            'menu_label' => 'Server 4',
+            'menu_label' => 'All Countries Number 3',
             'provider' => 'SMS Bower',
             'user_route' => '/world-sv3',
             'enabled_key' => 'provider_sv3_enabled',
             'enabled_default' => false,
             'server_num' => 4,
             'nav_match' => ['world-sv3', 'world-sv3/*'],
-            'description' => 'International verification via SMS Bower (user menu: Server 4).',
+            'description' => 'International verification via SMS Bower (user menu: All Countries Number 3).',
         ],
         'smspool' => [
             'setting_id' => 2,

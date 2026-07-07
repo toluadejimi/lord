@@ -27,7 +27,7 @@
         <label>Home</label>
     </li>
     <li class="pc-item">
-        <a href="{{ url('cworld') }}" class="pc-link pc-link-modern {{ request()->is('cworld', 'cworld/*') ? 'active' : '' }}">
+        <a href="{{ route('dashboard') }}" class="pc-link pc-link-modern {{ request()->routeIs('dashboard') ? 'active' : '' }}">
             <span class="pc-micon pc-micon-soft"><i class="ti ti-layout-dashboard"></i></span>
             <span class="pc-mtext">Dashboard</span>
         </a>

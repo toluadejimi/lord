@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Concerns\ManagesHeroStyleVerification;
 use App\Services\AppConfigService;
+use App\Support\VerificationLabels;
 use App\Services\PricingService;
 use App\Services\Sms\HeroCatalogService;
 use App\Services\VerificationOrderService;
@@ -69,7 +70,7 @@ class WorldSv3Controller extends Controller
 
     protected function heroServerLabel(): string
     {
-        return 'Server 4';
+        return VerificationLabels::customerMenuLabelForServer(4);
     }
 
     protected function heroServerNumber(): int

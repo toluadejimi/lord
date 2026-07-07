@@ -2,7 +2,7 @@
     <div class="cp-hero__main">
         <span class="cp-hero__badge sv-server-pill">
             <span class="cp-hero__badge-num sv-num">{{ $serverNum }}</span>
-            <span>Server {{ $serverNum }}</span>
+            <span>{{ \App\Support\VerificationLabels::customerMenuLabelForServer($serverNum) }}</span>
         </span>
         <h2 class="h4">{{ $title }}</h2>
         <p class="cp-hero__subtitle">{{ $subtitle }}</p>

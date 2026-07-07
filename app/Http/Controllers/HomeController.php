@@ -24,7 +24,7 @@ class HomeController extends Controller
     public function index(Request $request)
     {
         if (Auth::check()) {
-            return redirect('cworld');
+            return redirect('dashboard');
         }
 
         return view('landing');
@@ -33,7 +33,7 @@ class HomeController extends Controller
 
     public function home(request $request)
     {
-        return redirect('cworld');
+        return redirect('dashboard');
     }
 
 
@@ -611,7 +611,7 @@ class HomeController extends Controller
             $user->save();
 
             $user = Auth::id() ?? null;
-            return redirect('cworld');
+            return redirect('dashboard');
         }
 
         return back()->with('error', "Email or Password Incorrect");
@@ -635,7 +635,7 @@ class HomeController extends Controller
     public function register_index(Request $request)
     {
         if (Auth::check()) {
-            return redirect('cworld');
+            return redirect('dashboard');
         }
 
         return view('Auth.register');
@@ -645,7 +645,7 @@ class HomeController extends Controller
     public function login_index(Request $request)
     {
         if (Auth::check()) {
-            return redirect('cworld');
+            return redirect('dashboard');
         }
 
         return view('Auth.login');
@@ -677,7 +677,7 @@ class HomeController extends Controller
 
         auth()->login($user);
 
-        return redirect('cworld')->with('message', 'Welcome! Your account has been created successfully.');
+        return redirect('dashboard')->with('message', 'Welcome! Your account has been created successfully.');
     }
 
 
