@@ -662,14 +662,13 @@ class HomeController extends Controller
     {
         // Validate the user input
         $validatedData = $request->validate([
-            'username' => 'required||string|max:255',
+            'username' => 'required|string|max:255|unique:users',
             'email' => 'required|string|email|unique:users|max:255',
             'password' => 'required|string|min:4|confirmed',
         ]);
 
-        // Create a new user
+        // Create a new user (production users table uses username, not name)
         $user = User::create([
-            'name' => $validatedData['username'],
             'username' => $validatedData['username'],
             'email' => $validatedData['email'],
             'password' => Hash::make($validatedData['password']),
