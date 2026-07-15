@@ -31,17 +31,20 @@ class EsimController extends Controller
             $query['page'] = max(1, (int) $request->input('page'));
         }
 
+        $type = $query['type'] ?? 'data';
         $result = $this->orders->packagesForDisplay($query);
+        $countries = $this->orders->countriesForDropdown($type);
 
         return view('esim.index', [
             'wallet' => (float) Auth::user()->wallet,
             'packages' => $result['packages'],
             'pagination' => $result['pagination'] ?? [],
+            'countries' => $countries,
             'loadError' => $result['error'] ?? null,
             'configured' => $this->client->configured(),
             'filters' => [
                 'country' => $query['country'] ?? '',
-                'type' => $query['type'] ?? 'data',
+                'type' => $type,
             ],
         ]);
     }

@@ -6,6 +6,7 @@ use App\Models\EsimOrder;
 use App\Models\Setting;
 use App\Models\User;
 use App\Services\Esim\PikaSimClient;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -44,6 +45,56 @@ class EsimOrderService
     }
 
     /**
+     * Country codes available for the dropdown (code => display name).
+     *
+     * @return array<string, string>
+     */
+    public function countriesForDropdown(string $type = 'data'): array
+    {
+        if (!$this->client->configured() || !$this->pricingConfigured()) {
+            return [];
+        }
+
+        $type = in_array($type, ['data', 'phone', 'all'], true) ? $type : 'data';
+
+        return Cache::remember('esim_countries_'.$type, 1800, function () use ($type) {
+            try {
+                $result = $this->client->packages([
+                    'type' => $type,
+                    'limit' => 200,
+                ]);
+            } catch (\Throwable $e) {
+                Log::warning('Esim countries fetch failed', ['error' => $e->getMessage()]);
+
+                return [];
+            }
+
+            $countries = [];
+            foreach ($result['packages'] as $pkg) {
+                if (!is_array($pkg)) {
+                    continue;
+                }
+                if (!empty($pkg['isUnlimited']) || ($pkg['pricingType'] ?? 'fixed') === 'per_day') {
+                    continue;
+                }
+
+                $code = strtoupper(trim((string) ($pkg['locationCode'] ?? $pkg['location'] ?? '')));
+                if ($code === '' || strlen($code) > 8) {
+                    continue;
+                }
+
+                if (!isset($countries[$code])) {
+                    $countries[$code] = $this->countryDisplayName($code, $pkg);
+                }
+            }
+
+            asort($countries, SORT_NATURAL | SORT_FLAG_CASE);
+
+            return $countries;
+        });
+    }
+
+    /**
      * @param  array<string, mixed>  $query
      * @return array{packages: list<array<string, mixed>>, pagination: array<string, mixed>, error?: string}
      */
@@ -79,10 +130,12 @@ class EsimOrderService
                     continue;
                 }
 
+                $code = strtoupper(trim((string) ($pkg['locationCode'] ?? $pkg['location'] ?? $pkg['region'] ?? '')));
                 $rows[] = [
                     'package_code' => (string) $pkg['packageCode'],
                     'name' => (string) ($pkg['name'] ?? $pkg['packageCode']),
-                    'location' => (string) ($pkg['locationCode'] ?? $pkg['location'] ?? $pkg['region'] ?? ''),
+                    'location' => $code,
+                    'location_name' => $this->countryDisplayName($code, $pkg),
                     'volume_gb' => (float) ($pkg['volumeGB'] ?? 0),
                     'duration_days' => (int) ($pkg['duration'] ?? $pkg['validityDays'] ?? 0),
                     'speed' => (string) ($pkg['speed'] ?? ''),
@@ -103,6 +156,26 @@ class EsimOrderService
 
             return ['packages' => [], 'pagination' => [], 'error' => $e->getMessage()];
         }
+    }
+
+    /**
+     * @param  array<string, mixed>  $pkg
+     */
+    protected function countryDisplayName(string $code, array $pkg = []): string
+    {
+        $fromApi = (string) data_get($pkg, 'locationNetworkList.0.locationName', '');
+        if ($fromApi !== '') {
+            return $fromApi;
+        }
+
+        if ($code !== '' && class_exists(\Locale::class)) {
+            $name = \Locale::getDisplayRegion('-'.$code, 'en');
+            if (is_string($name) && $name !== '' && $name !== $code) {
+                return $name;
+            }
+        }
+
+        return $code !== '' ? $code : 'Global / Regional';
     }
 
     /**
