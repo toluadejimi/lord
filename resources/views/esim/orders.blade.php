@@ -62,9 +62,6 @@
                         @if($order->activation_code)
                         <div class="small mb-2"><span class="text-muted">Activation</span><br><code class="user-select-all">{{ $order->activation_code }}</code></div>
                         @endif
-                        @if($order->short_url)
-                        <a href="{{ $order->short_url }}" target="_blank" rel="noopener" class="esim-btn esim-btn-ghost btn-sm">Open install link</a>
-                        @endif
                     </div>
                 </div>
             @endif
