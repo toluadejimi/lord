@@ -86,7 +86,7 @@
     @if($esimOn)
     <li class="pc-item">
         <a href="{{ route('esim.index') }}" class="pc-link pc-link-modern pc-link-premium {{ request()->is('esim', 'esim/*') ? 'active' : '' }}">
-            <span class="pc-micon pc-micon-soft"><i class="ti ti-sim-card"></i></span>
+            <span class="pc-micon pc-micon-soft"><i class="fas fa-sim-card"></i></span>
             <span class="pc-mtext">Esim</span>
         </a>
     </li>

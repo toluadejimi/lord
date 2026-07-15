@@ -75,7 +75,7 @@ class DashboardController extends Controller
             ],
             [
                 'label' => 'Esim',
-                'icon' => 'ti-sim-card',
+                'icon' => 'fas fa-sim-card',
                 'tone' => 'indigo',
                 'url' => route('esim.index'),
                 'enabled' => $esimOn,

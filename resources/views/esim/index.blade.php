@@ -36,7 +36,7 @@
 @if($loadError)
 <div class="card esim-empty">
     <div class="card-body text-center py-5 px-4">
-        <div class="esim-empty__icon"><i class="ti ti-sim-card"></i></div>
+        <div class="esim-empty__icon"><i class="fas fa-sim-card"></i></div>
         <h3 class="h6 fw-bold mb-2">Esim unavailable</h3>
         <p class="text-muted mb-0 small">{{ $loadError }}</p>
     </div>
@@ -67,7 +67,7 @@
     <div class="col-6 col-lg-3 col-md-4">
         <div class="esim-package">
             <div class="esim-package__top">
-                <div class="esim-package__icon"><i class="ti ti-sim-card"></i></div>
+                <div class="esim-package__icon"><i class="fas fa-sim-card"></i></div>
                 <div class="min-w-0">
                     <div class="esim-package__name">{{ $pkg['name'] }}</div>
                     <div class="esim-package__location">

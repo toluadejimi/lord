@@ -13,7 +13,7 @@
 
         <div class="cp-hero">
             <div class="cp-hero__main">
-                <h2 class="h4"><i class="ti ti-sim-card me-1"></i> Esim</h2>
+                <h2 class="h4"><i class="fas fa-sim-card me-1"></i> Esim</h2>
                 <p class="cp-hero__subtitle">Travel &amp; data eSIMs with instant QR activation.</p>
             </div>
             @include('partials.customer-wallet-card', [
