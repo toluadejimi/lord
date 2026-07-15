@@ -3,7 +3,7 @@
 @section('esim-body')
 <form method="get" action="{{ route('esim.index') }}" class="esim-filters" id="esim-filters">
     <div class="row g-3 align-items-end">
-        <div class="col-12 col-md-5">
+        <div class="col-12 col-md-4">
             <label class="form-label" for="esim-country">Country</label>
             <select name="country" id="esim-country" class="form-select">
                 <option value="">All countries</option>
@@ -14,7 +14,18 @@
                 @endforeach
             </select>
         </div>
-        <div class="col-7 col-md-4">
+        <div class="col-6 col-md-3">
+            <label class="form-label" for="esim-duration">Duration</label>
+            <select name="duration" id="esim-duration" class="form-select">
+                <option value="">Any duration</option>
+                @foreach($durations as $days => $label)
+                    <option value="{{ $days }}" @selected((string) $filters['duration'] === (string) $days)>
+                        {{ $label }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+        <div class="col-6 col-md-3">
             <label class="form-label" for="esim-type">Plan type</label>
             <select name="type" id="esim-type" class="form-select">
                 <option value="data" @selected($filters['type'] === 'data')>Data only</option>
@@ -22,10 +33,10 @@
                 <option value="all" @selected($filters['type'] === 'all')>All plans</option>
             </select>
         </div>
-        <div class="col-5 col-md-3">
+        <div class="col-12 col-md-2">
             <div class="esim-filters__actions">
                 <button type="submit" class="esim-btn flex-grow-1">Apply</button>
-                @if($filters['country'] !== '' || ($filters['type'] ?? 'data') !== 'data')
+                @if($filters['country'] !== '' || $filters['duration'] !== '' || ($filters['type'] ?? 'data') !== 'data')
                     <a href="{{ route('esim.index') }}" class="esim-btn esim-btn-ghost" title="Clear filters">Clear</a>
                 @endif
             </div>
@@ -46,7 +57,7 @@
     <div class="card-body text-center py-5 px-4">
         <div class="esim-empty__icon"><i class="ti ti-world-search"></i></div>
         <h3 class="h6 fw-bold mb-2">No packages found</h3>
-        <p class="text-muted mb-3 small">Try another country or plan type.</p>
+        <p class="text-muted mb-3 small">Try another country, duration, or plan type.</p>
         <a href="{{ route('esim.index') }}" class="esim-btn esim-btn-ghost">Reset filters</a>
     </div>
 </div>
@@ -57,6 +68,9 @@
             {{ $countries[$filters['country']] }}
         @else
             Available packages
+        @endif
+        @if($filters['duration'] !== '')
+            · {{ $filters['duration'] }} {{ (int) $filters['duration'] === 1 ? 'day' : 'days' }}
         @endif
     </h3>
     <span>{{ count($packages) }} plan{{ count($packages) === 1 ? '' : 's' }}</span>

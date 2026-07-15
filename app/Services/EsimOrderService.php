@@ -95,6 +95,59 @@ class EsimOrderService
     }
 
     /**
+     * Duration options available for the dropdown (days => label).
+     *
+     * @return array<int, string>
+     */
+    public function durationsForDropdown(string $type = 'data', ?string $country = null): array
+    {
+        if (!$this->client->configured() || !$this->pricingConfigured()) {
+            return [];
+        }
+
+        $type = in_array($type, ['data', 'phone', 'all'], true) ? $type : 'data';
+        $countryKey = $country ? strtoupper($country) : 'all';
+
+        return Cache::remember('esim_durations_'.$type.'_'.$countryKey, 1800, function () use ($type, $country) {
+            try {
+                $query = [
+                    'type' => $type,
+                    'limit' => 200,
+                ];
+                if ($country) {
+                    $query['country'] = strtoupper($country);
+                }
+                $result = $this->client->packages($query);
+            } catch (\Throwable $e) {
+                Log::warning('Esim durations fetch failed', ['error' => $e->getMessage()]);
+
+                return [];
+            }
+
+            $durations = [];
+            foreach ($result['packages'] as $pkg) {
+                if (!is_array($pkg)) {
+                    continue;
+                }
+                if (!empty($pkg['isUnlimited']) || ($pkg['pricingType'] ?? 'fixed') === 'per_day') {
+                    continue;
+                }
+
+                $days = (int) ($pkg['duration'] ?? $pkg['validityDays'] ?? 0);
+                if ($days <= 0) {
+                    continue;
+                }
+
+                $durations[$days] = $days === 1 ? '1 day' : $days.' days';
+            }
+
+            ksort($durations, SORT_NUMERIC);
+
+            return $durations;
+        });
+    }
+
+    /**
      * @param  array<string, mixed>  $query
      * @return array{packages: list<array<string, mixed>>, pagination: array<string, mixed>, error?: string}
      */
@@ -145,6 +198,14 @@ class EsimOrderService
                     'max_privacy' => (bool) ($pkg['maxPrivacy'] ?? false),
                     'plan_type' => (string) ($pkg['planType'] ?? 'data'),
                 ];
+            }
+
+            if (!empty($query['duration'])) {
+                $wanted = (int) $query['duration'];
+                $rows = array_values(array_filter(
+                    $rows,
+                    fn (array $row) => (int) ($row['duration_days'] ?? 0) === $wanted
+                ));
             }
 
             return [
