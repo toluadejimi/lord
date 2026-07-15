@@ -104,7 +104,7 @@ return [
             ],
         ],
         'pikasim' => [
-            'label' => 'PikaSIM (eSIM Reseller)',
+            'label' => 'Esim',
             'keys' => [
                 'provider_pikasim_enabled' => ['label' => 'Module Enabled', 'type' => 'boolean', 'env' => null, 'default' => '0'],
                 'PIKASIM_API_KEY' => ['label' => 'Reseller API Key (X-API-Key)', 'type' => 'password', 'env' => 'PIKASIM_API_KEY'],
@@ -130,6 +130,7 @@ return [
         5 => ['name' => 'hero', 'label' => 'Server 3 — HeroSMS'],
         6 => ['name' => 'sv3', 'label' => 'Server 4 — SMS Bower'],
         7 => ['name' => 'telegram_premium', 'label' => 'Telegram Blue Tick'],
+        8 => ['name' => 'esim', 'label' => 'Esim'],
     ],
 
     'verification_types' => [

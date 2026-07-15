@@ -2,6 +2,7 @@
     $navCfg = app(\App\Services\AppConfigService::class);
     $vtuMasterOn = $navCfg->getBool('provider_vtu_enabled', true);
     $tbtOn = $navCfg->getBool('provider_telegram_blue_tick_enabled', false);
+    $esimOn = $navCfg->getBool('provider_pikasim_enabled', false);
 
     $verificationServers = collect(config('platform.admin_service_groups', []))
         ->filter(fn ($svc) => !empty($svc['user_route']) && !empty($svc['enabled_key']))
@@ -67,10 +68,11 @@
     @endif
 
     {{-- Premium --}}
-    @if($tbtOn)
+    @if($tbtOn || $esimOn)
     <li class="pc-item pc-caption pc-caption-modern pc-caption-premium">
         <label>Premium</label>
     </li>
+    @if($tbtOn)
     <li class="pc-item">
         <a href="{{ route('telegram-blue-tick.index') }}" class="pc-link pc-link-modern pc-link-premium {{ request()->is('telegram-blue-tick', 'telegram-blue-tick/*') ? 'active' : '' }}">
             <span class="pc-micon pc-micon-telegram">
@@ -80,6 +82,15 @@
             <span class="pc-mtext">Telegram Blue Tick</span>
         </a>
     </li>
+    @endif
+    @if($esimOn)
+    <li class="pc-item">
+        <a href="{{ route('esim.index') }}" class="pc-link pc-link-modern pc-link-premium {{ request()->is('esim', 'esim/*') ? 'active' : '' }}">
+            <span class="pc-micon pc-micon-soft"><i class="ti ti-sim-card"></i></span>
+            <span class="pc-mtext">Esim</span>
+        </a>
+    </li>
+    @endif
     @endif
 
     {{-- VTU & API --}}

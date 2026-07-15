@@ -74,4 +74,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(TelegramPremiumOrder::class);
     }
+
+    public function esimOrders()
+    {
+        return $this->hasMany(EsimOrder::class);
+    }
 }

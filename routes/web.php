@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminEsimController;
 use App\Http\Controllers\Admin\AdminMaintenanceController;
 use App\Http\Controllers\Admin\AdminServicesController;
 use App\Http\Controllers\Admin\AdminSettingsController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ApiDocsController;
 use App\Http\Controllers\AssistantController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EsimController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SimController;
@@ -219,6 +221,10 @@ Route::get('change-password',  [HomeController::class,'change_password']);
     Route::post('telegram-blue-tick/search', [TelegramBlueTickController::class, 'searchRecipient'])->name('telegram-blue-tick.search');
     Route::post('telegram-blue-tick/purchase', [TelegramBlueTickController::class, 'purchase'])->name('telegram-blue-tick.purchase');
 
+    Route::get('esim', [EsimController::class, 'index'])->name('esim.index');
+    Route::get('esim/orders', [EsimController::class, 'orders'])->name('esim.orders');
+    Route::post('esim/purchase', [EsimController::class, 'purchase'])->name('esim.purchase');
+
     Route::post('assistant/command', [AssistantController::class, 'command']);
 
 });
@@ -268,6 +274,9 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('telegram-blue-tick', [AdminTelegramBlueTickController::class, 'index']);
     Route::post('telegram-blue-tick', [AdminTelegramBlueTickController::class, 'update']);
     Route::post('telegram-blue-tick/fetch-packages', [AdminTelegramBlueTickController::class, 'fetchPackages']);
+    Route::get('esim', [AdminEsimController::class, 'index']);
+    Route::post('esim', [AdminEsimController::class, 'update']);
+    Route::post('esim/fetch-packages', [AdminEsimController::class, 'fetchPackages']);
     Route::get('settings', [AdminSettingsController::class, 'index']);
     Route::post('settings/keys', [AdminSettingsController::class, 'updateKeys']);
     Route::post('settings/notification', [AdminSettingsController::class, 'updateNotification']);

@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\EsimOrder;
 use App\Models\TelegramPremiumOrder;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Verification;
 use App\Services\AppConfigService;
+use App\Services\Esim\PikaSimClient;
+use App\Services\EsimOrderService;
 use App\Services\TelegramPremiumOrderService;
 use App\Services\VerificationOrderService;
 use App\Services\WalletFundingService;
@@ -24,6 +27,8 @@ class WebhookController extends Controller
         protected WalletService $wallet,
         protected WalletFundingService $funding,
         protected TelegramPremiumOrderService $telegramPremium,
+        protected EsimOrderService $esimOrders,
+        protected PikaSimClient $pikaSim,
     ) {}
 
     protected function verifyInbound(Request $request): bool
@@ -171,6 +176,52 @@ class WebhookController extends Controller
                 ?? $orderPayload['payload']['reason']
                 ?? 'Order failed at provider');
             $this->telegramPremium->markFailed($order, $reason, true);
+        }
+
+        return response()->json(['success' => true]);
+    }
+
+    public function esim(Request $request)
+    {
+        $signature = (string) ($request->header('X-Webhook-Signature') ?? '');
+        $body = $request->getContent();
+
+        if ($this->pikaSim->webhookSecret() !== '') {
+            if (!$this->pikaSim->verifyWebhookSignature($body, $signature)) {
+                return response()->json(['success' => false], 401);
+            }
+        }
+
+        $event = (string) ($request->input('event') ?? '');
+        $data = $request->input('data', []);
+        if (!is_array($data)) {
+            $data = [];
+        }
+
+        $externalOrderId = (string) ($data['externalOrderId'] ?? '');
+        $providerOrderId = (string) ($data['orderId'] ?? '');
+
+        $order = null;
+        if ($externalOrderId !== '') {
+            $order = EsimOrder::where('ref_id', $externalOrderId)->first();
+        }
+        if (!$order && $providerOrderId !== '') {
+            $order = EsimOrder::where('provider_order_id', $providerOrderId)->first();
+        }
+
+        if (!$order) {
+            return response()->json(['success' => true, 'message' => 'Order not tracked']);
+        }
+
+        if ($event === 'esim.provisioned' || $event === 'esim.topup.completed') {
+            $esim = is_array($data['esim'] ?? null) ? $data['esim'] : $data;
+            if ($providerOrderId !== '' && empty($order->provider_order_id)) {
+                $order->provider_order_id = $providerOrderId;
+            }
+            $this->esimOrders->markProvisioned($order, $esim, $request->all());
+        } elseif ($event === 'order.failed') {
+            $reason = (string) ($data['message'] ?? $data['error'] ?? $request->input('error') ?? 'Order failed at provider');
+            $this->esimOrders->markFailed($order, $reason, true);
         }
 
         return response()->json(['success' => true]);

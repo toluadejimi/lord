@@ -44,6 +44,11 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link {{ ($adminActive ?? '') === 'esim' ? 'active' : '' }}" href="{{ url('admin/esim') }}">
+                            <i class="fas fa-sim-card"></i> Esim
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link {{ ($adminActive ?? '') === 'settings' ? 'active' : '' }}" href="{{ url('admin/settings') }}">
                             <i class="fas fa-cog"></i> Platform Settings
                         </a>

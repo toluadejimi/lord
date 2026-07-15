@@ -27,6 +27,7 @@ class DashboardController extends Controller
 
         $vtuOn = $config->getBool('provider_vtu_enabled', true);
         $tbtOn = $config->getBool('provider_telegram_blue_tick_enabled', false);
+        $esimOn = $config->getBool('provider_pikasim_enabled', false);
 
         $popularServices = collect([
             [
@@ -71,6 +72,13 @@ class DashboardController extends Controller
                 'tone' => 'sky',
                 'url' => route('telegram-blue-tick.index'),
                 'enabled' => $tbtOn,
+            ],
+            [
+                'label' => 'Esim',
+                'icon' => 'ti-sim-card',
+                'tone' => 'indigo',
+                'url' => route('esim.index'),
+                'enabled' => $esimOn,
             ],
             [
                 'label' => 'Orders',
