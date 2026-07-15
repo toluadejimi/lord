@@ -103,6 +103,15 @@ return [
                 'telegram_premium_price_12' => ['label' => 'Fixed price 12 mo (NGN)', 'type' => 'text', 'env' => null],
             ],
         ],
+        'pikasim' => [
+            'label' => 'PikaSIM (eSIM Reseller)',
+            'keys' => [
+                'provider_pikasim_enabled' => ['label' => 'Module Enabled', 'type' => 'boolean', 'env' => null, 'default' => '0'],
+                'PIKASIM_API_KEY' => ['label' => 'Reseller API Key (X-API-Key)', 'type' => 'password', 'env' => 'PIKASIM_API_KEY'],
+                'PIKASIM_API_BASE' => ['label' => 'API Base URL', 'type' => 'text', 'env' => 'PIKASIM_API_BASE', 'default' => 'https://pikasim.com/api/v1/reseller'],
+                'PIKASIM_WEBHOOK_SECRET' => ['label' => 'Webhook HMAC Secret', 'type' => 'password', 'env' => 'PIKASIM_WEBHOOK_SECRET'],
+            ],
+        ],
         'site' => [
             'label' => 'Sitewide',
             'keys' => [
