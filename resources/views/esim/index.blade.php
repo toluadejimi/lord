@@ -42,15 +42,19 @@
         <div class="esim-package">
             <div class="esim-package__name">{{ $pkg['name'] }}</div>
             <div class="esim-package__meta">
-                @if($pkg['location']){{ $pkg['location'] }} · @endif
+                @if($pkg['location'])
+                    {{ $pkg['location'] }} ·
+                @endif
                 {{ rtrim(rtrim(number_format($pkg['volume_gb'], 2), '0'), '.') }} GB
-                @if($pkg['duration_days']) · {{ $pkg['duration_days'] }} days@endif
+                @if($pkg['duration_days'])
+                    · {{ $pkg['duration_days'] }} days
+                @endif
             </div>
             @if($pkg['speed'])
-            <div class="esim-package__meta">{{ $pkg['speed'] }}</div>
+                <div class="esim-package__meta">{{ $pkg['speed'] }}</div>
             @endif
             <div class="esim-package__price">₦{{ number_format($pkg['price_ngn'], 2) }}</div>
-            <form method="post" action="{{ route('esim.purchase') }}" class="mt-2" onsubmit="return confirm('Buy {{ addslashes($pkg['name']) }} for ₦{{ number_format($pkg['price_ngn'], 2) }}?');">
+            <form method="post" action="{{ route('esim.purchase') }}" class="mt-2" onsubmit="return confirm('Buy this package for ₦{{ number_format($pkg['price_ngn'], 2) }}?');">
                 @csrf
                 <input type="hidden" name="package_code" value="{{ $pkg['package_code'] }}">
                 <input type="hidden" name="price_ngn" value="{{ $pkg['price_ngn'] }}">

@@ -23,8 +23,12 @@
             <div class="small text-muted mb-2">
                 ₦{{ number_format($order->amount_ngn, 2) }}
                 @if($order->location) · {{ $order->location }}@endif
-                @if($order->volume_gb) · {{ $order->volume_gb }} GB@endif
-                @if($order->duration_days) · {{ $order->duration_days }} days@endif
+                @if($order->volume_gb)
+                    · {{ $order->volume_gb }} GB
+                @endif
+                @if($order->duration_days)
+                    · {{ $order->duration_days }} days
+                @endif
             </div>
 
             @if($order->status === 'failed' && $order->failure_reason)
